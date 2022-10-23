@@ -3,7 +3,14 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { HashRouter, Route } from 'react-router-dom';
 import { NavBar, Card, Alert } from './widgets';
-import { RecipeList, TaskDetails, TaskEdit, TaskNew } from './recipe-components';
+import {
+  RecipeAdd,
+  RecipeList,
+  ShoppingCart,
+  TaskDetails,
+  TaskEdit,
+  TaskNew,
+} from './recipe-components';
 
 class Menu extends Component {
   render() {
@@ -12,9 +19,9 @@ class Menu extends Component {
       //en for å legge til nye oppskrifter
       //en for handleliste
       <NavBar brand="Food Recipe App">
-        <NavBar.Link to="/tasks">Recipes</NavBar.Link>
-        <NavBar.Link to="/tasks">Add Recipes</NavBar.Link>
-        <NavBar.Link to="/tasks">Shopping Cart</NavBar.Link>
+        <NavBar.Link to="/recipes">Recipes</NavBar.Link>
+        <NavBar.Link to="/recipes/add">Add Recipes</NavBar.Link>
+        <NavBar.Link to="/recipes/cart">Shopping Cart</NavBar.Link>
       </NavBar>
     );
   }
@@ -32,7 +39,9 @@ ReactDOM.render(
       <Alert />
       <Menu />
       <Route exact path="/" component={Home} />
-      <Route exact path="/tasks" component={RecipeList} />
+      <Route exact path="/recipes" component={RecipeList} />
+      <Route exact path="/recipes/add" component={RecipeAdd} />
+      <Route exact path="/recipes/cart" component={ShoppingCart} />
       <Route exact path="/tasks/:id(\d+)" component={TaskDetails} /> {/* id must be number */}
       <Route exact path="/tasks/:id(\d+)/edit" component={TaskEdit} /> {/* id must be number */}
       <Route exact path="/tasks/new" component={TaskNew} />

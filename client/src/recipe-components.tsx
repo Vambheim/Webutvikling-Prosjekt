@@ -40,7 +40,29 @@ export class RecipeList extends Component {
 
 export class RecipeAdd extends Component {
   render() {
-    return <Card title="Add Recipe"></Card>;
+    return (
+      <Card title="Add Recipe">
+        <Row>
+          <Column>You can add your favourite recipe here</Column>
+        </Row>
+        <Row>
+          <Column width={2}>
+            <Form.Input type="text" placeholder="Name on dish"></Form.Input>
+          </Column>
+          <Column>
+            <Form.Textarea type="text" rows={6} placeholder="Steps"></Form.Textarea>
+          </Column>
+          <Column></Column>
+        </Row>
+        <Button.Success>Add recipe</Button.Success>
+      </Card>
+    );
+  }
+}
+
+export class ShoppingCart extends Component {
+  render() {
+    return <Card title="Shopping Cart"></Card>;
   }
 }
 
