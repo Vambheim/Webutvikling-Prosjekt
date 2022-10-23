@@ -1,6 +1,9 @@
-1. Linker til ressurser som skal brukes:
+Linker til ressurser som skal brukes:
+
 For Repsonsivt desing: https://react-bootstrap.github.io/
+
 Muligens for hashing: https://medium.com/@nick_92077/user-authentication-basics-hashing-and-jwt-3f9adf12272
+
 Muligens for API: https://rapidapi.com/spoonacular/api/recipe-food-nutrition
 
 
