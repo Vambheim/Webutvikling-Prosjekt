@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import taskService, { Task } from './task-service';
+import taskService, { Task } from './recipe-service';
 import { createHashHistory } from 'history';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -10,13 +10,13 @@ const history = createHashHistory(); // Use history.push(...) to programmaticall
 /**
  * Renders task list.
  */
-export class TaskList extends Component {
+export class RecipeList extends Component {
   tasks: Task[] = [];
 
   render() {
     return (
       <>
-        <Card title="Tasks">
+        <Card title="Recipes">
           {this.tasks.map((task) => (
             <Row key={task.id}>
               <Column>
@@ -35,6 +35,12 @@ export class TaskList extends Component {
       .getAll()
       .then((tasks) => (this.tasks = tasks))
       .catch((error) => Alert.danger('Error getting tasks: ' + error.message));
+  }
+}
+
+export class RecipeAdd extends Component {
+  render() {
+    return <Card title="Add Recipe"></Card>;
   }
 }
 
