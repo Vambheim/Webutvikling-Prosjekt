@@ -25,17 +25,20 @@ export class RecipeList extends Component {
             </Row>
           ))}
         </Card>
+        <Card title="Filter">
+          <Form.Select></Form.Select>
+        </Card>
         <Button.Success onClick={() => history.push('/tasks/new')}>New task</Button.Success>
       </>
     );
   }
 
-  mounted() {
-    taskService
-      .getAll()
-      .then((tasks) => (this.tasks = tasks))
-      .catch((error) => Alert.danger('Error getting tasks: ' + error.message));
-  }
+  // mounted() {
+  //   taskService
+  //     .getAll()
+  //     .then((tasks) => (this.tasks = tasks))
+  //     .catch((error) => Alert.danger('Error getting tasks: ' + error.message));
+  // }
 }
 
 export class RecipeAdd extends Component {
@@ -49,10 +52,18 @@ export class RecipeAdd extends Component {
           <Column width={2}>
             <Form.Input type="text" placeholder="Name on dish"></Form.Input>
           </Column>
-          <Column>
+          <Column width={2}>
             <Form.Textarea type="text" rows={6} placeholder="Steps"></Form.Textarea>
           </Column>
-          <Column></Column>
+          <Column width={2}>
+            <Form.Input type="text" placeholder="Ingredient"></Form.Input>
+          </Column>
+          <Column width={1}>
+            <Form.Select></Form.Select>
+          </Column>
+          <Column width={1}>
+            <Button.Light>+</Button.Light>
+          </Column>
         </Row>
         <Button.Success>Add recipe</Button.Success>
       </Card>
@@ -60,9 +71,23 @@ export class RecipeAdd extends Component {
   }
 }
 
-export class ShoppingCart extends Component {
+export class ShoppingList extends Component {
+  ings: string[] = ['ost', 'kjøtt', 'biff'];
+
   render() {
-    return <Card title="Shopping Cart"></Card>;
+    return (
+      <Card title="Shopping List">
+        {this.ings.map((ing, i) => (
+          <Row key={i}>
+            <Row>
+              <Column width={1}>{ing}</Column>
+              <Form.Checkbox></Form.Checkbox>
+            </Row>
+          </Row>
+        ))}
+        <Button.Danger>Reset Shopping List</Button.Danger>
+      </Card>
+    );
   }
 }
 

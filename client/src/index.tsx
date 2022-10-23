@@ -7,6 +7,7 @@ import {
   RecipeAdd,
   RecipeList,
   ShoppingCart,
+  ShoppingList,
   TaskDetails,
   TaskEdit,
   TaskNew,
@@ -21,7 +22,7 @@ class Menu extends Component {
       <NavBar brand="Food Recipe App">
         <NavBar.Link to="/recipes">Recipes</NavBar.Link>
         <NavBar.Link to="/recipes/add">Add Recipes</NavBar.Link>
-        <NavBar.Link to="/recipes/cart">Shopping Cart</NavBar.Link>
+        <NavBar.Link to="/recipes/cart">Shopping List</NavBar.Link>
       </NavBar>
     );
   }
@@ -41,7 +42,7 @@ ReactDOM.render(
       <Route exact path="/" component={Home} />
       <Route exact path="/recipes" component={RecipeList} />
       <Route exact path="/recipes/add" component={RecipeAdd} />
-      <Route exact path="/recipes/cart" component={ShoppingCart} />
+      <Route exact path="/recipes/cart" component={ShoppingList} />
       <Route exact path="/tasks/:id(\d+)" component={TaskDetails} /> {/* id must be number */}
       <Route exact path="/tasks/:id(\d+)/edit" component={TaskEdit} /> {/* id must be number */}
       <Route exact path="/tasks/new" component={TaskNew} />
