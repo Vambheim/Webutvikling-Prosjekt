@@ -12,6 +12,16 @@ const history = createHashHistory(); // Use history.push(...) to programmaticall
  */
 export class RecipeList extends Component {
   tasks: Task[] = [];
+  countries: string[] = ['Norway', 'China']; // Midlertidig løsning frem til api er hentet
+  country: string = '';
+  categories: string[] = ['Fish', 'Tapas']; // Midlertidig løsning frem til api er hentet
+  category: string = '';
+  ingredients: string[] = ['Milk', 'Chilli']; // Midlertidig løsning frem til api er hentet
+  ingredient: string = '';
+
+  filter() {
+    alert('heiiiiu');
+  }
 
   render() {
     return (
@@ -26,9 +36,55 @@ export class RecipeList extends Component {
           ))}
         </Card>
         <Card title="Filter">
-          <Form.Select></Form.Select>
+          <Row>
+            <Column width={2}>Country:</Column>
+            <Column width={2}>Category:</Column>
+            <Column width={2}>Ingredients:</Column>
+          </Row>
+          <Row>
+            <Column width={2}>
+              <Form.Select
+                value={this.country}
+                onChange={(event) => (this.country = event.currentTarget.value)}
+              >
+                {this.countries.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </Form.Select>
+            </Column>
+            <Column width={2}>
+              <Form.Select
+                value={this.category}
+                onChange={(event) => (this.category = event.currentTarget.value)}
+              >
+                {this.categories.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </Form.Select>
+            </Column>
+            <Column width={2}>
+              <Form.Select
+                value={this.ingredient}
+                onChange={(event) => (this.ingredient = event.currentTarget.value)}
+              >
+                {this.ingredients.map((ing) => (
+                  <option key={ing} value={ing}>
+                    {ing}
+                  </option>
+                ))}
+              </Form.Select>
+            </Column>
+            <Column>
+              <Button.Success>Add filters </Button.Success>
+              <Button.Light>Like this recipe &#10084;</Button.Light>
+              {/* For bruk til å like oppskrifter senere */}
+            </Column>
+          </Row>
         </Card>
-        <Button.Success onClick={() => history.push('/tasks/new')}>New task</Button.Success>
       </>
     );
   }
@@ -65,14 +121,27 @@ export class RecipeAdd extends Component {
             <Button.Light>+</Button.Light>
           </Column>
         </Row>
-        <Button.Success>Add recipe</Button.Success>
+        <Button.Success>Add recipe </Button.Success>
       </Card>
     );
   }
 }
 
 export class ShoppingList extends Component {
-  ings: string[] = ['ost', 'kjøtt', 'biff'];
+  ings: string[] = ['Cheese', 'Meat', 'Chicken'];
+
+  removeOne(i: number, ing: string) {
+    if (confirm('Do you want to remove ' + ing + ' from the shopping list?')) {
+      // Called when OK is pressed
+      this.ings.splice(i, 1);
+    } else {
+      console.log('Cancel');
+    }
+  }
+
+  removeAll() {
+    this.ings = [];
+  }
 
   render() {
     return (
@@ -80,12 +149,23 @@ export class ShoppingList extends Component {
         {this.ings.map((ing, i) => (
           <Row key={i}>
             <Row>
-              <Column width={1}>{ing}</Column>
-              <Form.Checkbox></Form.Checkbox>
+              <Column width={3}>{ing}</Column>
+              <Column width={1}>
+                <Button.Light onClick={() => this.removeOne(i, ing)} small>
+                  &#128465;
+                </Button.Light>
+              </Column>
+              <Column></Column>
             </Row>
           </Row>
         ))}
-        <Button.Danger>Reset Shopping List</Button.Danger>
+        <Button.Danger
+          onClick={() => {
+            this.removeAll();
+          }}
+        >
+          Reset Shopping List
+        </Button.Danger>
       </Card>
     );
   }

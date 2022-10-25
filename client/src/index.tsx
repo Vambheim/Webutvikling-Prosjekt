@@ -6,7 +6,6 @@ import { NavBar, Card, Alert } from './widgets';
 import {
   RecipeAdd,
   RecipeList,
-  ShoppingCart,
   ShoppingList,
   TaskDetails,
   TaskEdit,
@@ -23,6 +22,7 @@ class Menu extends Component {
         <NavBar.Link to="/recipes">Recipes</NavBar.Link>
         <NavBar.Link to="/recipes/add">Add Recipes</NavBar.Link>
         <NavBar.Link to="/recipes/cart">Shopping List</NavBar.Link>
+        <NavBar.Link to="/recipes/cart">My User</NavBar.Link>
       </NavBar>
     );
   }
