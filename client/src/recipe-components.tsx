@@ -2,21 +2,19 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import taskService, { Task } from './recipe-service';
+import taskService, { Recipe } from './recipe-service';
 import { createHashHistory } from 'history';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
-
 /**
  * Renders task list.
  */
 export class RecipeList extends Component {
-  tasks: Task[] = [];
   countries: string[] = ['Norway', 'China']; // Midlertidig løsning frem til api er hentet
   country: string = '';
   categories: string[] = ['Fish', 'Tapas']; // Midlertidig løsning frem til api er hentet
   category: string = '';
-  ingredients: string[] = ['Milk', 'Chilli']; // Midlertidig løsning frem til api er hentet
+  ingredients: string[] = ['Milk', 'Chili']; // Midlertidig løsning frem til api er hentet
   ingredient: string = '';
 
   filter() {
@@ -26,7 +24,7 @@ export class RecipeList extends Component {
   render() {
     return (
       <>
-        <Card title="Recipes">
+        {/* <Card title="Recipes">
           {this.tasks.map((task) => (
             <Row key={task.id}>
               <Column>
@@ -34,7 +32,7 @@ export class RecipeList extends Component {
               </Column>
             </Row>
           ))}
-        </Card>
+        </Card> */}
         <Card title="Filter">
           <Row>
             <Column width={2}>Country:</Column>
@@ -79,7 +77,7 @@ export class RecipeList extends Component {
               </Form.Select>
             </Column>
             <Column>
-              <Button.Success>Add filters </Button.Success>
+              <Button.Success>Add filters</Button.Success>
               <Button.Light>Like this recipe &#10084;</Button.Light>
               {/* For bruk til å like oppskrifter senere */}
             </Column>
@@ -95,6 +93,49 @@ export class RecipeList extends Component {
   //     .then((tasks) => (this.tasks = tasks))
   //     .catch((error) => Alert.danger('Error getting tasks: ' + error.message));
   // }
+}
+
+export class RecipeDetails extends Component {
+  recipe: Recipe = { id: 0, name: 'Kvæfjord cake', category: 'Cake', country: 'Norway' };
+
+  //   var data = {
+  //     code: 42,
+  //     items: [{
+  //         id: 1,
+  //         name: 'foo'
+  //     }, {
+  //         id: 2,
+  //         name: 'bar'
+  //     }]
+  // };
+
+  render() {
+    return (
+      <>
+        <Card title="Task">
+          <Row>
+            <Column width={2}>Name:</Column>
+            <Column>{this.recipe.name}</Column>
+          </Row>
+          <Row>
+            <Column width={2}>Category:</Column>
+            <Column width={2}>{this.recipe.category}</Column>
+          </Row>
+          <Row>
+            <Column width={2}>Done:</Column>
+            <Column>
+              {/* <Form.Checkbox checked={this.task.done} onChange={() => {}} disabled /> */}
+            </Column>
+          </Row>
+        </Card>
+        <Button.Success
+          onClick={() => history.push('/tasks/' + this.props.match.params.id + '/edit')}
+        >
+          Edit
+        </Button.Success>
+      </>
+    );
+  }
 }
 
 export class RecipeAdd extends Component {

@@ -2,11 +2,21 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:3000/api/v2';
 
-export type Task = {
-  id: number;
-  title: string;
-  done: boolean;
+export type Recipe = {
+  recipe_id: number;
+  name: string;
+  category: string;
+  country: string;
 };
+
+export type Step = {
+  step_id: number; 
+  description: string;
+  order: number;
+  recipe_id: number;
+}
+
+
 
 class TaskService {
   /**
