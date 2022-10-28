@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import taskService, { Recipe } from './recipe-service';
+import taskService, { Recipe, User } from './recipe-service';
 import { createHashHistory } from 'history';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -16,6 +16,10 @@ export class RecipeList extends Component {
   category: string = '';
   ingredients: string[] = ['Milk', 'Chili']; // Midlertidig løsning frem til api er hentet
   ingredient: string = '';
+  recipes: Recipe[] = [
+    { recipe_id: 0, name: 'Kvæfjord cake', category: 'Cake', country: 'Norway' },
+    { recipe_id: 1, name: 'Sushi', category: 'Dinner', country: 'Japan' }, // Midelertidig data, skal fjernes
+  ];
 
   filter() {
     alert('heiiiiu');
@@ -24,23 +28,14 @@ export class RecipeList extends Component {
   render() {
     return (
       <>
-        {/* <Card title="Recipes">
-          {this.tasks.map((task) => (
-            <Row key={task.id}>
-              <Column>
-                <NavLink to={'/tasks/' + task.id}>{task.title}</NavLink>
-              </Column>
-            </Row>
-          ))}
-        </Card> */}
         <Card title="Filter">
           <Row>
-            <Column width={2}>Country:</Column>
-            <Column width={2}>Category:</Column>
-            <Column width={2}>Ingredients:</Column>
+            <Column width={3}>Country:</Column>
+            <Column width={3}>Category:</Column>
+            <Column width={3}>Ingredients:</Column>
           </Row>
           <Row>
-            <Column width={2}>
+            <Column width={3}>
               <Form.Select
                 value={this.country}
                 onChange={(event) => (this.country = event.currentTarget.value)}
@@ -52,7 +47,7 @@ export class RecipeList extends Component {
                 ))}
               </Form.Select>
             </Column>
-            <Column width={2}>
+            <Column width={3}>
               <Form.Select
                 value={this.category}
                 onChange={(event) => (this.category = event.currentTarget.value)}
@@ -64,7 +59,7 @@ export class RecipeList extends Component {
                 ))}
               </Form.Select>
             </Column>
-            <Column width={2}>
+            <Column width={3}>
               <Form.Select
                 value={this.ingredient}
                 onChange={(event) => (this.ingredient = event.currentTarget.value)}
@@ -78,10 +73,18 @@ export class RecipeList extends Component {
             </Column>
             <Column>
               <Button.Success>Add filters</Button.Success>
-              <Button.Light>Like this recipe &#10084;</Button.Light>
-              {/* For bruk til å like oppskrifter senere */}
             </Column>
           </Row>
+        </Card>
+        {/* Lists the recipes */}
+        <Card title="Recepies">
+          {this.recipes.map((recipe) => (
+            <Row key={recipe.recipe_id}>
+              <Column>
+                <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
+              </Column>
+            </Row>
+          ))}
         </Card>
       </>
     );
@@ -95,24 +98,14 @@ export class RecipeList extends Component {
   // }
 }
 
-export class RecipeDetails extends Component {
-  recipe: Recipe = { id: 0, name: 'Kvæfjord cake', category: 'Cake', country: 'Norway' };
-
-  //   var data = {
-  //     code: 42,
-  //     items: [{
-  //         id: 1,
-  //         name: 'foo'
-  //     }, {
-  //         id: 2,
-  //         name: 'bar'
-  //     }]
-  // };
+export class RecipeDetails extends Component<{ match: { params: { recipe_id: number } } }> {
+  recipe: Recipe = { recipe_id: 0, name: 'Kvæfjord cake', category: 'Cake', country: 'Norway' };
+  //Skal være tom og fylles av databasekall... where recipe_id = this.props.match.params.recipe_id
 
   render() {
     return (
       <>
-        <Card title="Task">
+        <Card title={'Recipe for ' + this.recipe.name}>
           <Row>
             <Column width={2}>Name:</Column>
             <Column>{this.recipe.name}</Column>
@@ -122,17 +115,16 @@ export class RecipeDetails extends Component {
             <Column width={2}>{this.recipe.category}</Column>
           </Row>
           <Row>
-            <Column width={2}>Done:</Column>
-            <Column>
-              {/* <Form.Checkbox checked={this.task.done} onChange={() => {}} disabled /> */}
-            </Column>
+            <Column width={2}>Country:</Column>
+            <Column width={2}>{this.recipe.country}</Column>
           </Row>
+          <Button.Light>Like this recipe &#10084;</Button.Light>
         </Card>
-        <Button.Success
-          onClick={() => history.push('/tasks/' + this.props.match.params.id + '/edit')}
+        {/* <Button.Success
+          onClick={() => history.push('/tasks/' + this.props.match.params.recipe_id + '/edit')}
         >
           Edit
-        </Button.Success>
+        </Button.Success> */}
       </>
     );
   }
@@ -162,7 +154,7 @@ export class RecipeAdd extends Component {
             <Button.Light>+</Button.Light>
           </Column>
         </Row>
-        <Button.Success>Add recipe </Button.Success>
+        <Button.Success>Add recipe</Button.Success>
       </Card>
     );
   }
@@ -212,9 +204,59 @@ export class ShoppingList extends Component {
   }
 }
 
-/**
- * Renders a specific task.
- */
+export class UserLogIn extends Component {
+  user: User[] = [
+    { username: 'Thomas', password: '123' },
+    { username: 'Ola', password: '90112' },
+  ];
+
+  test: User = { username: '', password: '' };
+
+  autent() {
+    console.log('Hei');
+    console.log('Username: ' + this.test.username);
+    console.log('Password: ' + this.test.password);
+  }
+
+  reset() {}
+
+  render() {
+    return (
+      <Card title="Log In">
+        <Row>
+          <Column width={6}>
+            <Form.Input type="text" placeholder="Username"></Form.Input>
+          </Column>
+        </Row>
+        <Row>
+          <Column width={6}>
+            <Form.Input
+              value={this.test.password}
+              type="password"
+              placeholder="Password"
+              onChange={(event) => (this.test.password = event.currentTarget.value)}
+            ></Form.Input>
+          </Column>
+        </Row>
+        <Row>
+          <br></br>
+        </Row>
+        <Row>
+          <Column width={3}>
+            <Button.Success
+              onClick={() => {
+                this.autent();
+              }}
+            >
+              Log in
+            </Button.Success>
+          </Column>
+        </Row>
+      </Card>
+    );
+  }
+}
+
 export class TaskDetails extends Component<{ match: { params: { id: number } } }> {
   task: Task = { id: 0, title: '', done: false };
 

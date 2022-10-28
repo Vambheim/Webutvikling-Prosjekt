@@ -10,13 +10,16 @@ export type Recipe = {
 };
 
 export type Step = {
-  step_id: number; 
+  step_id: number;
   description: string;
   order: number;
   recipe_id: number;
-}
+};
 
-
+export type User = {
+  username: string;
+  password: string;
+};
 
 class TaskService {
   /**

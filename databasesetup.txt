@@ -1,1 +1,13 @@
-STEP
+ER-diagram:
+
+
+RELATIONAL FORM: 
+
+
+CREATE TABLES:
+
+
+
+
+INSERT INTO:
+

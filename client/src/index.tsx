@@ -10,6 +10,7 @@ import {
   RecipeDetails,
   TaskEdit,
   TaskNew,
+  UserLogIn,
 } from './recipe-components';
 
 class Menu extends Component {
@@ -43,7 +44,8 @@ ReactDOM.render(
       <Route exact path="/recipes" component={RecipeList} />
       <Route exact path="/recipes/add" component={RecipeAdd} />
       <Route exact path="/recipes/cart" component={ShoppingList} />
-      <Route exact path="/recipes/user" component={RecipeDetails} /> {/* id must be number */}
+      <Route exact path="/recipes/user" component={UserLogIn} />
+      <Route exact path="/recipes/:id(\d+)" component={RecipeDetails} /> {/* id must be number */}
       <Route exact path="/tasks/:id(\d+)/edit" component={TaskEdit} /> {/* id must be number */}
       <Route exact path="/tasks/new" component={TaskNew} />
     </div>
