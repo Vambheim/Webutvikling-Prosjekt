@@ -205,15 +205,27 @@ export class ShoppingList extends Component {
 }
 
 export class UserLogIn extends Component {
-  user: User[] = [
+  users: User[] = [
+    //Skal være tom hehelolol
     { username: 'Thomas', password: '123' },
     { username: 'Ola', password: '90112' },
   ];
 
   test: User = { username: '', password: '' };
 
-  autent() {
-    console.log('Hei');
+  autent(username_input: string, password_input: string) {
+    if (this.users.some((user) => user.username === username_input)) {
+      console.log('brukenavn godkjent');
+    } else {
+      Alert.danger('No user with username: ' + username_input + ' found');
+    }
+
+    // if (this.users.some((user) => user.password === username_input)) {
+    //   console.log('brukenavn godkjent');
+    // } else {
+    //   Alert.danger('No user with username: ' + username_input + ' found');
+    // }
+
     console.log('Username: ' + this.test.username);
     console.log('Password: ' + this.test.password);
   }
@@ -225,7 +237,12 @@ export class UserLogIn extends Component {
       <Card title="Log In">
         <Row>
           <Column width={6}>
-            <Form.Input type="text" placeholder="Username"></Form.Input>
+            <Form.Input
+              value={this.test.username}
+              type="text"
+              placeholder="Username"
+              onChange={(event) => (this.test.username = event.currentTarget.value)}
+            ></Form.Input>
           </Column>
         </Row>
         <Row>
@@ -235,6 +252,13 @@ export class UserLogIn extends Component {
               type="password"
               placeholder="Password"
               onChange={(event) => (this.test.password = event.currentTarget.value)}
+              // @ts-ignore
+              // Makes it possible to log in with enter as well as with button
+              onKeyUp={(event) => {
+                if (event.key == 'Enter') {
+                  this.autent(this.test.username, this.test.password);
+                }
+              }}
             ></Form.Input>
           </Column>
         </Row>
