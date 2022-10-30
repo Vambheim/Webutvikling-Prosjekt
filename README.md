@@ -1,24 +1,15 @@
-API Key: 5b7869e75f75481a8f5005bc7bffd3a8
+Alle endringer i denne branchen relateres til implementasjon av React-Bootstrap
 
+API Key: 5b7869e75f75481a8f5005bc7bffd3a8
 
 Linker til ressurser som skal brukes:
 
 For Repsonsivt desing: https://react-bootstrap.github.io/
 
-Muligens for hashing: https://medium.com/@nick_92077/user-authentication-basics-hashing-and-jwt-3f9adf12272
+Muligens for hashing:
+https://medium.com/@nick_92077/user-authentication-basics-hashing-and-jwt-3f9adf12272
 
 Muligens for API: https://rapidapi.com/spoonacular/api/recipe-food-nutrition
-
-
-
-
-
-
-
-
-
-
-
 
 # Client tests example
 
