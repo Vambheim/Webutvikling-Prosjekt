@@ -13,6 +13,21 @@ import {
 } from './recipe-components';
 
 class Menu extends Component {
+
+  //henter data fra spoonacular når komponentet lastes 
+  mounted() {
+    const getApi = async () => {
+      const api = await fetch(
+        `https://api.spoonacular.com/recipes/random?apiKey=5b7869e75f75481a8f5005bc7bffd3a8&number=9`
+      );
+      //${process.env.REACT_APP_API_KEY}
+      const data = await api.json();
+      console.log(data);
+    };
+
+    getApi();
+  }
+
   render() {
     return (
       //En link for oppskriftene,
@@ -50,3 +65,4 @@ ReactDOM.render(
   </HashRouter>,
   document.getElementById('root')
 );
+
