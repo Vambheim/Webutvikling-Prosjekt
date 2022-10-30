@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import * as React from 'react';
 import { Component } from 'react-simplified';
 import { HashRouter, Route } from 'react-router-dom';
-import { Card, Alert } from './widgets';
+import { Alert, Card } from './widgets';
 import {
   RecipeAdd,
   RecipeList,
@@ -15,16 +15,19 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+// import Card from 'react-bootstrap/Card';
 
 class Menu extends Component {
   render() {
     return (
       <Navbar bg="light" expand="lg">
         <Container>
-          <Navbar.Brand href="/">Java matapplikasjon</Navbar.Brand>
+          <Navbar.Brand href="/" className="ms-auto">
+            Java matapplikasjon
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="m-auto">
+            <Nav className="ms-auto">
               <Nav.Link href="/#/recipes">Oppskrifter</Nav.Link>
               <Nav.Link href="/#/recipes/add">Legg til oppskrift</Nav.Link>
               <Nav.Link href="/#/recipes/cart">Handleliste</Nav.Link>
