@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import * as React from 'react';
 import { Component } from 'react-simplified';
 import { HashRouter, Route } from 'react-router-dom';
-import { NavBar, Card, Alert } from './widgets';
+import { Card, Alert } from './widgets';
 import {
   RecipeAdd,
   RecipeList,
@@ -11,19 +11,33 @@ import {
   TaskEdit,
   TaskNew,
 } from './recipe-components';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 class Menu extends Component {
   render() {
     return (
-      //En link for oppskriftene,
-      //en for å legge til nye oppskrifter
-      //en for handleliste
-      <NavBar brand="Food Recipe App">
-        <NavBar.Link to="/recipes">Recipes</NavBar.Link>
-        <NavBar.Link to="/recipes/add">Add Recipes</NavBar.Link>
-        <NavBar.Link to="/recipes/cart">Shopping List</NavBar.Link>
-        <NavBar.Link to="/recipes/cart">My User</NavBar.Link>
-      </NavBar>
+      <Navbar bg="light" expand="lg">
+        <Container>
+          <Navbar.Brand href="/">Java matapplikasjon</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="m-auto">
+              <Nav.Link href="/#/recipes">Oppskrifter</Nav.Link>
+              <Nav.Link href="/#/recipes/add">Legg til oppskrift</Nav.Link>
+              <Nav.Link href="/#/recipes/cart">Handleliste</Nav.Link>
+              <NavDropdown title="Innstillinger" id="basic-nav-dropdown">
+                <NavDropdown.Item href="/#/recipes/cart">Profil</NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.2">Mørk modus</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#action/3.4">Overrask meg</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
     );
   }
 }
