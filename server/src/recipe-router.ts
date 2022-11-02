@@ -13,15 +13,31 @@ router.get('/recipes', (_request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-// router.get('/recipes/:recipe_id', (request, response) => {
-//   const recipe_id = Number(request.params.recipe_id);
-//   recipeService
-//     .get(recipe_id)
-//     .then((recipe) =>
-//       recipe ? response.send(recipe) : response.status(404).send('Recipe not found')
-//     )
-//     .catch((error) => response.status(500).send(error));
-// });
+router.get('/recipes/:recipe_id', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+  recipeService
+    .get(recipe_id)
+    .then((recipe) =>
+      recipe ? response.send(recipe) : response.status(404).send('Recipe not found')
+    )
+    .catch((error) => response.status(500).send(error));
+});
+
+router.get('/recipes/:recipe_id/steps', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+  recipeService
+    .getSteps(recipe_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+router.get('/recipes/:recipe_id/ingredients', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+  recipeService
+    .getIngredients(recipe_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
 
 // Example request body: { title: "Ny oppgave" }
 // // Example response body: { id: 4 }

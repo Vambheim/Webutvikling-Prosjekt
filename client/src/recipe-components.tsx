@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import recipeService, { Recipe, User } from './recipe-service';
+import recipeService, { Recipe, Step, Ingredient } from './recipe-service';
 import { createHashHistory } from 'history';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -10,18 +10,9 @@ const history = createHashHistory(); // Use history.push(...) to programmaticall
  * Renders task list.
  */
 export class RecipeList extends Component {
-  countries: string[] = ['Norway', 'China']; // Midlertidig løsning frem til api er hentet
   country: string = '';
-  categories: string[] = ['Fish', 'Tapas']; // Midlertidig løsning frem til api er hentet
   category: string = '';
-  ingredients: string[] = []; // Midlertidig løsning frem til api er hentet
-  ingredient: string = '';
-
   recipes: Recipe[] = [];
-
-  filter() {
-    alert('heiiiiu');
-  }
 
   render() {
     return (
@@ -38,11 +29,14 @@ export class RecipeList extends Component {
                 value={this.country}
                 onChange={(event) => (this.country = event.currentTarget.value)}
               >
-                {this.countries.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
+                {this.recipes
+                  .map((recipe) => recipe.country)
+                  .filter((country, index, array) => array.indexOf(country) === index)
+                  .map((country, i) => (
+                    <option key={i} value={country}>
+                      {country}
+                    </option>
+                  ))}
               </Form.Select>
             </Column>
             <Column width={3}>
@@ -50,15 +44,19 @@ export class RecipeList extends Component {
                 value={this.category}
                 onChange={(event) => (this.category = event.currentTarget.value)}
               >
-                {this.categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
+                {this.recipes
+                  .map((recipe) => recipe.category)
+                  .filter((category, index, array) => array.indexOf(category) === index)
+                  .map((category, i) => (
+                    <option key={i} value={category}>
+                      {category}
+                    </option>
+                  ))}
               </Form.Select>
             </Column>
             <Column width={3}>
-              <Form.Select
+              {/* <Form.Select
+                // Hvordan skal vi gjøre det med filter knyttet til ingrediens?
                 value={this.ingredient}
                 onChange={(event) => (this.ingredient = event.currentTarget.value)}
               >
@@ -67,15 +65,14 @@ export class RecipeList extends Component {
                     {ing}
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Select> */}
             </Column>
             <Column>
-              <Button.Success>Add filters</Button.Success>
+              <Button.Success onClick={() => this.filter()}>Add filters</Button.Success>
             </Column>
           </Row>
         </Card>
 
-        {/* Lists the recipes */}
         <Card title="Recepies">
           {this.recipes.map((recipe) => (
             <Row key={recipe.recipe_id}>
@@ -95,11 +92,17 @@ export class RecipeList extends Component {
       .then((recipes) => (this.recipes = recipes))
       .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
   }
+
+  filter() {
+    alert('hei');
+  }
 }
 
 export class RecipeDetails extends Component<{ match: { params: { recipe_id: number } } }> {
-  recipe: Recipe = { recipe_id: 0, name: 'Kvæfjord cake', category: 'Cake', country: 'Norway' };
-  //Skal være tom og fylles av databasekall... where recipe_id = this.props.match.params.recipe_id
+  recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
+  steps: Step[] = [];
+  ingredients: Ingredient[] = [];
+  portions: number = 1;
 
   render() {
     return (
@@ -119,6 +122,42 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
           </Row>
           <Button.Light>Like this recipe &#10084;</Button.Light>
         </Card>
+
+        <Card title="This is how you make it">
+          <ol>
+            {this.steps.map((step) => (
+              <Row key={step.order_number}>
+                <Column>
+                  <li>{step.description}</li>
+                </Column>
+              </Row>
+            ))}
+          </ol>
+        </Card>
+
+        <Card title="Ingredients">
+          <Row>
+            <Column width={6}>Select portions:</Column>
+            <Column width={6}>
+              <Form.Input
+                type="number"
+                value={this.portions}
+                onChange={(event) => (this.portions = Number(event.currentTarget.value))}
+                min={1}
+                max={50}
+              ></Form.Input>
+            </Column>
+          </Row>
+
+          {this.ingredients.map((ing) => (
+            <Row key={ing.ingredient_id}>
+              <Column>
+                <li>{ing.name}</li>
+              </Column>
+            </Row>
+          ))}
+        </Card>
+
         {/* <Button.Success
           onClick={() => history.push('/tasks/' + this.props.match.params.recipe_id + '/edit')}
         >
@@ -126,6 +165,20 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
         </Button.Success> */}
       </>
     );
+  }
+
+  mounted() {
+    recipeService
+      .get(this.props.match.params.recipe_id)
+      .then((recipe) => (this.recipe = recipe))
+      .then(() => recipeService.getSteps(this.recipe.recipe_id))
+      .then((steps) => (this.steps = steps))
+      .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
+
+    recipeService
+      .getIngredients(1)
+      .then((ingredients) => (this.ingredients = ingredients))
+      .then(() => console.log(this.ingredients));
   }
 }
 

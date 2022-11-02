@@ -12,8 +12,16 @@ export type Recipe = {
 export type Step = {
   step_id: number;
   description: string;
-  order: number;
+  order_number: number;
   recipe_id: number;
+};
+
+export type Ingredient = {
+  ingredient_id: number;
+  name: string;
+  recipe_id: number;
+  amount_per_person: number;
+  measurement_unit: string;
 };
 
 export type User = {
@@ -23,17 +31,31 @@ export type User = {
 
 class RecipeService {
   /**
-   * Get task with given id.
+   * Get recipe with given id.
    */
-  // get(recipe_id: number) {
-  //   return axios.get<Recipe>('/recipes/' + recipe_id).then((response) => response.data);
-  // }
+  get(recipe_id: number) {
+    return axios.get<Recipe>('/recipes/' + recipe_id).then((response) => response.data);
+  }
 
   /**
-   * Get all tasks.
+   * Get all recipes.
    */
   getAll() {
     return axios.get<Recipe[]>('/recipes').then((response) => response.data);
+  }
+
+  /**
+   * Get all steps with given id
+   */
+  getSteps(recipe_id: number) {
+    return axios.get<Step[]>('/recipes/' + recipe_id + '/steps').then((response) => response.data);
+  }
+
+  /**
+   * Get ingredients with given id
+   */
+  getIngredients(recipe_id: number) {
+    return axios.get<Ingredient[]>("/recipes/" + recipe_id + '/ingredients').then((response) => response.data); 
   }
 
   /**

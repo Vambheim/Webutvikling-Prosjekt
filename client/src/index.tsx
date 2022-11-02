@@ -45,8 +45,8 @@ ReactDOM.render(
       <Route exact path="/recipes/add" component={RecipeAdd} />
       <Route exact path="/recipes/cart" component={ShoppingList} />
       <Route exact path="/recipes/user" component={UserLogIn} />
-      <Route exact path="/recipes/:id(\d+)" component={RecipeDetails} /> {/* id must be number */}
-      <Route exact path="/tasks/:id(\d+)/edit" component={TaskEdit} /> {/* id must be number */}
+      <Route exact path="/recipes/:recipe_id(\d+)" component={RecipeDetails} />
+      <Route exact path="/tasks/:id(\d+)/edit" component={TaskEdit} />
       <Route exact path="/tasks/new" component={TaskNew} />
     </div>
   </HashRouter>,
