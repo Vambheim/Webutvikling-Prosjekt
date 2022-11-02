@@ -9,12 +9,31 @@ export type Recipe = {
 };
 
 export type Ingredient = {
-  ingredient_id : number; 
+  ingredient_id: number;
   name: string;
+};
 
-}
+export type Step = {
+  step_id: number;
+  order_number: number;
+  description: string;
+  recipe_id: number;
+};
 
 class RecipeService {
+  /**
+   * Get all recipes.
+   */
+  getAll() {
+    return new Promise<Recipe[]>((resolve, reject) => {
+      pool.query('SELECT * FROM Recipe', (error, results: RowDataPacket[]) => {
+        if (error) return reject(error);
+
+        resolve(results as Recipe[]);
+      });
+    });
+  }
+
   /**
    * Get recipe with given recipe_id.
    */
@@ -33,19 +52,21 @@ class RecipeService {
   }
 
   /**
-   * Get all recipes.
+   * Get steps connected to given recipe
    */
-  getAll() {
-    return new Promise<Recipe[]>((resolve, reject) => {
-      pool.query('SELECT * FROM Recipe', (error, results: RowDataPacket[]) => {
-        if (error) return reject(error);
+  getSteps(recipe_id: number) {
+    return new Promise<Step | undefined>((resolve, reject) => {
+      pool.query(
+        'SELECT * FROM step WHERE recipe_id = ?',
+        [recipe_id],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
 
-        resolve(results as Recipe[]);
-      });
+          resolve(results[0] as Step);
+        }
+      );
     });
   }
-
-
 
   /**
    * Create new recipe.
@@ -77,11 +98,17 @@ class RecipeService {
   // }
 }
 
+// class IngredientService {
 
-class IngredientService {
-  
-}
+// }
 
+// class UserService {
+
+// }
+
+// class ShoppingListService {
+
+// }
 
 const recipeService = new RecipeService();
 export default recipeService;
