@@ -137,7 +137,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
 
         <Card title="Ingredients">
           <Row>
-            <Column width={6}>Select portions:</Column>
+            <Column width={2}>Select portions:</Column>
             <Column width={6}>
               <Form.Input
                 type="number"
@@ -152,7 +152,11 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
           {this.ingredients.map((ing) => (
             <Row key={ing.ingredient_id}>
               <Column>
-                <li>{ing.name}</li>
+                {ing.amount_per_person * this.portions +
+                  ' ' +
+                  ing.measurement_unit +
+                  ' ' +
+                  ing.name}
               </Column>
             </Row>
           ))}
@@ -173,12 +177,9 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
       .then((recipe) => (this.recipe = recipe))
       .then(() => recipeService.getSteps(this.recipe.recipe_id))
       .then((steps) => (this.steps = steps))
-      .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
-
-    recipeService
-      .getIngredients(1)
+      .then(() => recipeService.getIngredients(this.recipe.recipe_id))
       .then((ingredients) => (this.ingredients = ingredients))
-      .then(() => console.log(this.ingredients));
+      .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
 }
 
