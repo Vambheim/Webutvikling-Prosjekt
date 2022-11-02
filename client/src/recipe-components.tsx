@@ -1,18 +1,21 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
-import { Alert, Row, Card, Column, Button } from './widgets';
+import { Alert, Row, Column, Button, Form, Card, Container } from './widgets';
 import { NavLink } from 'react-router-dom';
 import taskService, { Task } from './recipe-service';
 import { createHashHistory } from 'history';
-
-import Form from 'react-bootstrap/Form';
-// import Card from 'react-bootstrap/Card';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
 /**
  * Renders task list.
  */
+
+export class Home extends Component {
+  render() {
+    return <Card title="Welcome"></Card>;
+  }
+}
 export class RecipeList extends Component {
   tasks: Task[] = [];
   countries: string[] = ['Norway', 'China']; // Midlertidig løsning frem til api er hentet
@@ -41,7 +44,6 @@ export class RecipeList extends Component {
         <Card title="Filter">
           <Row>
             <Column width={2}>Country:</Column>
-            <Column width={2}>Country:</Column>
             <Column width={2}>Category:</Column>
             <Column width={2}>Ingredients:</Column>
           </Row>
@@ -58,8 +60,6 @@ export class RecipeList extends Component {
                 ))}
               </Form.Select>
             </Column>
-
-            <Column width={2}></Column>
             <Column width={2}>
               <Form.Select
                 value={this.category}
@@ -114,45 +114,22 @@ export class RecipeAdd extends Component {
           <Column>You can add your favourite recipe here</Column>
         </Row>
         <Row>
-          <Column width={4}>
-            <Form.Label htmlFor="inputName">Name of dish</Form.Label>
-            <Form.Control type="text" id="dishName" aria-describedby="dishHelpBlocl" />
-            <Form.Text id="dishHelpBlock" muted>
-              Please insert the name of the desired dish above
-            </Form.Text>
+          <Column width={2}>
+            <Form.Input type="text" placeholder="Name on dish"></Form.Input>
           </Column>
-
-          <Column width={4}>
-            <Form.Label htmlFor="Steps">Steps</Form.Label>
-            <Form.Control type="text" id="dishSteps" aria-describedby="stepsHelpBlock" />
-            <Form.Text id="stepsHelpBlock" muted>
-              Please insert a step in making the current dish above
-            </Form.Text>
+          <Column width={2}>
+            <Form.Textarea type="text" rows={6} placeholder="Steps"></Form.Textarea>
           </Column>
-          <Column width={4}>
-            <Form.Label htmlFor="Ingredient">Ingredient</Form.Label>
-            <Form.Control type="text" id="ingredient" aria-describedby="ingredientHelpBlock" />
-            <Form.Text id="ingredientHelpBlock" muted>
-              Please insert the name of an ingredient in the current dish above
-            </Form.Text>
+          <Column width={2}>
+            <Form.Input type="text" placeholder="Ingredient"></Form.Input>
           </Column>
           <Column width={1}>
-            <Form.Select
-              value={this.category}
-              onChange={(event) => (this.category = event.currentTarget.value)}
-            >
-              {this.categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </Form.Select>
+            <Form.Select></Form.Select>
           </Column>
           <Column width={1}>
             <Button.Light>+</Button.Light>
           </Column>
         </Row>
-        <br />
         <Button.Success>Add recipe </Button.Success>
       </Card>
     );

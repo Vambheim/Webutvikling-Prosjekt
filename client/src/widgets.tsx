@@ -8,7 +8,12 @@ import { NavLink } from 'react-router-dom';
  *
  * Properties: title
  */
-export class Card extends Component<{ title: ReactNode }> {
+export class Card extends Component<{
+  title: ReactNode;
+  width?: number;
+  height?: number;
+  textalign?: string;
+}> {
   render() {
     return (
       <div className="card">
@@ -65,8 +70,9 @@ class ButtonSuccess extends Component<{
                 padding: '5px 5px',
                 fontSize: '16px',
                 lineHeight: '0.7',
+                fontFamily: 'Times',
               }
-            : {}
+            : { fontFamily: 'Times' }
         }
         onClick={this.props.onClick}
       >
@@ -273,7 +279,18 @@ class FormSelect extends Component<{
     // For further information, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
     const { value, onChange, children, ...rest } = this.props;
     return (
-      <select {...rest} className="custom-select" value={value} onChange={onChange}>
+      <select
+        {...rest}
+        className="custom-select"
+        style={{
+          padding: '5px 5px',
+          fontSize: '16px',
+          lineHeight: '0.7',
+          borderRadius: '5px',
+        }}
+        value={value}
+        onChange={onChange}
+      >
         {children}
       </select>
     );

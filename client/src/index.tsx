@@ -11,6 +11,7 @@ import {
   TaskEdit,
   TaskNew,
 } from './recipe-components';
+import { Home } from './react-components';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -20,10 +21,15 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 class Menu extends Component {
   render() {
     return (
-      <Navbar bg="light" expand="lg">
+      <Navbar
+        bg="light"
+        expand="lg"
+        /* style={{
+        background: 'linear-gradient(to right, rgba(255, 242, 184, 0.5), rgba(255, 5, 64, 0.5))',*/
+      >
         <Container>
           <Navbar.Brand href="/" className="ms-auto">
-            Java matapplikasjon
+            recAPI
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -45,19 +51,14 @@ class Menu extends Component {
   }
 }
 
-class Home extends Component {
-  render() {
-    return <Card title="Welcome">This is your favourite food recipe app</Card>;
-  }
-}
-
 ReactDOM.render(
   <HashRouter>
     <div>
       <Alert />
       <Menu />
       <Route exact path="/" component={Home} />
-      <Route exact path="/recipes" component={RecipeList} />
+      <Route exact path="/recipes" component={RecipeList} />{' '}
+      {/*Her er RecipelistNy midlertidig, opprinnelig er Recipelist*/}
       <Route exact path="/recipes/add" component={RecipeAdd} />
       <Route exact path="/recipes/cart" component={ShoppingList} />
       <Route exact path="/tasks/:id(\d+)" component={TaskDetails} /> {/* id must be number */}
