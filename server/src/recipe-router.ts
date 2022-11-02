@@ -6,22 +6,22 @@ import recipeService from './recipe-service';
  */
 const router = express.Router();
 
-router.get('/recipe', (_request, response) => {
+router.get('/recipes', (_request, response) => {
   recipeService
     .getAll()
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
 });
 
-router.get('/recipe/:recipe_id', (request, response) => {
-  const recipe_id = Number(request.params.recipe_id);
-  recipeService
-    .get(recipe_id)
-    .then((recipe) =>
-      recipe ? response.send(recipe) : response.status(404).send('Recipe not found')
-    )
-    .catch((error) => response.status(500).send(error));
-});
+// router.get('/recipes/:recipe_id', (request, response) => {
+//   const recipe_id = Number(request.params.recipe_id);
+//   recipeService
+//     .get(recipe_id)
+//     .then((recipe) =>
+//       recipe ? response.send(recipe) : response.status(404).send('Recipe not found')
+//     )
+//     .catch((error) => response.status(500).send(error));
+// });
 
 // Example request body: { title: "Ny oppgave" }
 // // Example response body: { id: 4 }

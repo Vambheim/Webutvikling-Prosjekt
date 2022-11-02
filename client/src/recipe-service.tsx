@@ -21,19 +21,19 @@ export type User = {
   password: string;
 };
 
-class TaskService {
+class RecipeService {
   /**
    * Get task with given id.
    */
-  get(id: number) {
-    return axios.get<Task>('/tasks/' + id).then((response) => response.data);
-  }
+  // get(recipe_id: number) {
+  //   return axios.get<Recipe>('/recipes/' + recipe_id).then((response) => response.data);
+  // }
 
   /**
    * Get all tasks.
    */
   getAll() {
-    return axios.get<Task[]>('/tasks').then((response) => response.data);
+    return axios.get<Recipe[]>('/recipes').then((response) => response.data);
   }
 
   /**
@@ -48,5 +48,5 @@ class TaskService {
   }
 }
 
-const taskService = new TaskService();
-export default taskService;
+const recipeService = new RecipeService();
+export default recipeService;

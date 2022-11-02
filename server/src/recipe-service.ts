@@ -26,7 +26,7 @@ class RecipeService {
    */
   getAll() {
     return new Promise<Recipe[]>((resolve, reject) => {
-      pool.query('SELECT * FROM Recipe', (error, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe', (error, results: RowDataPacket[]) => {
         if (error) return reject(error);
 
         resolve(results as Recipe[]);
@@ -54,12 +54,15 @@ class RecipeService {
   /**
    * Get steps connected to given recipe
    */
-  getAll() {
-    return new Promise<Recipe[]>((resolve, reject) => {
-      pool.query('SELECT * FROM Recipe', (error, results: RowDataPacket[]) => {
-        if (error) return reject(error);
+  getSteps(recipe_id: number) {
+    return new Promise<Step[]>((resolve, reject) => {
+      pool.query(
+        'SELECT * FROM step WHERE recipe_id = ?',
+        [recipe_id],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
 
-          resolve(results[0] as Step);
+          resolve(results as Step[]);
         }
       );
     });
@@ -110,7 +113,6 @@ class RecipeService {
 const recipeService = new RecipeService();
 export default recipeService;
 
-
 //Mock-up av hvordan vi skal laste inn Spoontacular-informasjonen i databaasen:
 // let Oppskrifter = []
 
@@ -119,5 +121,5 @@ export default recipeService;
 // }
 
 // Oppskrifter.map((oppskrift) => {
-//   database('INSERT INTO recipe (recipe_id, name, category, country) VALUES = ?', [oppskrift["id"], oppskrift["recipeName"], oppskrift["category"] ]) //Pusher altså 
+//   database('INSERT INTO recipe (recipe_id, name, category, country) VALUES = ?', [oppskrift["id"], oppskrift["recipeName"], oppskrift["category"] ]) //Pusher altså
 // })

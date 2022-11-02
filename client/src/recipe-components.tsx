@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import taskService, { Recipe, User } from './recipe-service';
+import recipeService, { Recipe, User } from './recipe-service';
 import { createHashHistory } from 'history';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -14,12 +14,10 @@ export class RecipeList extends Component {
   country: string = '';
   categories: string[] = ['Fish', 'Tapas']; // Midlertidig løsning frem til api er hentet
   category: string = '';
-  ingredients: string[] = ['Milk', 'Chili']; // Midlertidig løsning frem til api er hentet
+  ingredients: string[] = []; // Midlertidig løsning frem til api er hentet
   ingredient: string = '';
-  recipes: Recipe[] = [
-    { recipe_id: 0, name: 'Kvæfjord cake', category: 'Cake', country: 'Norway' },
-    { recipe_id: 1, name: 'Sushi', category: 'Dinner', country: 'Japan' }, // Midelertidig data, skal fjernes
-  ];
+
+  recipes: Recipe[] = [];
 
   filter() {
     alert('heiiiiu');
@@ -76,6 +74,7 @@ export class RecipeList extends Component {
             </Column>
           </Row>
         </Card>
+
         {/* Lists the recipes */}
         <Card title="Recepies">
           {this.recipes.map((recipe) => (
@@ -90,12 +89,12 @@ export class RecipeList extends Component {
     );
   }
 
-  // mounted() {
-  //   taskService
-  //     .getAll()
-  //     .then((tasks) => (this.tasks = tasks))
-  //     .catch((error) => Alert.danger('Error getting tasks: ' + error.message));
-  // }
+  mounted() {
+    recipeService
+      .getAll()
+      .then((recipes) => (this.recipes = recipes))
+      .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
+  }
 }
 
 export class RecipeDetails extends Component<{ match: { params: { recipe_id: number } } }> {
