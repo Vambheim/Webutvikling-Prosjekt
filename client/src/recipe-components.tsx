@@ -269,7 +269,7 @@ export class UserLogIn extends Component {
           <Column width={3}>
             <Button.Success
               onClick={() => {
-                this.autent();
+                this.autent(this.test.username, this.test.password);
               }}
             >
               Log in
