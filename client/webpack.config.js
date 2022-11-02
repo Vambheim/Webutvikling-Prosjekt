@@ -8,8 +8,21 @@
  */
 
 const path = require('path');
+var webpack = require('webpack');
+
+process.env.REACT_APP_API_KEY = '5b7869e75f75481a8f5005bc7bffd3a8';
+
+// const test = require('dotenv').config();
+// console.log(test);
 
 module.exports = {
+  plugins: [
+    //la inn plugins for å håndtere verdier i env filen
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_API_KEY': JSON.stringify(process.env.REACT_APP_API_KEY),
+    }),
+  ],
+
   entry: './src/index.tsx', // Initial file to bundle
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
