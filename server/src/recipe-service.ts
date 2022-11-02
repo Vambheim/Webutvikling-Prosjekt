@@ -9,9 +9,6 @@ export type Recipe = {
 };
 
 
-
-
-
 class RecipeService {
   /**
    * Get recipe with given recipe_id.
