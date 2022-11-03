@@ -19,22 +19,9 @@ export class RecipeList extends Component {
   ingredients: string[] = ['Milk', 'Chilli']; // Midlertidig løsning frem til api er hentet
   ingredient: string = '';
 
-  filter() {
-    alert('heiiiiu');
-  }
-
   render() {
     return (
       <>
-        <Card title="Recipes">
-          {this.tasks.map((task) => (
-            <Row key={task.id}>
-              <Column>
-                <NavLink to={'/tasks/' + task.id}>{task.title}</NavLink>
-              </Column>
-            </Row>
-          ))}
-        </Card>
         <Card title="Filter">
           <Row>
             <Column width={2}>Country:</Column>
@@ -78,12 +65,23 @@ export class RecipeList extends Component {
                 ))}
               </Form.Select>
             </Column>
+
             <Column>
               <Button.Success>Add filters </Button.Success>
               <Button.Light>Like this recipe &#10084;</Button.Light>
               {/* For bruk til å like oppskrifter senere */}
             </Column>
           </Row>
+        </Card>
+
+        <Card title="Recipes">
+          {this.tasks.map((task) => (
+            <Row key={task.id}>
+              <Column>
+                <NavLink to={'/tasks/' + task.id}>{task.title}</NavLink>
+              </Column>
+            </Row>
+          ))}
         </Card>
       </>
     );

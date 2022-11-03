@@ -14,14 +14,14 @@ class RecipeService {
    * Get task with given id.
    */
   get(id: number) {
-    return axios.get<Recipe>('/recipies/' + recipe_id).then((response) => response.data);
+    return axios.get<Recipe>('/recipes/' + recipe_id).then((response) => response.data);
   }
 
   /**
    * Get all tasks.
    */
   getAll() {
-    return axios.get<Recipe[]>('/recipies').then((response) => response.data);
+    return axios.get<Recipe[]>('/recipes').then((response) => response.data);
   }
 
   /**

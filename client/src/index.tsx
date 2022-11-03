@@ -12,6 +12,10 @@ import {
   TaskNew,
 } from './recipe-components';
 
+import mealDBService from './mealDB-service';
+
+console.log(mealDBService.get(52772));
+
 class Menu extends Component {
   render() {
     return (
