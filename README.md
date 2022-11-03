@@ -1,3 +1,6 @@
+API Key: 5b7869e75f75481a8f5005bc7bffd3a8
+
+
 Linker til ressurser som skal brukes:
 
 For Repsonsivt desing: https://react-bootstrap.github.io/
