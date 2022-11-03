@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import recipeService, { Recipe, Step, Ingredient } from './recipe-service';
+import recipeService, { Recipe, Step, Ingredient, User } from './recipe-service';
 import { createHashHistory } from 'history';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -94,7 +94,7 @@ export class RecipeList extends Component {
   }
 
   filter() {
-    alert('hei');
+    alert('jhei');
   }
 }
 
@@ -258,32 +258,28 @@ export class ShoppingList extends Component {
 }
 
 export class UserLogIn extends Component {
-  users: User[] = [
-    //Skal være tom hehelolol
-    { username: 'Thomas', password: '123' },
-    { username: 'Ola', password: '90112' },
-  ];
+  email: string = '';
+  user: User[] = [];
 
-  test: User = { username: '', password: '' };
+  // autent(username_input: string, password_input: string) {
+  //   if (this.users.some((user) => user.username === username_input)) {
+  //     console.log('brukenavn godkjent');
+  //   } else {
+  //     Alert.danger('No user with username: ' + username_input + ' found');
+  //   }
 
-  autent(username_input: string, password_input: string) {
-    if (this.users.some((user) => user.username === username_input)) {
-      console.log('brukenavn godkjent');
-    } else {
-      Alert.danger('No user with username: ' + username_input + ' found');
-    }
+  // if (this.users.some((user) => user.password === username_input)) {
+  //   console.log('brukenavn godkjent');
+  // } else {
+  //   Alert.danger('No user with username: ' + username_input + ' found');
+  // }
 
-    // if (this.users.some((user) => user.password === username_input)) {
-    //   console.log('brukenavn godkjent');
-    // } else {
-    //   Alert.danger('No user with username: ' + username_input + ' found');
-    // }
+  // console.log('Username: ' + this.email);
+  // }
 
-    console.log('Username: ' + this.test.username);
-    console.log('Password: ' + this.test.password);
+  reset() {
+    this.email = '';
   }
-
-  reset() {}
 
   render() {
     return (
@@ -291,16 +287,16 @@ export class UserLogIn extends Component {
         <Row>
           <Column width={6}>
             <Form.Input
-              value={this.test.username}
+              value={this.email}
               type="text"
-              placeholder="Username"
-              onChange={(event) => (this.test.username = event.currentTarget.value)}
+              placeholder="email"
+              onChange={(event) => (this.email = event.currentTarget.value)}
             ></Form.Input>
           </Column>
         </Row>
         <Row>
           <Column width={6}>
-            <Form.Input
+            {/* <Form.Input
               value={this.test.password}
               type="password"
               placeholder="Password"
@@ -312,64 +308,17 @@ export class UserLogIn extends Component {
                   this.autent(this.test.username, this.test.password);
                 }
               }}
-            ></Form.Input>
+            ></Form.Input> */}
           </Column>
         </Row>
         <Row>
-          <br></br>
-        </Row>
-        <Row>
-          <Column width={3}>
-            <Button.Success
-              onClick={() => {
-                this.autent(this.test.username, this.test.password);
-              }}
-            >
-              Log in
-            </Button.Success>
-          </Column>
+          <Column width={3}></Column>
         </Row>
       </Card>
     );
   }
-}
 
-export class TaskDetails extends Component<{ match: { params: { id: number } } }> {
-  task: Task = { id: 0, title: '', done: false };
-
-  render() {
-    return (
-      <>
-        <Card title="Task">
-          <Row>
-            <Column width={2}>Title:</Column>
-            <Column>{this.task.title}</Column>
-          </Row>
-          <Row>
-            <Column width={2}>Description:</Column>
-          </Row>
-          <Row>
-            <Column width={2}>Done:</Column>
-            <Column>
-              <Form.Checkbox checked={this.task.done} onChange={() => {}} disabled />
-            </Column>
-          </Row>
-        </Card>
-        <Button.Success
-          onClick={() => history.push('/tasks/' + this.props.match.params.id + '/edit')}
-        >
-          Edit
-        </Button.Success>
-      </>
-    );
-  }
-
-  mounted() {
-    taskService
-      .get(this.props.match.params.id)
-      .then((task) => (this.task = task))
-      .catch((error) => Alert.danger('Error getting task: ' + error.message));
-  }
+  // mounted() {}
 }
 
 /**

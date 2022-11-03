@@ -1,5 +1,6 @@
 import express from 'express';
 import recipeService from './recipe-service';
+import bcrypt from 'bcrypt';
 
 /**
  * Express router containing task methods.

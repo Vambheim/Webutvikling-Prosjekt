@@ -23,6 +23,13 @@ export type Step = {
   recipe_id: number;
 };
 
+export type User = {
+  email: string;
+  first_name: string;
+  last_name: string;
+  password: string;
+};
+
 class RecipeService {
   /**
    * Get all recipes.

@@ -25,7 +25,9 @@ export type Ingredient = {
 };
 
 export type User = {
-  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
   password: string;
 };
 
@@ -55,7 +57,9 @@ class RecipeService {
    * Get ingredients with given id
    */
   getIngredients(recipe_id: number) {
-    return axios.get<Ingredient[]>("/recipes/" + recipe_id + '/ingredients').then((response) => response.data); 
+    return axios
+      .get<Ingredient[]>('/recipes/' + recipe_id + '/ingredients')
+      .then((response) => response.data);
   }
 
   /**

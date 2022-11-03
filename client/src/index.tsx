@@ -23,7 +23,7 @@ class Menu extends Component {
         <NavBar.Link to="/recipes">Recipes</NavBar.Link>
         <NavBar.Link to="/recipes/add">Add Recipes</NavBar.Link>
         <NavBar.Link to="/recipes/cart">Shopping List</NavBar.Link>
-        <NavBar.Link to="/recipes/user">My User</NavBar.Link>
+        <NavBar.Link to="/recipes/users">My User</NavBar.Link>
       </NavBar>
     );
   }
@@ -44,7 +44,7 @@ ReactDOM.render(
       <Route exact path="/recipes" component={RecipeList} />
       <Route exact path="/recipes/add" component={RecipeAdd} />
       <Route exact path="/recipes/cart" component={ShoppingList} />
-      <Route exact path="/recipes/user" component={UserLogIn} />
+      <Route exact path="/recipes/users" component={UserLogIn} />
       <Route exact path="/recipes/:recipe_id(\d+)" component={RecipeDetails} />
       <Route exact path="/tasks/:id(\d+)/edit" component={TaskEdit} />
       <Route exact path="/tasks/new" component={TaskNew} />
