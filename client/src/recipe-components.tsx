@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import taskService, { Recipe, User } from './recipe-service';
+import recipeService, { Recipe, Step, Ingredient, User } from './recipe-service';
 import { createHashHistory } from 'history';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
@@ -10,20 +10,9 @@ const history = createHashHistory(); // Use history.push(...) to programmaticall
  * Renders task list.
  */
 export class RecipeList extends Component {
-  countries: string[] = ['Norway', 'China']; // Midlertidig løsning frem til api er hentet
   country: string = '';
-  categories: string[] = ['Fish', 'Tapas']; // Midlertidig løsning frem til api er hentet
   category: string = '';
-  ingredients: string[] = ['Milk', 'Chili']; // Midlertidig løsning frem til api er hentet
-  ingredient: string = '';
-  recipes: Recipe[] = [
-    { recipe_id: 0, name: 'Kvæfjord cake', category: 'Cake', country: 'Norway' },
-    { recipe_id: 1, name: 'Sushi', category: 'Dinner', country: 'Japan' }, // Midelertidig data, skal fjernes
-  ];
-
-  filter() {
-    alert('heiiiiu');
-  }
+  recipes: Recipe[] = [];
 
   render() {
     return (
@@ -40,11 +29,14 @@ export class RecipeList extends Component {
                 value={this.country}
                 onChange={(event) => (this.country = event.currentTarget.value)}
               >
-                {this.countries.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
+                {this.recipes
+                  .map((recipe) => recipe.country)
+                  .filter((country, index, array) => array.indexOf(country) === index)
+                  .map((country, i) => (
+                    <option key={i} value={country}>
+                      {country}
+                    </option>
+                  ))}
               </Form.Select>
             </Column>
             <Column width={3}>
@@ -52,15 +44,19 @@ export class RecipeList extends Component {
                 value={this.category}
                 onChange={(event) => (this.category = event.currentTarget.value)}
               >
-                {this.categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
+                {this.recipes
+                  .map((recipe) => recipe.category)
+                  .filter((category, index, array) => array.indexOf(category) === index)
+                  .map((category, i) => (
+                    <option key={i} value={category}>
+                      {category}
+                    </option>
+                  ))}
               </Form.Select>
             </Column>
             <Column width={3}>
-              <Form.Select
+              {/* <Form.Select
+                // Hvordan skal vi gjøre det med filter knyttet til ingrediens?
                 value={this.ingredient}
                 onChange={(event) => (this.ingredient = event.currentTarget.value)}
               >
@@ -69,14 +65,14 @@ export class RecipeList extends Component {
                     {ing}
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Select> */}
             </Column>
             <Column>
-              <Button.Success>Add filters</Button.Success>
+              <Button.Success onClick={() => this.filter()}>Add filters</Button.Success>
             </Column>
           </Row>
         </Card>
-        {/* Lists the recipes */}
+
         <Card title="Recepies">
           {this.recipes.map((recipe) => (
             <Row key={recipe.recipe_id}>
@@ -90,17 +86,23 @@ export class RecipeList extends Component {
     );
   }
 
-  // mounted() {
-  //   taskService
-  //     .getAll()
-  //     .then((tasks) => (this.tasks = tasks))
-  //     .catch((error) => Alert.danger('Error getting tasks: ' + error.message));
-  // }
+  mounted() {
+    recipeService
+      .getAll()
+      .then((recipes) => (this.recipes = recipes))
+      .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
+  }
+
+  filter() {
+    alert('jhei');
+  }
 }
 
 export class RecipeDetails extends Component<{ match: { params: { recipe_id: number } } }> {
-  recipe: Recipe = { recipe_id: 0, name: 'Kvæfjord cake', category: 'Cake', country: 'Norway' };
-  //Skal være tom og fylles av databasekall... where recipe_id = this.props.match.params.recipe_id
+  recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
+  steps: Step[] = [];
+  ingredients: Ingredient[] = [];
+  portions: number = 1;
 
   render() {
     return (
@@ -120,6 +122,46 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
           </Row>
           <Button.Light>Like this recipe &#10084;</Button.Light>
         </Card>
+
+        <Card title="This is how you make it">
+          <ol>
+            {this.steps.map((step) => (
+              <Row key={step.order_number}>
+                <Column>
+                  <li>{step.description}</li>
+                </Column>
+              </Row>
+            ))}
+          </ol>
+        </Card>
+
+        <Card title="Ingredients">
+          <Row>
+            <Column width={2}>Select portions:</Column>
+            <Column width={6}>
+              <Form.Input
+                type="number"
+                value={this.portions}
+                onChange={(event) => (this.portions = Number(event.currentTarget.value))}
+                min={1}
+                max={50}
+              ></Form.Input>
+            </Column>
+          </Row>
+
+          {this.ingredients.map((ing) => (
+            <Row key={ing.ingredient_id}>
+              <Column>
+                {ing.amount_per_person * this.portions +
+                  ' ' +
+                  ing.measurement_unit +
+                  ' ' +
+                  ing.name}
+              </Column>
+            </Row>
+          ))}
+        </Card>
+
         {/* <Button.Success
           onClick={() => history.push('/tasks/' + this.props.match.params.recipe_id + '/edit')}
         >
@@ -127,6 +169,17 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
         </Button.Success> */}
       </>
     );
+  }
+
+  mounted() {
+    recipeService
+      .get(this.props.match.params.recipe_id)
+      .then((recipe) => (this.recipe = recipe))
+      .then(() => recipeService.getSteps(this.recipe.recipe_id))
+      .then((steps) => (this.steps = steps))
+      .then(() => recipeService.getIngredients(this.recipe.recipe_id))
+      .then((ingredients) => (this.ingredients = ingredients))
+      .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
 }
 
@@ -205,32 +258,28 @@ export class ShoppingList extends Component {
 }
 
 export class UserLogIn extends Component {
-  users: User[] = [
-    //Skal være tom hehelolol
-    { username: 'Thomas', password: '123' },
-    { username: 'Ola', password: '90112' },
-  ];
+  email: string = '';
+  user: User[] = [];
 
-  test: User = { username: '', password: '' };
+  // autent(username_input: string, password_input: string) {
+  //   if (this.users.some((user) => user.username === username_input)) {
+  //     console.log('brukenavn godkjent');
+  //   } else {
+  //     Alert.danger('No user with username: ' + username_input + ' found');
+  //   }
 
-  autent(username_input: string, password_input: string) {
-    if (this.users.some((user) => user.username === username_input)) {
-      console.log('brukenavn godkjent');
-    } else {
-      Alert.danger('No user with username: ' + username_input + ' found');
-    }
+  // if (this.users.some((user) => user.password === username_input)) {
+  //   console.log('brukenavn godkjent');
+  // } else {
+  //   Alert.danger('No user with username: ' + username_input + ' found');
+  // }
 
-    // if (this.users.some((user) => user.password === username_input)) {
-    //   console.log('brukenavn godkjent');
-    // } else {
-    //   Alert.danger('No user with username: ' + username_input + ' found');
-    // }
+  // console.log('Username: ' + this.email);
+  // }
 
-    console.log('Username: ' + this.test.username);
-    console.log('Password: ' + this.test.password);
+  reset() {
+    this.email = '';
   }
-
-  reset() {}
 
   render() {
     return (
@@ -238,16 +287,16 @@ export class UserLogIn extends Component {
         <Row>
           <Column width={6}>
             <Form.Input
-              value={this.test.username}
+              value={this.email}
               type="text"
-              placeholder="Username"
-              onChange={(event) => (this.test.username = event.currentTarget.value)}
+              placeholder="email"
+              onChange={(event) => (this.email = event.currentTarget.value)}
             ></Form.Input>
           </Column>
         </Row>
         <Row>
           <Column width={6}>
-            <Form.Input
+            {/* <Form.Input
               value={this.test.password}
               type="password"
               placeholder="Password"
@@ -259,64 +308,17 @@ export class UserLogIn extends Component {
                   this.autent(this.test.username, this.test.password);
                 }
               }}
-            ></Form.Input>
+            ></Form.Input> */}
           </Column>
         </Row>
         <Row>
-          <br></br>
-        </Row>
-        <Row>
-          <Column width={3}>
-            <Button.Success
-              onClick={() => {
-                this.autent();
-              }}
-            >
-              Log in
-            </Button.Success>
-          </Column>
+          <Column width={3}></Column>
         </Row>
       </Card>
     );
   }
-}
 
-export class TaskDetails extends Component<{ match: { params: { id: number } } }> {
-  task: Task = { id: 0, title: '', done: false };
-
-  render() {
-    return (
-      <>
-        <Card title="Task">
-          <Row>
-            <Column width={2}>Title:</Column>
-            <Column>{this.task.title}</Column>
-          </Row>
-          <Row>
-            <Column width={2}>Description:</Column>
-          </Row>
-          <Row>
-            <Column width={2}>Done:</Column>
-            <Column>
-              <Form.Checkbox checked={this.task.done} onChange={() => {}} disabled />
-            </Column>
-          </Row>
-        </Card>
-        <Button.Success
-          onClick={() => history.push('/tasks/' + this.props.match.params.id + '/edit')}
-        >
-          Edit
-        </Button.Success>
-      </>
-    );
-  }
-
-  mounted() {
-    taskService
-      .get(this.props.match.params.id)
-      .then((task) => (this.task = task))
-      .catch((error) => Alert.danger('Error getting task: ' + error.message));
-  }
+  // mounted() {}
 }
 
 /**
