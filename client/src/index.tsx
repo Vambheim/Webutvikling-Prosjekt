@@ -5,13 +5,13 @@ import { HashRouter, Route } from 'react-router-dom';
 import { Alert, Card } from './widgets';
 import {
   RecipeAdd,
-  RecipeList,
+  // RecipeList,
   ShoppingList,
   TaskDetails,
   TaskEdit,
   TaskNew,
 } from './recipe-components';
-import { Home } from './react-components';
+import { Home, RecipeList } from './react-components';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
