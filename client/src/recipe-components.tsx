@@ -238,7 +238,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   loggedInCheck() {
     // let logInLink = <text className="link"></text>
     if (!loggedIn) {
-      Alert.danger('You have to log in to like this recipe');
+      Alert.danger(`You have to ${logInLink} in to like this recipe`);
     }
   }
 
