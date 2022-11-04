@@ -115,7 +115,7 @@ export class RecipeAdd extends Component {
         </Row>
         <Row>
           <Column width={2}>
-            <Form.Input type="text" placeholder="Name on dish"></Form.Input>
+            <Form.Input type="text" placeholder="Name of dish"></Form.Input>
           </Column>
           <Column width={2}>
             <Form.Textarea type="text" rows={6} placeholder="Steps"></Form.Textarea>

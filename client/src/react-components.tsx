@@ -14,7 +14,9 @@ import {
   Navbar,
   Nav,
   NavDropdown,
+  Accordion,
 } from 'react-bootstrap';
+import { Column } from './widgets';
 
 // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 const history = createHashHistory();
@@ -255,6 +257,121 @@ export class RecipeList extends Component {
           </Card>
         </Container>
       </div>
+    );
+  }
+}
+
+export class RecipeAdd extends Component {
+  categories: string[] = ['Fish', 'Tapas']; // Midlertidig løsning frem til api er hentet
+  category: string = '';
+  recipeName: string = '';
+  description: string = '';
+  country: string = '';
+  ingredients: string = '';
+  ingredient: string[] = ['Carrot', 'Potato', 'Chicken'];
+
+  render() {
+    return (
+      <Container style={{}}>
+        <Card
+          style={{
+            border: 'none',
+            textAlign: 'center',
+            marginTop: '20px',
+          }}
+        >
+          <Card.Title>New Recipe</Card.Title>
+          <Card.Body>
+            <Card.Text>Want to add a new recipe to our database? Add it below: </Card.Text>
+          </Card.Body>
+        </Card>
+        <Row>
+          <Col md={2}>
+            <Form>
+              <Form.Group className="mb-3" controlId="formBasicname">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="Name"
+                  placeholder="Enter name"
+                  value={this.recipeName}
+                  onChange={(event) => (this.recipeName = event.currentTarget.value)}
+                />
+                <Form.Text className="text-muted"></Form.Text>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicname">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  type="desc"
+                  placeholder="Enter description"
+                  value={this.description}
+                  onChange={(event) => (this.description = event.currentTarget.value)}
+                />
+                <Form.Text className="text-muted"></Form.Text>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicname">
+                <Form.Label>Country</Form.Label>
+                <Form.Control
+                  type="Country"
+                  placeholder="Enter country"
+                  value={this.country}
+                  onChange={(event) => (this.country = event.currentTarget.value)}
+                />
+                <Form.Text className="text-muted"></Form.Text>
+              </Form.Group>
+              Kategori
+              <Form.Select
+                value={this.category}
+                onChange={(event) => (this.category = event.currentTarget.value)}
+              >
+                <option key="Category" hidden></option>
+                {this.categories.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </Form.Select>
+              <Form.Group className="collapse" controlId="formBasicIngredient" hidden>
+                <Form.Label>Ingredients</Form.Label>
+                <Form.Control
+                  type="Ingredient"
+                  placeholder="Enter Ingredient"
+                  value={this.ingredients}
+                  onChange={(event) => (this.ingredients = event.currentTarget.value)}
+                />
+                <Form.Text className="text-muted"></Form.Text>
+              </Form.Group>
+              <Accordion defaultActiveKey="1" flush style={{ marginTop: '10px' }}>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Add ingredients</Accordion.Header>
+                  <Accordion.Body>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                    culpa qui officia deserunt mollit anim id est laborum.
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Form>
+          </Col>
+          <Col className="justify-content-md-center" md={{ span: 4, offset: 2 }}>
+            <Card style={{ width: '26rem', textAlign: 'center', marginTop: '7%' }}>
+              <Card.Img variant="top" src="https://s.tihlde.org/burger" />
+              <Card.Body>
+                <Card.Title>{this.recipeName}</Card.Title>
+                <Card.Text> {this.description}</Card.Text>
+                <Card.Text>{this.country}</Card.Text>
+                <Card.Text>{this.category}</Card.Text>
+
+                <Button variant="primary" data-toggle="collapse" data-target="#formBasicIngredient">
+                  Gå videre
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
