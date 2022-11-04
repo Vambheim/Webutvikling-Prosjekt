@@ -164,7 +164,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             Like this recipe &#10084;
           </Button.Light>
         </Card>
-
         <Card title="This is how you make it">
           <ol>
             {this.steps.map((step) => (
@@ -176,10 +175,9 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             ))}
           </ol>
         </Card>
-
         <Card title="Ingredients">
           <Row>
-            <Column width={2}>Select portions:</Column>
+            <Column width={2}>Select portions jajja:</Column>
             <Column width={6}>
               <Form.Input
                 type="number"
@@ -214,8 +212,14 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             </Column>
           </Row>
         </Card>
-
-        <Button.Success onClick={() => this.editRecipe()}>Edit</Button.Success>
+        
+        <Button.Success
+          onClick={() => {
+            this.editRecipe();
+          }}
+        >
+          Edit
+        </Button.Success>
       </>
     );
   }
@@ -593,80 +597,5 @@ export class RegisterUser extends Component {
   clearInput() {
     this.user = { username: '', first_name: '', last_name: '', password: '', email: '' };
     this.confirm_password = '';
-  }
-}
-
-export class UserDetails extends Component<{ match: { params: { email: string } } }> {
-  render() {
-    return (
-      <Card title="User details">
-        <Row>
-          <Column>Username:</Column>
-        </Row>
-      </Card>
-    );
-  }
-
-  // mounted() {
-  // }
-}
-
-/**
- * Renders form to edit a specific task.
- */
-export class TaskEdit extends Component<{ match: { params: { id: number } } }> {
-  task: Task = { id: 0, title: '', done: false };
-
-  render() {
-    return (
-      <>
-        <Card title="Edit task">
-          <Row>
-            <Column width={2}>
-              <Form.Label>Title:</Form.Label>
-            </Column>
-            <Column>
-              <Form.Input
-                type="text"
-                value={this.task.title}
-                onChange={(event) => (this.task.title = event.currentTarget.value)}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column width={2}>
-              <Form.Label>Description:</Form.Label>
-            </Column>
-            <Column>
-              <Form.Textarea value="" onChange={() => {}} rows={10} disabled />
-            </Column>
-          </Row>
-          <Row>
-            <Column width={2}>Done:</Column>
-            <Column>
-              <Form.Checkbox
-                checked={this.task.done}
-                onChange={(event) => (this.task.done = event.currentTarget.checked)}
-              />
-            </Column>
-          </Row>
-        </Card>
-        <Row>
-          <Column>
-            <Button.Success onClick={() => Alert.info('Not yet implemented')}>Save</Button.Success>
-          </Column>
-          <Column right>
-            <Button.Danger onClick={() => Alert.info('Not yet implemented')}>Delete</Button.Danger>
-          </Column>
-        </Row>
-      </>
-    );
-  }
-
-  mounted() {
-    taskService
-      .get(this.props.match.params.id)
-      .then((task) => (this.task = task))
-      .catch((error) => Alert.danger('Error getting task: ' + error.message));
   }
 }
