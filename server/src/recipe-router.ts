@@ -39,6 +39,7 @@ router.get('/recipes/:recipe_id/ingredients', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+
 router.get('/ingredients', (_request, response) => {
   recipeService
     .getAllIngredients()
@@ -59,6 +60,40 @@ router.get('/recipes/:country/:category/:ingredient', (request, response) => {
       .then((rows) => response.send(rows))
       .catch((error) => response.status(500).send(error));
   }
+
+router.post('/recipes', (request, response) => {
+  const data = request.body;
+  if (data && data.name != 0 && data.category != 0 && data.country != 0)
+    recipeService
+      .create(data.name, data.category, data.country)
+      .then((recipe_id) => response.send({ recipe_id: recipe_id }))
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Missing recipe details');
+});
+
+router.put('/recipes', (request, response) => {
+  const data = request.body;
+  if (
+    typeof data.recipe_id == 'number' &&
+    data.recipe_id.length != 0 &&
+    typeof data.name == 'string' &&
+    data.name.length != 0 &&
+    typeof data.category == 'string' &&
+    data.category.length != 0 &&
+    typeof data.country == 'string' &&
+    data.country.length != 0
+  )
+    recipeService
+      .update({
+        recipe_id: data.recipe_id,
+        name: data.name,
+        category: data.category,
+        country: data.country,
+      })
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Propperties are not valid');
+
 });
 
 // Example request body: { title: "Ny oppgave" }
