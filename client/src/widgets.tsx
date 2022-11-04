@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ReactNode, ChangeEvent } from 'react';
 import { Component } from 'react-simplified';
 import { NavLink } from 'react-router-dom';
+import { loggedIn } from './recipe-components';
 
 /**
  * Renders an information card using Bootstrap classes.
@@ -310,6 +311,7 @@ export class Alert extends Component {
             role="alert"
           >
             {alert.text}
+
             <button
               type="button"
               className="btn-close btn-sm"
