@@ -35,7 +35,14 @@ router.get('/recipes/:recipe_id/steps', (request, response) => {
 router.get('/recipes/:recipe_id/ingredients', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
   recipeService
-    .getIngredients(recipe_id)
+    .getIngredientsToRecipe(recipe_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+router.get('/ingredients', (_request, response) => {
+  recipeService
+    .getAllIngredients()
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
 });

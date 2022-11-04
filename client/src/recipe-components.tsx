@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import recipeService, { Recipe, Step, Ingredient, User } from './recipe-service';
+import recipeService, { Recipe, Step, RecipeIngredient, Ingredient, User } from './recipe-service';
 import { createHashHistory } from 'history';
 
 //false as default
@@ -15,6 +15,10 @@ const history = createHashHistory(); // Use history.push(...) to programmaticall
 export class RecipeList extends Component {
   country: string = '';
   category: string = '';
+
+  ingredient: Ingredient = { ingredient_id: 0, name: '' };
+  ingredients: Ingredient[] = [];
+
   recipes: Recipe[] = [];
   filtered_recipes: Recipe[] = [];
 
@@ -61,17 +65,17 @@ export class RecipeList extends Component {
               </Form.Select>
             </Column>
             <Column width={3}>
-              {/* <Form.Select
+              <Form.Select
                 // Hvordan skal vi gjøre det med filter knyttet til ingrediens?
-                value={this.ingredient}
-                onChange={(event) => (this.ingredient = event.currentTarget.value)}
+                value={this.ingredient['name']}
+                onChange={(event) => (this.ingredient['name'] = event.currentTarget.value)}
               >
                 {this.ingredients.map((ing) => (
-                  <option key={ing} value={ing}>
-                    {ing}
+                  <option key={ing.ingredient_id} value={ing.name}>
+                    {ing.name}
                   </option>
                 ))}
-              </Form.Select> */}
+              </Form.Select>
             </Column>
             <Column>
               <Button.Success onClick={() => this.filter()}>Add filters</Button.Success>
@@ -118,6 +122,11 @@ export class RecipeList extends Component {
       .getAll()
       .then((recipes) => (this.recipes = recipes))
       .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
+
+    recipeService
+      .getAllIngredients()
+      .then((ingredients) => (this.ingredients = ingredients))
+      .catch((error) => Alert.danger('Error getting ingredients: ' + error.message));
   }
 
   search() {
@@ -141,7 +150,7 @@ export class RecipeList extends Component {
 export class RecipeDetails extends Component<{ match: { params: { recipe_id: number } } }> {
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
   steps: Step[] = [];
-  ingredients: Ingredient[] = [];
+  ingredients: RecipeIngredient[] = [];
   portions: number = 1;
 
   render() {
@@ -226,7 +235,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
       .then((recipe) => (this.recipe = recipe))
       .then(() => recipeService.getSteps(this.recipe.recipe_id))
       .then((steps) => (this.steps = steps))
-      .then(() => recipeService.getIngredients(this.recipe.recipe_id))
+      .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
       .then((ingredients) => (this.ingredients = ingredients))
       .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
