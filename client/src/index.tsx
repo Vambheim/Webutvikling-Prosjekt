@@ -18,12 +18,13 @@ import {
 class Menu extends Component {
   //henter data fra spoonacular når komponentet lastes
   mounted() {
-    var string = '';
-    var til100 = '';
-    var til200 = '';
-    var til300 = '';
-    var til400 = '';
-    var til500 = '';
+    var allowed = false;
+    var string = "";
+    var til100 = "";
+    var til200 = "";
+    var til300 = "";
+    var til400 = "";
+    var til500 = "";
     for (let i = 0; i <= 500; i++) {
       string = string.concat(`${i},`);
       switch (i) {
@@ -62,7 +63,7 @@ class Menu extends Component {
         console.log(data[1]['title']);
       };
 
-      getApi();
+      allowed == true ? getApi() : return
     }
     getRecipesBulk(til100);
     // getRecipesBulk(til200)
