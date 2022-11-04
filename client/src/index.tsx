@@ -22,10 +22,11 @@ class Menu extends Component {
   render() {
     return (
       <Navbar
-        bg="light"
         expand="lg"
-        /* style={{
-        background: 'linear-gradient(to right, rgba(255, 242, 184, 0.5), rgba(255, 5, 64, 0.5))',*/
+        style={{
+          backgroundColor: 'rgb(255, 225, 185)',
+          fontFamily: 'Courier New',
+        }}
       >
         <Container>
           <Navbar.Brand href="/" className="ms-auto">

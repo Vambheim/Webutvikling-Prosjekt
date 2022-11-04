@@ -25,9 +25,18 @@ export class Home extends Component {
   render() {
     return (
       <Container style={{ flex: 'column' }}>
-        <Card style={{ border: 'none', textAlign: 'center', fontFamily: 'Century Gothic' }}>
+        <Card
+          style={{
+            border: 'none',
+            textAlign: 'center',
+            fontFamily: 'Courier New',
+            backgroundColor: 'rgb(255, 235, 205)',
+          }}
+        >
           <Card.Body>
-            <Card style={{ border: 'none', textAlign: 'center' }}>
+            <Card
+              style={{ border: 'none', textAlign: 'center', backgroundColor: 'rgb(255, 235, 205)' }}
+            >
               <Card.Body>
                 <Carousel>
                   <Carousel.Item interval={1500}>
@@ -68,13 +77,13 @@ export class Home extends Component {
               </Card.Body>
               <Card.Title>
                 {'Anbefalinger:'}
-                <Card.Body style={{ backgroundColor: 'rgb(169, 110, 41)' }}>
+                <Card.Body style={{ backgroundColor: 'rgb(255, 235, 205)' }}>
                   <Row style={{ justifyContent: 'center' }}>
                     <Card
                       style={{
                         width: '18rem',
                         marginRight: '1rem',
-                        backgroundColor: 'rgb(255, 235, 205)',
+                        backgroundColor: 'rgb(255, 225, 185)',
                       }}
                     >
                       <Card.Img
@@ -95,7 +104,7 @@ export class Home extends Component {
                       style={{
                         width: '18rem',
                         marginRight: '1rem',
-                        backgroundColor: 'rgb(255, 235, 205)',
+                        backgroundColor: 'rgb(255, 225, 185)',
                       }}
                     >
                       <Card.Img
@@ -116,7 +125,7 @@ export class Home extends Component {
                       style={{
                         width: '18rem',
                         marginRight: '1rem',
-                        backgroundColor: 'rgb(255, 235, 205)',
+                        backgroundColor: 'rgb(255, 225, 185)',
                       }}
                     >
                       <Card.Img
@@ -137,7 +146,7 @@ export class Home extends Component {
                       style={{
                         width: '18rem',
                         marginRight: '1rem',
-                        backgroundColor: 'rgb(255, 235, 205)',
+                        backgroundColor: 'rgb(255, 225, 185)',
                       }}
                     >
                       <Card.Img
@@ -162,6 +171,9 @@ export class Home extends Component {
         </Card>
       </Container>
     );
+  }
+  componentDidMount() {
+    document.body.style.backgroundColor = 'rgb(255, 235, 205)';
   }
 }
 
