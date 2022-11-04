@@ -105,10 +105,24 @@ class RecipeService {
   getAllIngredients() {
     return new Promise<Ingredient[]>((resolve, reject) => {
       pool.query('SELECT * FROM ingredient', (error, results: RowDataPacket[]) => {
-        if(error) return reject(error); 
+        if (error) return reject(error);
 
         resolve(results as Ingredient[]);
       });
+    });
+  }
+
+  getFilteredRecipe(country: string, category: string, ingredient: string) {
+    return new Promise<Recipe[]>((resolve, reject) => {
+      pool.query(
+        'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN recipe_ingredient ON recipe.recipe_id = recipe_ingredient.recipe_id JOIN ingredient ON recipe_ingredient.ingredient_id = ingredient.ingredient_id WHERE recipe.country=? AND recipe.category=? AND ingredient.name=?',
+        [country, category, ingredient],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
+
+          resolve(results as Recipe[]);
+        }
+      );
     });
   }
 

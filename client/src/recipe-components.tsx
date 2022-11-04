@@ -19,7 +19,7 @@ export class RecipeList extends Component {
   ingredient: Ingredient = { ingredient_id: 0, name: '' };
   ingredients: Ingredient[] = [];
 
-  recipes: Recipe[] = [];
+  recipes: Recipe[] = []; // original, do not change
   filtered_recipes: Recipe[] = [];
 
   search_input: string = '';
@@ -39,6 +39,10 @@ export class RecipeList extends Component {
                 value={this.country}
                 onChange={(event) => (this.country = event.currentTarget.value)}
               >
+                <option key={'blankChoice'} hidden>
+                  {'Choose country: '}
+                </option>
+
                 {this.recipes
                   .map((recipe) => recipe.country)
                   .filter((country, index, array) => array.indexOf(country) === index)
@@ -54,6 +58,9 @@ export class RecipeList extends Component {
                 value={this.category}
                 onChange={(event) => (this.category = event.currentTarget.value)}
               >
+                <option key={'blankChoice'} hidden>
+                  {'Choose category: '}
+                </option>
                 {this.recipes
                   .map((recipe) => recipe.category)
                   .filter((category, index, array) => array.indexOf(category) === index)
@@ -66,19 +73,27 @@ export class RecipeList extends Component {
             </Column>
             <Column width={3}>
               <Form.Select
-                // Hvordan skal vi gjøre det med filter knyttet til ingrediens?
                 value={this.ingredient['name']}
                 onChange={(event) => (this.ingredient['name'] = event.currentTarget.value)}
               >
-                {this.ingredients.map((ing) => (
-                  <option key={ing.ingredient_id} value={ing.name}>
-                    {ing.name}
-                  </option>
-                ))}
+                <option key={'blankChoice'} hidden>
+                  {'Choose ingredient: '}
+                </option>
+                {this.ingredients
+                  .map((ing) => ing.name)
+                  .filter((ing, index, array) => array.indexOf(ing) === index)
+                  .map((ing, i) => (
+                    <option key={i} value={ing}>
+                      {this.firstLetterUpperCase(ing)}
+                    </option>
+                  ))}
               </Form.Select>
             </Column>
+          </Row>
+          <Row>
             <Column>
-              <Button.Success onClick={() => this.filter()}>Add filters</Button.Success>
+              <Button.Success onClick={() => this.addFilter()}>Add filters</Button.Success>
+              <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
             </Column>
           </Row>
         </Card>
@@ -97,7 +112,7 @@ export class RecipeList extends Component {
           </Column>
         </Card>
         <Card title="Recepies">
-          {this.recipes.map((recipe) => (
+          {this.filtered_recipes.map((recipe) => (
             <Row key={recipe.recipe_id}>
               <Column>
                 <NavLink
@@ -120,7 +135,7 @@ export class RecipeList extends Component {
   mounted() {
     recipeService
       .getAll()
-      .then((recipes) => (this.recipes = recipes))
+      .then((recipes) => (this.recipes = recipes) && (this.filtered_recipes = recipes))
       .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
 
     recipeService
@@ -129,11 +144,14 @@ export class RecipeList extends Component {
       .catch((error) => Alert.danger('Error getting ingredients: ' + error.message));
   }
 
+  firstLetterUpperCase(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
   search() {
     this.recipes.map((recipe) => {
       if (this.search_input.length > 0) {
         if (recipe.name.includes(this.search_input)) {
-          this.filtered_recipes.push(recipe);
           console.log(recipe.name);
         } else {
           console.log('does not match bro');
@@ -142,8 +160,20 @@ export class RecipeList extends Component {
     });
   }
 
-  filter() {
-    Alert.danger('Not yet implemented');
+  addFilter() {
+    if (this.country.length == 0 || this.category.length == 0 || this.ingredient.name.length == 0) {
+      Alert.danger('Please choose all filters');
+    } else {
+      recipeService
+        .getFilteredRecipes(this.country, this.category, this.ingredient.name)
+        .then((recipe) => (this.filtered_recipes = recipe))
+        .catch((error) => Alert.danger('Error getting filtered recipes: ' + error.message));
+    }
+  }
+
+  removeFilter() {
+    this.filtered_recipes = this.recipes;
+    Alert.success('Filters have been removed');
   }
 }
 

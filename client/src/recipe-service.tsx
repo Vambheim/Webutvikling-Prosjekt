@@ -76,6 +76,15 @@ class RecipeService {
   }
 
   /**
+   * Get filtered recipes
+   */
+  getFilteredRecipes(country: string, category: string, ingredient: string) {
+    return axios
+      .get<Recipe[]>('/recipes/' + country + '/' + category + '/' + ingredient)
+      .then((response) => response.data);
+  }
+
+  /**
    * Create new task having the given title.
    *
    * Resolves the newly created task id.
