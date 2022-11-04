@@ -135,6 +135,11 @@ class RecipeService {
           if (error) return reject(error);
 
           resolve(results.insertId);
+        }
+      );
+    });
+  }
+
   update(recipe: Recipe) {
     return new Promise<void>((resolve, reject) => {
       pool.query(

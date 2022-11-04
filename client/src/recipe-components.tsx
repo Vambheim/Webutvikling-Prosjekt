@@ -367,7 +367,7 @@ export class RecipeAdd extends Component {
         </div>
         <div
           style={{
-            //@ts-ginore
+            //@ts-ignore
             visibility: this.showSteps,
           }}
         >
