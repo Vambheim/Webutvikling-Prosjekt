@@ -8,12 +8,17 @@ export type Recipe = {
   country: string;
 };
 
-export type Ingredient = {
+export type RecipeIngredient = {
   ingredient_id: number;
   name: string;
   recipe_id: number;
   amount_per_person: number;
   measurement_unit: string;
+};
+
+export type Ingredient = {
+  ingredient_id: number;
+  name: string;
 };
 
 export type Step = {
@@ -83,15 +88,39 @@ class RecipeService {
    * Gets all ingredients for given recipe
    */
 
-  getIngredients(recipe_id: number) {
-    return new Promise<Ingredient[]>((resolve, reject) => {
+  getIngredientsToRecipe(recipe_id: number) {
+    return new Promise<RecipeIngredient[]>((resolve, reject) => {
       pool.query(
         'SELECT * FROM recipe_ingredient JOIN ingredient ON recipe_ingredient.ingredient_id = ingredient.ingredient_id WHERE recipe_id = ?',
         [recipe_id],
         (error, results: RowDataPacket[]) => {
           if (error) return reject(error);
 
-          resolve(results as Ingredient[]);
+          resolve(results as RecipeIngredient[]);
+        }
+      );
+    });
+  }
+
+  getAllIngredients() {
+    return new Promise<Ingredient[]>((resolve, reject) => {
+      pool.query('SELECT * FROM ingredient', (error, results: RowDataPacket[]) => {
+        if (error) return reject(error);
+
+        resolve(results as Ingredient[]);
+      });
+    });
+  }
+
+  getFilteredRecipe(country: string, category: string, ingredient: string) {
+    return new Promise<Recipe[]>((resolve, reject) => {
+      pool.query(
+        'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN recipe_ingredient ON recipe.recipe_id = recipe_ingredient.recipe_id JOIN ingredient ON recipe_ingredient.ingredient_id = ingredient.ingredient_id WHERE recipe.country=? AND recipe.category=? AND ingredient.name=?',
+        [country, category, ingredient],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
+
+          resolve(results as Recipe[]);
         }
       );
     });
