@@ -54,20 +54,20 @@ class Menu extends Component {
         const api = await fetch(
           `https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.REACT_APP_API_KEY}&ids=${ids}?`
 
-          //`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=5000`
+          //`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=500`
         );
         //${process.env.REACT_APP_API_KEY}
         const data = await api.json();
-        console.log(data);
+        console.log(data[1]["title"]);
       };
 
       getApi();
     }
     getRecipesBulk(til100)
-    getRecipesBulk(til200)
-    getRecipesBulk(til300)
-    getRecipesBulk(til400)
-    getRecipesBulk(til500)
+    // getRecipesBulk(til200)
+    // getRecipesBulk(til300)
+    // getRecipesBulk(til400)
+    // getRecipesBulk(til500)
   }
 
   render() {
