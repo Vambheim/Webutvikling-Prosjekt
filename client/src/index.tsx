@@ -8,8 +8,11 @@ import {
   RecipeList,
   ShoppingList,
   RecipeDetails,
-  TaskEdit,
+  RecipeEdit,
   UserLogIn,
+  RegisterUser,
+  UserDetails,
+  loggedIn,
 } from './recipe-components';
 
 class Menu extends Component {
@@ -52,7 +55,6 @@ ReactDOM.render(
       <Route exact path="/recipes/user/:email" component={UserDetails} />
       <Route exact path="/recipes/:recipe_id(\d+)" component={RecipeDetails} />
       <Route exact path="/recipes/:id(\d+)/edit" component={RecipeEdit} />
-      <Route exact path="/tasks/new" component={TaskNew} />
     </div>
   </HashRouter>,
   document.getElementById('root')
