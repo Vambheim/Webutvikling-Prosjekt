@@ -213,11 +213,13 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
           </Row>
         </Card>
 
-        {/* <Button.Success
-          onClick={() => history.push('/tasks/' + this.props.match.params.recipe_id + '/edit')}
+        <Button.Success
+          onClick={() => {
+            this.editRecipe();
+          }}
         >
           Edit
-        </Button.Success> */}
+        </Button.Success>
       </>
     );
   }
