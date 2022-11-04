@@ -97,6 +97,15 @@ class RecipeService {
     });
   }
 
+  create(name: string, country: string, category: string) {
+    return new Promise<number>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO recipe SET name = ?, category = ?,  country = ?',
+        [name, category, country],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+
+          resolve(results.insertId);
   update(recipe: Recipe) {
     return new Promise<void>((resolve, reject) => {
       pool.query(

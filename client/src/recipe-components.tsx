@@ -296,7 +296,7 @@ export class RecipeAdd extends Component {
           </Row>
           <Row>
             <Column>
-              <Button.Light onClick={() => (this.showIng = 'visible')}>
+              <Button.Light onClick={() => this.openIngredient()}>
                 Continue to add ingredients
               </Button.Light>
             </Column>
@@ -314,7 +314,7 @@ export class RecipeAdd extends Component {
                 <Form.Input type="text" placeholder={'Ingredient'}></Form.Input>
               </Column>
               <Column>
-                <Button.Light onClick={() => this.addIngredient()}>+</Button.Light>
+                <Button.Light onClick={() => this.addIngredient()}>+ </Button.Light>
               </Column>
             </Row>
             <Row>
@@ -328,7 +328,7 @@ export class RecipeAdd extends Component {
         </div>
         <div
           style={{
-            //@ts-ignore
+            //@ts-ginore
             visibility: this.showSteps,
           }}
         >
@@ -352,12 +352,28 @@ export class RecipeAdd extends Component {
     );
   }
 
+  mounted() {}
+
+  openIngredient() {
+    if (this.recipe.name == '' && this.recipe.country == '' && this.recipe.category == '') {
+      Alert.danger('All fields must be filled in order to add ingredient');
+    } else {
+      this.showIng = 'visible';
+    }
+  }
+
   saveRecipe() {
-    Alert.danger('Not yet implemented');
+    recipeService
+      .create(this.recipe.name, this.recipe.country, this.recipe.category)
+      .then((recipe_id) => history.push('/recipes/' + recipe_id))
+      .catch((error) => Alert.danger('Error creating task: ' + error.message));
   }
 
   addIngredient() {
-    Alert.danger('Not yet implemented');
+    // TODO
+    // Åpne nytt tekstfelt
+    // Lagre når alle ingredienser er lagret
+    Alert.danger('ikke implementert');
   }
 
   addStep() {

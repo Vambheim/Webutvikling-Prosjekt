@@ -72,10 +72,14 @@ class RecipeService {
    *
    * Resolves the newly created task id.
    */
-  create(title: string) {
+  create(name: string, category: string, country: string) {
     return axios
-      .post<{ id: number }>('/tasks', { title: title })
-      .then((response) => response.data.id);
+      .post<{ recipe_id: number }>('/recipes', {
+        name: name,
+        category: category,
+        country: country,
+      })
+      .then((response) => response.data.recipe_id);
   }
 }
 

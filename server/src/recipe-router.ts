@@ -1,6 +1,5 @@
 import express from 'express';
 import recipeService from './recipe-service';
-import bcrypt from 'bcrypt';
 
 /**
  * Express router containing task methods.
@@ -38,6 +37,16 @@ router.get('/recipes/:recipe_id/ingredients', (request, response) => {
     .getIngredients(recipe_id)
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
+});
+
+router.post('/recipes', (request, response) => {
+  const data = request.body;
+  if (data && data.name != 0 && data.category != 0 && data.country != 0)
+    recipeService
+      .create(data.name, data.category, data.country)
+      .then((recipe_id) => response.send({ recipe_id: recipe_id }))
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Missing recipe details');
 });
 
 router.put('/recipes', (request, response) => {
