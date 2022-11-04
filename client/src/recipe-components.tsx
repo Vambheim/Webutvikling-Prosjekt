@@ -334,8 +334,10 @@ export class RecipeAdd extends Component {
         >
           <Card title="Add steps">
             <Row>
-              <Column width={2}>
-                <Form.Input placeholder="Step"></Form.Input>
+              <Column id={'test'} width={2}>
+                <div id="test">
+                  <Form.Input placeholder="Step"></Form.Input>
+                </div>
               </Column>
               <Column>
                 <Button.Light onClick={() => this.addStep()}>+</Button.Light>
@@ -361,7 +363,10 @@ export class RecipeAdd extends Component {
   }
 
   addStep() {
-    Alert.danger('Not yet implemented');
+    let stepInput = document.getElementById('test');
+    let newStepInput = document.createElement('input');
+    newStepInput.type = 'text';
+    stepInput?.appendChild(newStepInput);
   }
 }
 
