@@ -19,6 +19,7 @@ class Menu extends Component {
 
   //henter data fra spoonacular når komponentet lastes 
   mounted() {
+    var allowed = false;
     var string = "";
     var til100 = "";
     var til200 = "";
@@ -64,7 +65,7 @@ class Menu extends Component {
         console.log(data[1]["title"]);
       };
 
-      getApi();
+      allowed == true ? getApi() : return
     }
     getRecipesBulk(til100)
     // getRecipesBulk(til200)
