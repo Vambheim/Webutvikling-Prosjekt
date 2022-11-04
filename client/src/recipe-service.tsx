@@ -62,6 +62,10 @@ class RecipeService {
       .then((response) => response.data);
   }
 
+  update(recipe: Recipe) {
+    return axios.put('/recipes', recipe).then((response) => response.data);
+  }
+
   /**
    * Create new task having the given title.
    *

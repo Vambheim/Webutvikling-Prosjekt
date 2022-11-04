@@ -122,7 +122,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
           </Row>
           <Button.Light>Like this recipe &#10084;</Button.Light>
         </Card>
-
         <Card title="This is how you make it">
           <ol>
             {this.steps.map((step) => (
@@ -134,10 +133,9 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             ))}
           </ol>
         </Card>
-
         <Card title="Ingredients">
           <Row>
-            <Column width={2}>Select portions:</Column>
+            <Column width={2}>Select portions jajja:</Column>
             <Column width={6}>
               <Form.Input
                 type="number"
@@ -162,11 +160,11 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
           ))}
         </Card>
 
-        {/* <Button.Success
-          onClick={() => history.push('/tasks/' + this.props.match.params.recipe_id + '/edit')}
+        <Button.Success
+          onClick={() => history.push('/recipes/' + this.props.match.params.recipe_id + '/edit')}
         >
           Edit
-        </Button.Success> */}
+        </Button.Success>
       </>
     );
   }
@@ -324,46 +322,80 @@ export class UserLogIn extends Component {
 /**
  * Renders form to edit a specific task.
  */
-export class TaskEdit extends Component<{ match: { params: { id: number } } }> {
-  task: Task = { id: 0, title: '', done: false };
+export class RecipeEdit extends Component<{ match: { params: { id: number } } }> {
+  recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
+  recipes: Recipe[] = [];
 
   render() {
     return (
       <>
-        <Card title="Edit task">
+        <Card title="Edit Recipe">
           <Row>
             <Column width={2}>
-              <Form.Label>Title:</Form.Label>
+              <Form.Label>Name:</Form.Label>
             </Column>
             <Column>
               <Form.Input
                 type="text"
-                value={this.task.title}
-                onChange={(event) => (this.task.title = event.currentTarget.value)}
+                value={this.recipe.name}
+                onChange={(event) => (this.recipe.name = event.currentTarget.value)}
               />
             </Column>
           </Row>
+
+          <Row>
+            <Column width={2}>Country:</Column>
+            <Column>
+              <Form.Select
+                value={this.recipe.country}
+                onChange={(event) => (this.recipe.country = event.currentTarget.value)}
+              >
+                {this.recipes
+                  .map((recipe) => recipe.country)
+                  .filter((country, index, array) => array.indexOf(country) === index)
+                  .map((country, i) => (
+                    <option key={i} value={country}>
+                      {country}
+                    </option>
+                  ))}
+              </Form.Select>
+            </Column>
+          </Row>
+
           <Row>
             <Column width={2}>
-              <Form.Label>Description:</Form.Label>
+              <Form.Label>Category:</Form.Label>
             </Column>
             <Column>
-              <Form.Textarea value="" onChange={() => {}} rows={10} disabled />
-            </Column>
-          </Row>
-          <Row>
-            <Column width={2}>Done:</Column>
-            <Column>
-              <Form.Checkbox
-                checked={this.task.done}
-                onChange={(event) => (this.task.done = event.currentTarget.checked)}
-              />
+              <Form.Select
+                value={this.recipe.category}
+                onChange={(event) => (this.recipe.category = event.currentTarget.value)}
+              >
+                {this.recipes
+                  .map((recipe) => recipe.category)
+                  .filter((category, index, array) => array.indexOf(category) === index)
+                  .map((category, i) => (
+                    <option key={i} value={category}>
+                      {category}
+                    </option>
+                  ))}
+              </Form.Select>
             </Column>
           </Row>
         </Card>
         <Row>
           <Column>
-            <Button.Success onClick={() => Alert.info('Not yet implemented')}>Save</Button.Success>
+            <Button.Success
+              onClick={() =>
+                recipeService
+                  .update(this.recipe)
+                  .then(() => history.push('/recipes/' + this.recipe.recipe_id))
+                  .catch((error) => Alert.danger('Error in updating recipe: ' + error.message))
+              }
+              //Tror problemet over her er at category og country blir lagt i recipes og ikke i recipe
+            >
+              Save
+            </Button.Success>
           </Column>
           <Column right>
             <Button.Danger onClick={() => Alert.info('Not yet implemented')}>Delete</Button.Danger>
@@ -374,10 +406,12 @@ export class TaskEdit extends Component<{ match: { params: { id: number } } }> {
   }
 
   mounted() {
-    taskService
+    recipeService.getAll().then((recipes) => (this.recipes = recipes));
+
+    recipeService
       .get(this.props.match.params.id)
-      .then((task) => (this.task = task))
-      .catch((error) => Alert.danger('Error getting task: ' + error.message));
+      .then((recipe) => (this.recipe = recipe))
+      .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
   }
 }
 

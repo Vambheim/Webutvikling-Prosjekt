@@ -11,6 +11,7 @@ import {
   TaskEdit,
   TaskNew,
   UserLogIn,
+  RecipeEdit,
 } from './recipe-components';
 
 class Menu extends Component {
@@ -46,7 +47,7 @@ ReactDOM.render(
       <Route exact path="/recipes/cart" component={ShoppingList} />
       <Route exact path="/recipes/users" component={UserLogIn} />
       <Route exact path="/recipes/:recipe_id(\d+)" component={RecipeDetails} />
-      <Route exact path="/tasks/:id(\d+)/edit" component={TaskEdit} />
+      <Route exact path="/recipes/:id(\d+)/edit" component={RecipeEdit} />
       <Route exact path="/tasks/new" component={TaskNew} />
     </div>
   </HashRouter>,

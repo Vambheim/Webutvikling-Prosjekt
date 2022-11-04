@@ -97,6 +97,20 @@ class RecipeService {
     });
   }
 
+  update(recipe: Recipe) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'UPDATE recipe SET name=?, category=?, country=? WHERE recipe_id=?',
+        [recipe.name, recipe.category, recipe.country, recipe.recipe_id],
+        (error, _results) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+
   /**
    * Create new recipe.
    *h
