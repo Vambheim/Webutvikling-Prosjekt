@@ -101,14 +101,16 @@ export class RecipeList extends Component {
         <Card title="Search">
           <Column>
             <Form.Input
-              onChange={(event) => (this.search_input = event.currentTarget.value)}
+              onChange={(event) => this.search(event.currentTarget.value)}
               value={this.search_input}
               type="search"
               placeholder="Search"
             ></Form.Input>
           </Column>
           <Column>
-            <Button.Light onClick={() => this.search()}>Search</Button.Light>
+            {/* <Button.Light onClick={(event) => this.search(event.currentTarget.value)}>
+              Search
+            </Button.Light> */}
           </Column>
         </Card>
         <Card title="Recepies">
@@ -148,16 +150,16 @@ export class RecipeList extends Component {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  search() {
+  search(input: string) {
+    this.search_input = input;
+    let searchRecipe: Recipe[] = [];
+
     this.recipes.map((recipe) => {
-      if (this.search_input.length > 0) {
-        if (recipe.name.includes(this.search_input)) {
-          console.log(recipe.name);
-        } else {
-          console.log('does not match bro');
-        }
+      if (recipe.name.toLowerCase().includes(this.search_input.toLowerCase())) {
+        searchRecipe.push(recipe);
       }
     });
+    this.filtered_recipes = searchRecipe;
   }
 
   addFilter() {
@@ -172,6 +174,9 @@ export class RecipeList extends Component {
   }
 
   removeFilter() {
+    this.country = '';
+    this.category = '';
+    this.ingredient.name = '';
     this.filtered_recipes = this.recipes;
     Alert.success('Filters have been removed');
   }
