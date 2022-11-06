@@ -756,7 +756,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
             </Button.Success>
           </Column>
           <Column right>
-            <Button.Danger onClick={() => Alert.info('Not yet implemented')}>Delete</Button.Danger>
+            <Button.Danger
+              onClick={() =>
+                recipeService.delete(this.recipe.recipe_id).then(() => history.push('/recipes/'))
+              }
+            >
+              Delete
+            </Button.Danger>
           </Column>
         </Row>
       </>
