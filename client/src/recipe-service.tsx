@@ -102,6 +102,13 @@ class RecipeService {
       })
       .then((response) => response.data.recipe_id);
   }
+
+  /**
+   * Slett oppgave med en gitt id.
+   */
+  delete(recipe_id: number) {
+    return axios.delete('/recipes/' + recipe_id).then((response) => response.data);
+  }
 }
 
 const recipeService = new RecipeService();
