@@ -36,28 +36,13 @@ export class Row extends Component {
  *
  * Properties: width, right
  */
-export class Column extends Component<{ id?: string; width?: number; right?: boolean }> {
+export class Column extends Component<{ width?: number; right?: boolean }> {
   render() {
-    if (this.props.id == undefined) {
-      return (
-        <div className={'col' + (this.props.width ? '-' + this.props.width : '')}>
-          <div className={'float-' + (this.props.right ? 'end' : 'start')}>
-            {this.props.children}
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div
-          id={'id' + this.props.id}
-          className={'col' + (this.props.width ? '-' + this.props.width : '')}
-        >
-          <div className={'float-' + (this.props.right ? 'end' : 'start')}>
-            {this.props.children}
-          </div>
-        </div>
-      );
-    }
+    return (
+      <div className={'col' + (this.props.width ? '-' + this.props.width : '')}>
+        <div className={'float-' + (this.props.right ? 'end' : 'start')}>{this.props.children}</div>
+      </div>
+    );
   }
 }
 
