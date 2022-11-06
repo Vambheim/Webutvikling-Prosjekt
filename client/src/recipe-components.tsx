@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import recipeService, { Recipe, Step, Ingredient, User } from './recipe-service';
+import recipeService, { Recipe, Step, RecipeIngredient, Ingredient, User } from './recipe-service';
 import { createHashHistory } from 'history';
 
 //false as default
@@ -15,7 +15,11 @@ const history = createHashHistory(); // Use history.push(...) to programmaticall
 export class RecipeList extends Component {
   country: string = '';
   category: string = '';
-  recipes: Recipe[] = [];
+
+  ingredient: Ingredient = { ingredient_id: 0, name: '' };
+  ingredients: Ingredient[] = [];
+
+  recipes: Recipe[] = []; // original, do not change
   filtered_recipes: Recipe[] = [];
 
   search_input: string = '';
@@ -35,6 +39,10 @@ export class RecipeList extends Component {
                 value={this.country}
                 onChange={(event) => (this.country = event.currentTarget.value)}
               >
+                <option key={'blankChoice'} hidden>
+                  {'Choose country: '}
+                </option>
+
                 {this.recipes
                   .map((recipe) => recipe.country)
                   .filter((country, index, array) => array.indexOf(country) === index)
@@ -50,6 +58,9 @@ export class RecipeList extends Component {
                 value={this.category}
                 onChange={(event) => (this.category = event.currentTarget.value)}
               >
+                <option key={'blankChoice'} hidden>
+                  {'Choose category: '}
+                </option>
                 {this.recipes
                   .map((recipe) => recipe.category)
                   .filter((category, index, array) => array.indexOf(category) === index)
@@ -61,20 +72,28 @@ export class RecipeList extends Component {
               </Form.Select>
             </Column>
             <Column width={3}>
-              {/* <Form.Select
-                // Hvordan skal vi gjøre det med filter knyttet til ingrediens?
-                value={this.ingredient}
-                onChange={(event) => (this.ingredient = event.currentTarget.value)}
+              <Form.Select
+                value={this.ingredient['name']}
+                onChange={(event) => (this.ingredient['name'] = event.currentTarget.value)}
               >
-                {this.ingredients.map((ing) => (
-                  <option key={ing} value={ing}>
-                    {ing}
-                  </option>
-                ))}
-              </Form.Select> */}
+                <option key={'blankChoice'} hidden>
+                  {'Choose ingredient: '}
+                </option>
+                {this.ingredients
+                  .map((ing) => ing.name)
+                  .filter((ing, index, array) => array.indexOf(ing) === index)
+                  .map((ing, i) => (
+                    <option key={i} value={ing}>
+                      {this.firstLetterUpperCase(ing)}
+                    </option>
+                  ))}
+              </Form.Select>
             </Column>
+          </Row>
+          <Row>
             <Column>
-              <Button.Success onClick={() => this.filter()}>Add filters</Button.Success>
+              <Button.Success onClick={() => this.addFilter()}>Add filters</Button.Success>
+              <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
             </Column>
           </Row>
         </Card>
@@ -82,18 +101,20 @@ export class RecipeList extends Component {
         <Card title="Search">
           <Column>
             <Form.Input
-              onChange={(event) => (this.search_input = event.currentTarget.value)}
+              onChange={(event) => this.search(event.currentTarget.value)}
               value={this.search_input}
               type="search"
               placeholder="Search"
             ></Form.Input>
           </Column>
           <Column>
-            <Button.Light onClick={() => this.search()}>Search</Button.Light>
+            {/* <Button.Light onClick={(event) => this.search(event.currentTarget.value)}>
+              Search
+            </Button.Light> */}
           </Column>
         </Card>
         <Card title="Recepies">
-          {this.recipes.map((recipe) => (
+          {this.filtered_recipes.map((recipe) => (
             <Row key={recipe.recipe_id}>
               <Column>
                 <NavLink
@@ -116,32 +137,55 @@ export class RecipeList extends Component {
   mounted() {
     recipeService
       .getAll()
-      .then((recipes) => (this.recipes = recipes))
+      .then((recipes) => (this.recipes = recipes) && (this.filtered_recipes = recipes))
       .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
+
+    recipeService
+      .getAllIngredients()
+      .then((ingredients) => (this.ingredients = ingredients))
+      .catch((error) => Alert.danger('Error getting ingredients: ' + error.message));
   }
 
-  search() {
+  firstLetterUpperCase(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  search(input: string) {
+    this.search_input = input;
+    let searchRecipe: Recipe[] = [];
+
     this.recipes.map((recipe) => {
-      if (this.search_input.length > 0) {
-        if (recipe.name.includes(this.search_input)) {
-          this.filtered_recipes.push(recipe);
-          console.log(recipe.name);
-        } else {
-          console.log('does not match bro');
-        }
+      if (recipe.name.toLowerCase().includes(this.search_input.toLowerCase())) {
+        searchRecipe.push(recipe);
       }
     });
+    this.filtered_recipes = searchRecipe;
   }
 
-  filter() {
-    Alert.danger('Not yet implemented');
+  addFilter() {
+    if (this.country.length == 0 || this.category.length == 0 || this.ingredient.name.length == 0) {
+      Alert.danger('Please choose all filters');
+    } else {
+      recipeService
+        .getFilteredRecipes(this.country, this.category, this.ingredient.name)
+        .then((recipe) => (this.filtered_recipes = recipe))
+        .catch((error) => Alert.danger('Error getting filtered recipes: ' + error.message));
+    }
+  }
+
+  removeFilter() {
+    this.country = '';
+    this.category = '';
+    this.ingredient.name = '';
+    this.filtered_recipes = this.recipes;
+    Alert.success('Filters have been removed');
   }
 }
 
 export class RecipeDetails extends Component<{ match: { params: { recipe_id: number } } }> {
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
   steps: Step[] = [];
-  ingredients: Ingredient[] = [];
+  ingredients: RecipeIngredient[] = [];
   portions: number = 1;
 
   render() {
@@ -230,7 +274,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
       .then((recipe) => (this.recipe = recipe))
       .then(() => recipeService.getSteps(this.recipe.recipe_id))
       .then((steps) => (this.steps = steps))
-      .then(() => recipeService.getIngredients(this.recipe.recipe_id))
+      .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
       .then((ingredients) => (this.ingredients = ingredients))
       .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
@@ -323,7 +367,7 @@ export class RecipeAdd extends Component {
           </Row>
           <Row>
             <Column>
-              <Button.Light onClick={() => (this.showIng = 'visible')}>
+              <Button.Light onClick={() => this.openIngredient()}>
                 Continue to add ingredients
               </Button.Light>
             </Column>
@@ -347,7 +391,7 @@ export class RecipeAdd extends Component {
                 {furtherIngredients}
               </Column>
               <Column>
-                <Button.Light onClick={() => this.addIngredient()}>+</Button.Light>
+                <Button.Light onClick={() => this.addIngredient()}>+ </Button.Light>
               </Column>
             </Row>
             <Row>
@@ -391,14 +435,29 @@ export class RecipeAdd extends Component {
     );
   }
 
+  mounted() {}
+
+  openIngredient() {
+    if (this.recipe.name == '' || this.recipe.country == '' || this.recipe.category == '') {
+      Alert.danger('All fields must be filled in order to add ingredient');
+    } else {
+      this.showIng = 'visible';
+    }
+  }
+
   saveRecipe() {
-    Alert.danger('Not yet implemented');
+    recipeService
+      .create(this.recipe.name, this.recipe.country, this.recipe.category)
+      .then((recipe_id) => history.push('/recipes/' + recipe_id))
+      .catch((error) => Alert.danger('Error creating task: ' + error.message));
   }
 
   addIngredient() {
+
     this.setState({
       numIngredientChildren: this.state.numIngredientChildren + 1,
     });
+
   }
 
   addStepInput() {
@@ -739,7 +798,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
             </Button.Success>
           </Column>
           <Column right>
-            <Button.Danger onClick={() => Alert.info('Not yet implemented')}>Delete</Button.Danger>
+            <Button.Danger
+              onClick={() =>
+                recipeService.delete(this.recipe.recipe_id).then(() => history.push('/recipes/'))
+              }
+            >
+              Delete
+            </Button.Danger>
           </Column>
         </Row>
       </>

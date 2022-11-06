@@ -16,12 +16,17 @@ export type Step = {
   recipe_id: number;
 };
 
-export type Ingredient = {
+export type RecipeIngredient = {
   ingredient_id: number;
   name: string;
   recipe_id: number;
   amount_per_person: number;
   measurement_unit: string;
+};
+
+export type Ingredient = {
+  ingredient_id: number;
+  name: string;
 };
 
 export type User = {
@@ -57,9 +62,25 @@ class RecipeService {
   /**
    * Get ingredients with given id
    */
-  getIngredients(recipe_id: number) {
+  getRecipeIngredients(recipe_id: number) {
     return axios
-      .get<Ingredient[]>('/recipes/' + recipe_id + '/ingredients')
+      .get<RecipeIngredient[]>('/recipes/' + recipe_id + '/ingredients')
+      .then((response) => response.data);
+  }
+
+  /**
+   * Get all ingredients in the database
+   */
+  getAllIngredients() {
+    return axios.get<Ingredient[]>('/ingredients').then((response) => response.data);
+  }
+
+  /**
+   * Get filtered recipes
+   */
+  getFilteredRecipes(country: string, category: string, ingredient: string) {
+    return axios
+      .get<Recipe[]>('/recipes/' + country + '/' + category + '/' + ingredient)
       .then((response) => response.data);
   }
 
@@ -72,10 +93,21 @@ class RecipeService {
    *
    * Resolves the newly created task id.
    */
-  create(title: string) {
+  create(name: string, category: string, country: string) {
     return axios
-      .post<{ id: number }>('/tasks', { title: title })
-      .then((response) => response.data.id);
+      .post<{ recipe_id: number }>('/recipes', {
+        name: name,
+        category: category,
+        country: country,
+      })
+      .then((response) => response.data.recipe_id);
+  }
+
+  /**
+   * Slett oppgave med en gitt id.
+   */
+  delete(recipe_id: number) {
+    return axios.delete('/recipes/' + recipe_id).then((response) => response.data);
   }
 }
 
