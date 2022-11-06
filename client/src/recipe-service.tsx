@@ -67,15 +67,22 @@ class RecipeService {
     return axios.put('/recipes', recipe).then((response) => response.data);
   }
 
-  /**
-   * Create new task having the given title.
-   *
-   * Resolves the newly created task id.
-   */
-  create(title: string) {
+  // /**
+  //  * Create new task having the given title.
+  //  *
+  //  * Resolves the newly created task id.
+  //  */
+  // create(title: string) {
+  //   return axios
+  //     .post<{ id: number }>('/tasks', { title: title })
+  //     .then((response) => response.data.id);
+  // }
+
+  PostSpoonacularRecipes(data: Recipe) {
+    console.log(data.name)
     return axios
-      .post<{ id: number }>('/tasks', { title: title })
-      .then((response) => response.data.id);
+      .post<Recipe>('/recipes/', { data })
+      .then((response) => response.data);
   }
 }
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import recipeService from './recipe-service';
 import bcrypt from 'bcrypt';
-
+import { Recipe } from './recipe-service';
 /**
  * Express router containing task methods.
  */
@@ -64,17 +64,22 @@ router.put('/recipes', (request, response) => {
   else response.status(400).send('Propperties are not valid');
 });
 
-// Example request body: { title: "Ny oppgave" }
-// // Example response body: { id: 4 }
-// router.post('/tasks', (request, response) => {
-//   const data = request.body;
-//   if (data && data.title && data.title.length != 0)
-//     taskService
-//       .create(data.title)
-//       .then((id) => response.send({ id: id }))
-//       .catch((error) => response.status(500).send(error));
-//   else response.status(400).send('Missing task title');
-// });
+// Example response body: { id: 4 }
+router.post('/recipes', (request, response) => {
+  var data = request.body;
+  console.log(data);
+  data = JSON.stringify(data).slice(8, -1);
+
+  var recipe = JSON.parse(data);
+  console.log(recipe['name']);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularRecipes(recipe)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error + 'post malæone'));
+  else response.status(666).send('satan');
+});
 
 // router.delete('/tasks/:id', (request, response) => {
 //   taskService

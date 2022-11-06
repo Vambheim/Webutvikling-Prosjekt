@@ -111,6 +111,21 @@ class RecipeService {
     });
   }
 
+  PostSpoonacularRecipes(data: any) {
+    console.log(data['recipe_id'], data['name'], data['category'], data['country']);
+    return new Promise<number>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO recipe SET recipe_id=?, name=?, category=?, country=?',
+        [data['recipe_id'], data['name'], data['category'], data['country']],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+
+          resolve(results.insertId);
+        }
+      );
+    });
+  }
+
   /**
    * Create new recipe.
    *h

@@ -14,6 +14,8 @@ import {
   UserDetails,
   loggedIn,
 } from './recipe-components';
+import RecipeService from './recipe-service';
+import { Recipe } from './recipe-service';
 
 class Menu extends Component {
 
@@ -51,26 +53,41 @@ class Menu extends Component {
       }
     }
 
-    function getRecipesBulk(ids: String) {
-      const getApi = async () => {
+    async function getRecipesBulk(ids: String) {
+      const getApi = async (): Promise<Recipe> => {
 
         const api = await fetch(
-          `https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.REACT_APP_API_KEY}&ids=${ids}?`
+          'https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772'
+
+          //`https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.REACT_APP_API_KEY}&ids=${ids}?`
 
           //`https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=500`
         );
         //${process.env.REACT_APP_API_KEY}
         const data = await api.json();
-        console.log(data[1]["title"]);
+        console.log(data["meals"][0]["strMeal"]);
+
+        const recipe: Recipe = {
+          recipe_id: data['meals'][0]['idMeal'],
+          name: data['meals'][0]['strMeal'],
+          category: data['meals'][0]['strCategory'],
+          country: data['meals'][0]['strArea'],
+        };
+
+
+        console.log(recipe);
+
+        return recipe
       };
 
-      getApi();
+      RecipeService.PostSpoonacularRecipes(await getApi())
     }
     getRecipesBulk(til100)
     // getRecipesBulk(til200)
     // getRecipesBulk(til300)
     // getRecipesBulk(til400)
     // getRecipesBulk(til500)
+
   }
 
   render() {
