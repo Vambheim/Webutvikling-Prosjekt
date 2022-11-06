@@ -399,7 +399,7 @@ export class RecipeAdd extends Component {
   mounted() {}
 
   openIngredient() {
-    if (this.recipe.name == '' && this.recipe.country == '' && this.recipe.category == '') {
+    if (this.recipe.name == '' || this.recipe.country == '' || this.recipe.category == '') {
       Alert.danger('All fields must be filled in order to add ingredient');
     } else {
       this.showIng = 'visible';
