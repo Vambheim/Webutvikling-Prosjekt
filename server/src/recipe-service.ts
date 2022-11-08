@@ -1,5 +1,6 @@
 import pool from './mysql-pool';
 import type { RowDataPacket, ResultSetHeader } from 'mysql2';
+import { useReducer } from 'react';
 
 export type Recipe = {
   recipe_id: number;
@@ -28,6 +29,7 @@ export type Step = {
   recipe_id: number;
 };
 
+//gitt av vi har endret databasen
 export type User = {
   email: string;
   first_name: string;
@@ -39,6 +41,8 @@ class RecipeService {
   /**
    * Get all recipes.
    */
+
+  //endre navn til getAllRecipes?
   getAll() {
     return new Promise<Recipe[]>((resolve, reject) => {
       pool.query('SELECT * FROM recipe', (error, results: RowDataPacket[]) => {
@@ -53,6 +57,7 @@ class RecipeService {
    * Get recipe with given recipe_id.
    */
 
+  //endre navn til getRecipe?
   get(recipe_id: number) {
     return new Promise<Recipe | undefined>((resolve, reject) => {
       pool.query(
@@ -126,6 +131,7 @@ class RecipeService {
     });
   }
 
+  // endre navn til createRecipe
   create(name: string, country: string, category: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
@@ -139,7 +145,7 @@ class RecipeService {
       );
     });
   }
-
+  // endre navn til updateRecipe
   update(recipe: Recipe) {
     return new Promise<void>((resolve, reject) => {
       pool.query(
@@ -149,6 +155,35 @@ class RecipeService {
           if (error) return reject(error);
 
           resolve();
+        }
+      );
+    });
+  }
+
+  userExistsCheck(email: string) {
+    return new Promise<User | undefined>((resolve, reject) => {
+      pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
+        if (error) return reject(error);
+
+        if (results.length > 0) {
+          return reject();
+        } else {
+          return resolve(results[0] as User);
+        }
+      });
+    });
+  }
+
+  createUser(email: string, first_name: string, last_name: string, password: string) {
+    // endre parametere til bare user?
+    return new Promise((resolve, reject) => {
+      pool.query(
+        'INSERT INTO user SET email=?, first_name=?, last_name=?, passwrd=?',
+        [email, first_name, last_name, password],
+        (error, results) => {
+          if (error) return reject(error);
+
+          resolve(results);
         }
       );
     });

@@ -1,10 +1,58 @@
 import express from 'express';
 import recipeService from './recipe-service';
+import bcrypt from 'bcryptjs';
 
 /**
  * Express router containing task methods.
  */
 const router = express.Router();
+var salt = bcrypt.genSaltSync(10);
+
+router.post('/user/add', (request, response) => {
+  const data = request.body;
+  let errors = [];
+
+  //Check required fields
+  if (!data.first_name || !data.last_name || !data.email || !data.password || !data.password2) {
+    errors.push({ msg: 'Please fill in all the fields' });
+    response.send('Please fill in all the fields');
+  }
+
+  //Check passwords match
+  if (data.password != data.password2) {
+    errors.push({ msg: 'Passwords dont match' });
+    response.send('Passwords does not match, please try again');
+  }
+
+  function register() {
+    bcrypt.hash(data.password, salt, (error, hash) => {
+      if (error) throw error;
+      data.password = hash;
+      // Store hash in your password DB.
+      recipeService
+        .createUser(data.email, data.first_name, data.last_name, data.password)
+        .then((rows) => response.send(rows))
+        .catch((error) => response.status(500).send(error));
+      return;
+    });
+  }
+
+  if (errors.length > 0) {
+    response.send('Error found');
+    return;
+  } else {
+    if (data.email.includes('@')) {
+      recipeService
+        .userExistsCheck(data.email)
+        .then(() => register())
+        .catch(() => response.send('Email: ' + data.email + ' is already in use'));
+      return;
+    } else {
+      response.send('Not a valid email address');
+      return;
+    }
+  }
+});
 
 router.get('/recipes', (_request, response) => {
   recipeService
@@ -46,10 +94,11 @@ router.get('/ingredients', (_request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-//Example request body: { country: "China" }
-//Example request body: { category: "Asian" }
-//Example request body: { ingredient: "Carrot" }
+//Example request params: { country: "China" }
+//Example request params: { category: "Asian" }
+//Example request params: { ingredient: "Carrot" }
 router.get('/recipes/:country/:category/:ingredient', (request, response) => {
+  // vurdere å endre sti til "recipes/filter" ? og data = request.body
   const country = String(request.params.country);
   const category = String(request.params.category);
   const ingredient = String(request.params.ingredient);

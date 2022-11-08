@@ -6,7 +6,17 @@ import recipeService, { Recipe, Step, RecipeIngredient, Ingredient, User } from 
 import { createHashHistory } from 'history';
 
 //false as default
-export let loggedIn: boolean = false;
+let loggedIn: boolean = false;
+let currentUser: User = {
+  email: 'test@mail.com',
+  first_name: 'Ola',
+  last_name: 'Nordmann',
+  password: '',
+};
+// halla bror, ta bort testdata når man har henta bruker
+// trenger nok id her ?? usikker på det faktisk
+// Sjekke om man kan lagre dette i local storage, er teit hvis man blir "logga ut" hvis man refresher siden
+
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 /**
  * Renders task list.
@@ -97,7 +107,6 @@ export class RecipeList extends Component {
             </Column>
           </Row>
         </Card>
-
         <Card title="Search">
           <Column>
             <Form.Input
@@ -221,7 +230,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
         </Card>
         <Card title="Ingredients">
           <Row>
-            <Column width={2}>Select amount of portions:</Column>
+            <Column width={2}>Select portions:</Column>
             <Column width={6}>
               <Form.Input
                 type="number"
@@ -282,6 +291,9 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   loggedInCheck() {
     if (!loggedIn) {
       Alert.info(`You have to log in to like this recipe`);
+    } else {
+      Alert.info('Logged in');
+      // add code here
     }
   }
 
@@ -551,25 +563,9 @@ export class ShoppingList extends Component {
 }
 
 export class UserLogIn extends Component {
-  username: string = '';
+  email: string = '';
   password: string = '';
   user: User[] = [];
-
-  // autent(username_input: string, password_input: string) {
-  //   if (this.users.some((user) => user.username === username_input)) {
-  //     console.log('brukenavn godkjent');
-  //   } else {
-  //     Alert.danger('No user with username: ' + username_input + ' found');
-  //   }
-
-  // if (this.users.some((user) => user.password === username_input)) {
-  //   console.log('brukenavn godkjent');
-  // } else {
-  //   Alert.danger('No user with username: ' + username_input + ' found');
-  // }
-
-  // console.log('Username: ' + this.email);
-  // }
 
   render() {
     return (
@@ -577,10 +573,10 @@ export class UserLogIn extends Component {
         <Row>
           <Column width={6}>
             <Form.Input
-              value={this.username}
+              value={this.email}
               type="text"
-              placeholder="Username"
-              onChange={(event) => (this.username = event.currentTarget.value)}
+              placeholder="Email"
+              onChange={(event) => (this.email = event.currentTarget.value)}
             ></Form.Input>
           </Column>
         </Row>
@@ -595,7 +591,7 @@ export class UserLogIn extends Component {
               // Makes it possible to log in with enter as well as with button
               onKeyUp={(event) => {
                 if (event.key == 'Enter') {
-                  console.log(this.username, this.password);
+                  console.log(this.email, this.password);
                 }
               }}
             ></Form.Input>
@@ -621,10 +617,13 @@ export class UserLogIn extends Component {
 
   logIn() {
     Alert.danger('Not yet implemented');
+    // sette den til true etter login har blitt verifisert, og currentUser har blitt fylt med data
+    loggedIn = true;
+    // videre kall på => history.push til "/recipes/user"
   }
 
   clearInput() {
-    this.username = '';
+    this.email = '';
     this.password = '';
   }
 
@@ -634,23 +633,12 @@ export class UserLogIn extends Component {
 }
 
 export class RegisterUser extends Component {
+  user: User = { email: '', first_name: '', last_name: '', password: '' };
   confirm_password: string = '';
-
-  user: User = { username: '', first_name: '', last_name: '', password: '', email: '' };
 
   render() {
     return (
       <Card title="Create your user here">
-        <Row>
-          <Column>
-            <Form.Input
-              type="text"
-              value={this.user.username}
-              placeholder="Username"
-              onChange={(event) => (this.user.username = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
         <Row>
           <Column>
             <Form.Input
@@ -716,39 +704,60 @@ export class RegisterUser extends Component {
   }
 
   createUser() {
-    Alert.danger('Not yet implemented');
-    // Psuedocode
-    // if(nytt_brukernavn finnes i username[]) {
-    //   alert("brukernavn finnes")
-    // } if (epost finnes) {
-    //   alert("epost allerede i bruk, log inn")
-    // } if (!password matches) {
-    // alert("passord matcher ikke")
-    // } else {
-    //   let hash = bcrypt.hash(passord);
-    //   RecipeService.addUser(this.bruker[ passord= hash])
-    // }
+    recipeService
+      .createUser(
+        this.user.email,
+        this.user.first_name,
+        this.user.last_name,
+        this.user.password,
+        this.confirm_password
+      )
+      .then((response) => {
+        if (response.length > 0) {
+          Alert.danger(response);
+        } else {
+          Alert.success('User created, please log in');
+          loggedIn = true;
+          history.push('/recipes/login');
+        }
+      })
+      .catch((error) => console.log('Error creating user: ' + error.message));
   }
 
   clearInput() {
-    this.user = { username: '', first_name: '', last_name: '', password: '', email: '' };
+    this.user = { email: '', first_name: '', last_name: '', password: '' };
     this.confirm_password = '';
   }
 }
 
-export class UserDetails extends Component<{ match: { params: { email: string } } }> {
+export class UserDetails extends Component {
   render() {
     return (
-      <Card title="User details">
+      <Card title={'User details for ' + currentUser.first_name + ' ' + currentUser.last_name}>
         <Row>
-          <Column>Username:</Column>
+          <Column>Welcome to your unique user page</Column>
+        </Row>
+        <Row>
+          <Column>
+            Functions on this page: Go to your shopping list and watch your liked recipes
+          </Column>
+        </Row>
+        <Row>
+          <Column>Username: {currentUser.email}</Column>
         </Row>
       </Card>
     );
   }
 
-  // mounted() {
-  // }
+  mounted() {
+    if (!loggedIn) {
+      history.push('/recipes/login');
+      Alert.info('Please log in');
+    } else {
+      Alert.success('logged in, well done, hardcore backend');
+      // endre beskjed her
+    }
+  }
 }
 //jalla
 

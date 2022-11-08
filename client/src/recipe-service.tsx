@@ -30,11 +30,10 @@ export type Ingredient = {
 };
 
 export type User = {
-  username: string;
+  email: string;
   first_name: string;
   last_name: string;
   password: string;
-  email: string;
 };
 
 class RecipeService {
@@ -84,15 +83,17 @@ class RecipeService {
       .then((response) => response.data);
   }
 
+  //Rename to updateRecipe
   update(recipe: Recipe) {
     return axios.put('/recipes', recipe).then((response) => response.data);
   }
 
   /**
-   * Create new task having the given title.
+   * Create new recipe.
    *
    * Resolves the newly created task id.
    */
+  //endre til createRecipe
   create(name: string, category: string, country: string) {
     return axios
       .post<{ recipe_id: number }>('/recipes', {
@@ -102,6 +103,23 @@ class RecipeService {
       })
       .then((response) => response.data.recipe_id);
   }
+
+  createUser(
+    email: string,
+    first_name: string,
+    last_name: string,
+    password: string,
+    password2: string
+  ) {
+    return axios
+      .post('/user/add', {
+        email: email,
+        first_name: first_name,
+        last_name: last_name,
+        password: password,
+        password2: password2,
+      })
+      .then((response) => response.data);
 
   /**
    * Slett oppgave med en gitt id.
