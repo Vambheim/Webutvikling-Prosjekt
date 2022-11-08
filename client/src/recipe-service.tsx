@@ -11,8 +11,8 @@ export type Recipe = {
 
 export type Step = {
   step_id: number;
-  description: string;
   order_number: number;
+  description: string;
   recipe_id: number;
 };
 
