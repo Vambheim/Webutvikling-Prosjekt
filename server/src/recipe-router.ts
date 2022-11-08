@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { request, response } from 'express';
 import recipeService from './recipe-service';
 import bcrypt from 'bcryptjs';
 
@@ -34,7 +34,7 @@ router.get('/login/:email/:password', (request, response) => {
   }
 });
 
-
+// sjekke over denne når du får tid Thomas, kan ryddes mye tror jeg
 router.post('/user/add', (request, response) => {
   const data = request.body;
   let errors = [];
@@ -102,6 +102,14 @@ router.get('/recipes/:recipe_id/steps', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
   recipeService
     .getSteps(recipe_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+router.get('/recipes/shoppinglist/:user_id', (request, response) => {
+  const user_id = Number(request.params.user_id);
+  recipeService
+    .getShoppingList(user_id)
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
 });

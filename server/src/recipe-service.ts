@@ -1,6 +1,5 @@
 import pool from './mysql-pool';
 import type { RowDataPacket, ResultSetHeader } from 'mysql2';
-import { useReducer } from 'react';
 
 export type Recipe = {
   recipe_id: number;
@@ -29,13 +28,21 @@ export type Step = {
   recipe_id: number;
 };
 
-//gitt av vi har endret databasen
 export type User = {
   user_id: string;
   email: string;
   first_name: string;
   last_name: string;
   password: string;
+};
+
+export type ShoppingListInfo = {
+  shopping_list_id: number;
+  recipe_id: number;
+  ingredient_id: number;
+  name: string; 
+  amount: number;
+  measurement_unit: string;
 };
 
 class RecipeService {
@@ -220,6 +227,38 @@ class RecipeService {
       );
     });
   }
+
+  /**
+   * Get shoppingList with give user_id
+   */
+
+  getShoppingList(user_id: number) {
+    return new Promise<ShoppingListInfo[]>((resolve, reject) => {
+      pool.query(
+        'SELECT shopping_list.shopping_list_id,shopping_list.recipe_id, ingredient.ingredient_id, ingredient.name, shopping_list.amount, shopping_list.measurement_unit FROM shopping_list JOIN user ON shopping_list.user_id=user.user_id JOIN ingredient ON shopping_list.ingredient_id = ingredient.ingredient_id WHERE user.user_id = 6',
+        [user_id],
+        (error, results: RowDataPacket[]) => {
+          resolve(results as ShoppingListInfo[]);
+
+          if (error) return reject(error);
+        }
+      );
+    });
+  }
+
+  // getSteps(recipe_id: number) {
+  //   return new Promise<Step[]>((resolve, reject) => {
+  //     pool.query(
+  //       'SELECT * FROM step WHERE recipe_id = ?',
+  //       [recipe_id],
+  //       (error, results: RowDataPacket[]) => {
+  //         if (error) return reject(error);
+
+  //         resolve(results as Step[]);
+  //       }
+  //     );
+  //   });
+  // }
 
   /**
    * Create new recipe.

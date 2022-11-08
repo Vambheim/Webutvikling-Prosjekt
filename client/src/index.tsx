@@ -68,7 +68,6 @@ class Menu extends Component {
       };
 
       allowed == true ? getApi() : '';
-
     }
     getRecipesBulk(til100);
     // getRecipesBulk(til200)
@@ -82,7 +81,7 @@ class Menu extends Component {
       <NavBar brand="/ˈres.A.PI/ -An app">
         <NavBar.Link to="/recipes">Recipes</NavBar.Link>
         <NavBar.Link to="/recipes/add">Add Recipes</NavBar.Link>
-        <NavBar.Link to="/recipes/cart">Shopping List</NavBar.Link>
+        <NavBar.Link to="/recipes/shoppinglist">Shopping List</NavBar.Link>
         <NavBar.Link to="/recipes/user">{'User 👤'}</NavBar.Link>
       </NavBar>
     );
@@ -104,7 +103,7 @@ ReactDOM.render(
       <Route exact path="/" component={Home} />
       <Route exact path="/recipes" component={RecipeList} />
       <Route exact path="/recipes/add" component={RecipeAdd} />
-      <Route exact path="/recipes/cart" component={ShoppingList} />
+      <Route exact path="/recipes/shoppinglist" component={ShoppingList} />
       <Route exact path="/recipes/login" component={UserLogIn} />
       <Route exact path="/recipes/register" component={RegisterUser} />
       <Route exact path="/recipes/user" component={UserDetails} />

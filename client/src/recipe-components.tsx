@@ -2,11 +2,18 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import recipeService, { Recipe, Step, RecipeIngredient, Ingredient, User } from './recipe-service';
+import recipeService, {
+  Recipe,
+  Step,
+  RecipeIngredient,
+  Ingredient,
+  User,
+  ShoppingListInfo,
+} from './recipe-service';
 import { createHashHistory } from 'history';
 
 //false as default
-let loggedIn: boolean = true;
+let loggedIn: boolean = false;
 let currentUser: User = {
   user_id: 0,
   email: 'test@mail.com',
@@ -486,49 +493,19 @@ export class RecipeAdd extends Component {
 }
 
 export class ShoppingList extends Component {
-  recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
-  ings: string[] = ['Cheese', 'Meat', 'Chicken'];
-  portions: number = 1;
-  ingredients: RecipeIngredient[] = [];
+  shopping_list: ShoppingListInfo[] = [];
+
   render() {
     return (
       <Card title="Shopping List">
-        <Row>
-          <Card title="Ingredients">
-            <Column>Portions: </Column>
-            <Column>
-              <Form.Input // ?
-                type="number"
-                value={this.portions}
-                onChange={(event) => (this.portions = Number(event.currentTarget.value))}
-                min={1}
-                max={50}
-              ></Form.Input>
+        {this.shopping_list.map((list, i) => (
+          <Row key={list.shopping_list_id}>
+            <Column width={3}>{list.amount + ' ' + list.measurement_unit + ' ' + list.name}</Column>
+            <Column width={1}>
+              <Button.Light onClick={() => this.removeOne(i, list.name)} small>
+                &#128465;
+              </Button.Light>
             </Column>
-          </Card>
-        </Row>
-        {this.ingredients.map((ingredients) => (
-          <Row key={ingredients.ingredient_id}>
-            <Column>
-              {ingredients.amount_per_person * this.portions +
-                ' ' +
-                ingredients.measurement_unit +
-                ' ' +
-                ingredients.name}
-            </Column>
-          </Row>
-        ))}
-        {this.ings.map((ing, i) => (
-          <Row key={i}>
-            <Row>
-              <Column width={3}>{ing}</Column>
-              <Column width={1}>
-                <Button.Light onClick={() => this.removeOne(i, ing)} small>
-                  &#128465;
-                </Button.Light>
-              </Column>
-              <Column></Column>
-            </Row>
           </Row>
         ))}
         <Button.Danger
@@ -538,18 +515,33 @@ export class ShoppingList extends Component {
         >
           Reset Shopping List
         </Button.Danger>
+        <Button.Danger
+          onClick={() => {
+            console.log(currentUser.user_id);
+          }}
+        >
+          Test{' '}
+        </Button.Danger>
       </Card>
     );
   }
 
-  // mounted() {
-  // }
+  mounted() {
+    if (!loggedIn) {
+      Alert.info('Log in to use this feature');
+    } else {
+      recipeService
+        .getShoppingList(currentUser.user_id)
+        .then((list) => (this.shopping_list = list))
+        .catch((error) => Alert.danger('Error getting shopping list ' + error.message));
+    }
+  }
 
   removeOne(i: number, ing: string) {
     //må gjøres i database
     if (confirm('Do you want to remove ' + ing + ' from the shopping list?')) {
       // Called when OK is pressed
-      this.ings.splice(i, 1);
+      console.log('okeyy');
     } else {
       console.log('Cancel');
     }
@@ -557,7 +549,6 @@ export class ShoppingList extends Component {
 
   removeAll() {
     //må gjøres i database
-    this.ings = [];
   }
 }
 //

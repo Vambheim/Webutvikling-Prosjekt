@@ -29,6 +29,15 @@ export type Ingredient = {
   name: string;
 };
 
+export type ShoppingListInfo = {
+  shopping_list_id: number;
+  recipe_id: number;
+  ingredient_id: number;
+  name: string;
+  amount: number;
+  measurement_unit: string;
+};
+
 export type User = {
   user_id: number;
   email: string;
@@ -105,8 +114,14 @@ class RecipeService {
       .then((response) => response.data.recipe_id);
   }
 
+  getShoppingList(user_id: number) {
+    return axios
+      .get<ShoppingListInfo[]>('/recipes/shoppinglist/' + user_id)
+      .then((response) => response.data);
+  }
+
   /**
-   * 
+   *
    */
   createUser(
     email: string,
@@ -134,7 +149,7 @@ class RecipeService {
   }
 
   /**
-   * Delete recipe with given id 
+   * Delete recipe with given id
    */
   delete(recipe_id: number) {
     return axios.delete('/recipes/' + recipe_id).then((response) => response.data);
