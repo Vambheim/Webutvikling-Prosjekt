@@ -317,7 +317,7 @@ export class RecipeAdd extends Component {
   // steps: Step[] = [];
   step: Step = { step_id: 0, order_number: 0, description: '', recipe_id: 0 };
   // ingredients: Ingredient[] = [];
-  ingredient: Ingredient = {
+  ingredient: RecipeIngredient = {
     ingredient_id: 0,
     name: '',
     recipe_id: 0,
@@ -472,11 +472,9 @@ export class RecipeAdd extends Component {
   }
 
   addIngredient() {
-
     this.setState({
       numIngredientChildren: this.state.numIngredientChildren + 1,
     });
-
   }
 
   addStepInput() {
@@ -498,7 +496,7 @@ export class ShoppingList extends Component {
           <Card title="Ingredients">
             <Column>Portions: </Column>
             <Column>
-              <Form.Input
+              <Form.Input // ?
                 type="number"
                 value={this.portions}
                 onChange={(event) => (this.portions = Number(event.currentTarget.value))}

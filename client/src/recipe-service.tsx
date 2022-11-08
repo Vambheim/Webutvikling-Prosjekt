@@ -120,6 +120,7 @@ class RecipeService {
         password2: password2,
       })
       .then((response) => response.data);
+  }
 
   /**
    * Slett oppgave med en gitt id.
