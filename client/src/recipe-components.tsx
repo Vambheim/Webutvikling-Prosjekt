@@ -299,7 +299,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
       console.log(this.recipe.recipe_id);
       recipeService
         .likeRecipe(currentUser.user_id, this.recipe.recipe_id)
-        .then((response) => Alert.success(response.message))
+        .then((response) => Alert.success(response))
         // alt kræsjer hvis man får en annen sql-feil en at man ikke kan ha flere rader med samme nøkkel
         .catch((error) => Alert.danger(error.response.data));
     }
@@ -620,6 +620,7 @@ export class UserLogIn extends Component {
       .then(() => Alert.success('Logged in as ' + currentUser.email))
       .then(() => history.push('/recipes/user'))
       .catch((error) => Alert.danger(error.response.data));
+    //denne fungere ikke hvis man har tomt passord
   }
 
   clearInput() {
