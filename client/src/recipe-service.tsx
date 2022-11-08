@@ -116,7 +116,7 @@ class RecipeService {
 
   getShoppingList(user_id: number) {
     return axios
-      .get<ShoppingListInfo[]>('/recipes/shoppinglist/' + user_id)
+      .get<ShoppingListInfo[]>('/shoppinglist/' + user_id)
       .then((response) => response.data);
   }
 
@@ -153,6 +153,20 @@ class RecipeService {
    */
   delete(recipe_id: number) {
     return axios.delete('/recipes/' + recipe_id).then((response) => response.data);
+  }
+
+  /**
+   * Delete shoppingList with given user
+   */
+  deleteShoppingList(user_id: number) {
+    return axios.delete('/shoppinglist' + user_id).then((response) => response.data);
+  }
+
+  /**
+   * Delete item in shopping list with give shopping_list_id
+   */
+  deleteItemShoppingList(shopping_list_id: number) {
+    return axios.delete('/shoppinglist' + shopping_list_id).then((response) => response.data);
   }
 }
 

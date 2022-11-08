@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 const router = express.Router();
 var salt = bcrypt.genSaltSync(10);
 
+///////////////////USER
 router.get('/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
   const password = String(request.params.password);
@@ -81,6 +82,7 @@ router.post('/user/add', (request, response) => {
   }
 });
 
+///////////////////RECIPES
 router.get('/recipes', (_request, response) => {
   recipeService
     .getAll()
@@ -106,43 +108,12 @@ router.get('/recipes/:recipe_id/steps', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-router.get('/recipes/shoppinglist/:user_id', (request, response) => {
-  const user_id = Number(request.params.user_id);
-  recipeService
-    .getShoppingList(user_id)
-    .then((rows) => response.send(rows))
-    .catch((error) => response.status(500).send(error));
-});
-
 router.get('/recipes/:recipe_id/ingredients', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
   recipeService
     .getIngredientsToRecipe(recipe_id)
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
-});
-
-router.get('/ingredients', (_request, response) => {
-  recipeService
-    .getAllIngredients()
-    .then((rows) => response.send(rows))
-    .catch((error) => response.status(500).send(error));
-});
-
-//Example request params: { country: "China" }
-//Example request params: { category: "Asian" }
-//Example request params: { ingredient: "Carrot" }
-router.get('/recipes/:country/:category/:ingredient', (request, response) => {
-  // vurdere å endre sti til "recipes/filter" ? og data = request.body
-  const country = String(request.params.country);
-  const category = String(request.params.category);
-  const ingredient = String(request.params.ingredient);
-  if (country && category && ingredient) {
-    recipeService
-      .getFilteredRecipe(country, category, ingredient)
-      .then((rows) => response.send(rows))
-      .catch((error) => response.status(500).send(error));
-  }
 });
 
 router.post('/recipes', (request, response) => {
@@ -183,6 +154,56 @@ router.delete('/recipes/:id', (request, response) => {
   recipeService
     .delete(Number(request.params.id))
     .then((_result) => response.send())
+    .catch((error) => response.status(500).send(error));
+});
+
+//////////////////INGREDIENTS
+router.get('/ingredients', (_request, response) => {
+  recipeService
+    .getAllIngredients()
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+///////////////////FILTER
+//Example request params: { country: "China" }
+//Example request params: { category: "Asian" }
+//Example request params: { ingredient: "Carrot" }
+router.get('/recipes/:country/:category/:ingredient', (request, response) => {
+  // vurdere å endre sti til "recipes/filter" ? og data = request.body
+  const country = String(request.params.country);
+  const category = String(request.params.category);
+  const ingredient = String(request.params.ingredient);
+  if (country && category && ingredient) {
+    recipeService
+      .getFilteredRecipe(country, category, ingredient)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  }
+});
+
+/////////////////////SHOPPING LIST
+router.get('/shoppinglist/:user_id', (request, response) => {
+  const user_id = Number(request.params.user_id);
+  recipeService
+    .getShoppingList(user_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+router.delete('/shoppinglist/:user_id', (request, response) => {
+  const user_id = Number(request.params.user_id);
+  recipeService
+    .deleteShoppingList(user_id)
+    .then((_results) => response.send('Shopping list deleted'))
+    .catch((error) => response.status(500).send(error));
+});
+
+router.delete('/shoppinglist/:shopping_list_id', (request, response) => {
+  const shopping_list_id = Number(request.params.shopping_list_id);
+  recipeService
+    .deleteItemShoppingList(shopping_list_id)
+    .then((_results) => response.send('Item in shopping list deleted'))
     .catch((error) => response.status(500).send(error));
 });
 
