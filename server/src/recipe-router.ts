@@ -8,6 +8,33 @@ import bcrypt from 'bcryptjs';
 const router = express.Router();
 var salt = bcrypt.genSaltSync(10);
 
+router.get('/login/:email/:password', (request, response) => {
+  const email = String(request.params.email);
+  const password = String(request.params.password);
+  // flere sjekker ?
+  //kanskje typeof = string ?
+  if (email.length > 0 && password.length > 0) {
+    recipeService
+      .getUser(email)
+      .then((user) => {
+        if (bcrypt.compareSync(password, String(user.password))) {
+          response.send(user);
+          return;
+        } else {
+          response.status(400).send('Incorrect Email and/or Password! ');
+          return;
+        }
+      })
+      .catch((error) => {
+        response.status(500).send(error);
+        return;
+      });
+  } else {
+    response.status(400).send('Please enter email and password');
+  }
+});
+
+
 router.post('/user/add', (request, response) => {
   const data = request.body;
   let errors = [];
@@ -38,7 +65,7 @@ router.post('/user/add', (request, response) => {
   }
 
   if (errors.length > 0) {
-    response.send('Error found');
+    response.send('Error found, please try again');
     return;
   } else {
     if (data.email.includes('@')) {

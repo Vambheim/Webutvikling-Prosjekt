@@ -30,6 +30,7 @@ export type Ingredient = {
 };
 
 export type User = {
+  user_id: number;
   email: string;
   first_name: string;
   last_name: string;
@@ -104,6 +105,9 @@ class RecipeService {
       .then((response) => response.data.recipe_id);
   }
 
+  /**
+   * 
+   */
   createUser(
     email: string,
     first_name: string,
@@ -123,7 +127,14 @@ class RecipeService {
   }
 
   /**
-   * Slett oppgave med en gitt id.
+   * Log in with email and password
+   */
+  logIn(email: string, password: string) {
+    return axios.get<User>('/login/' + email + '/' + password).then((response) => response.data);
+  }
+
+  /**
+   * Delete recipe with given id 
    */
   delete(recipe_id: number) {
     return axios.delete('/recipes/' + recipe_id).then((response) => response.data);

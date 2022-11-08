@@ -6,8 +6,9 @@ import recipeService, { Recipe, Step, RecipeIngredient, Ingredient, User } from 
 import { createHashHistory } from 'history';
 
 //false as default
-let loggedIn: boolean = false;
+let loggedIn: boolean = true;
 let currentUser: User = {
+  user_id: 0,
   email: 'test@mail.com',
   first_name: 'Ola',
   last_name: 'Nordmann',
@@ -559,11 +560,20 @@ export class ShoppingList extends Component {
     this.ings = [];
   }
 }
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 export class UserLogIn extends Component {
   email: string = '';
   password: string = '';
-  user: User[] = [];
+  // user: User = { user_id: 0, email: '', first_name: '', last_name: '', password: '' };
 
   render() {
     return (
@@ -589,7 +599,7 @@ export class UserLogIn extends Component {
               // Makes it possible to log in with enter as well as with button
               onKeyUp={(event) => {
                 if (event.key == 'Enter') {
-                  console.log(this.email, this.password);
+                  this.logIn();
                 }
               }}
             ></Form.Input>
@@ -611,13 +621,16 @@ export class UserLogIn extends Component {
       </Card>
     );
   }
-  // mounted() {}
+  //mounted() {}
 
   logIn() {
-    Alert.danger('Not yet implemented');
-    // sette den til true etter login har blitt verifisert, og currentUser har blitt fylt med data
-    loggedIn = true;
-    // videre kall på => history.push til "/recipes/user"
+    recipeService
+      .logIn(this.email, this.password)
+      .then((user) => (currentUser = user))
+      .then(() => (loggedIn = true))
+      .then(() => Alert.success('Logged in as ' + currentUser.email))
+      .then(() => history.push('/recipes/user'))
+      .catch((error) => Alert.danger(error.response.data));
   }
 
   clearInput() {
@@ -631,7 +644,7 @@ export class UserLogIn extends Component {
 }
 
 export class RegisterUser extends Component {
-  user: User = { email: '', first_name: '', last_name: '', password: '' };
+  user: User = { user_id: 0, email: '', first_name: '', last_name: '', password: '' };
   confirm_password: string = '';
 
   render() {
@@ -723,7 +736,7 @@ export class RegisterUser extends Component {
   }
 
   clearInput() {
-    this.user = { email: '', first_name: '', last_name: '', password: '' };
+    this.user = { user_id: 0, email: '', first_name: '', last_name: '', password: '' };
     this.confirm_password = '';
   }
 }
@@ -731,19 +744,27 @@ export class RegisterUser extends Component {
 export class UserDetails extends Component {
   render() {
     return (
-      <Card title={'User details for ' + currentUser.first_name + ' ' + currentUser.last_name}>
-        <Row>
-          <Column>Welcome to your unique user page</Column>
-        </Row>
-        <Row>
-          <Column>
-            Functions on this page: Go to your shopping list and watch your liked recipes
-          </Column>
-        </Row>
-        <Row>
-          <Column>Username: {currentUser.email}</Column>
-        </Row>
-      </Card>
+      <>
+        <Card title={'User details for ' + currentUser.first_name + ' ' + currentUser.last_name}>
+          <Row>
+            <Column>Welcome to your unique user page</Column>
+          </Row>
+          <Row>
+            <Column>
+              Functions on this page: Go to your shopping list and watch your liked recipes
+            </Column>
+          </Row>
+          <Row>
+            <Column>Email: {currentUser.email}</Column>
+          </Row>
+          <Row>
+            <Column>
+              <Button.Danger onClick={() => this.logOut()}>Log out</Button.Danger>
+            </Column>
+          </Row>
+        </Card>
+        <Card title="Liked recipes"></Card>
+      </>
     );
   }
 
@@ -751,13 +772,15 @@ export class UserDetails extends Component {
     if (!loggedIn) {
       history.push('/recipes/login');
       Alert.info('Please log in');
-    } else {
-      Alert.success('logged in, well done, hardcore backend');
-      // endre beskjed her
     }
   }
+
+  logOut() {
+    loggedIn = false;
+    history.push('/recipes');
+    currentUser = { user_id: 0, email: '', first_name: '', last_name: '', password: '' };
+  }
 }
-//jalla
 
 /**
  * Renders form to edit a specific task.
