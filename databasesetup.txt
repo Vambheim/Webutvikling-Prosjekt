@@ -48,3 +48,77 @@ FOREIGN KEY(shopping_list_id) REFERENCES shopping_list(shopping_list_id) ON DELE
 
 
 INSERT INTO:
+
+
+
+NOTATER:
+**************Shopping List*********************
+
+// trenger man shopping_list tabellen?
+// må vi legge til amount per person i shopping_list_recipe_ingredient
+// legge til user_id som fremmednøkkel i 
+
+select ingredient.name (lurer på om vi skal ta med amount per person eller om det skal hentes fra annet sted)
+shopping-list join shopping_list_recipe_ingredient 
+ON shopping_list_id 
+join recipe_ingredient on ingredient_id
+join ingredient on ingredient_id
+
+
+//gitt endringene over
+INSERT INTO shopping_list_recipe_ingredient VALUES ()
+recipe_id= this.match.props.params 
+user_id = hente fra global currentUser 
+ingredient_id = henter fra row id??
+amount = amount per person * porsjoner valgt i recipe_details
+
+
+Utskirft: 
+- Liste over alle ingredients gitt user_id i currentUser
+- Ha med hvor mye man trenger
+
+Funksjonalitet: 
+- Slette ingredienser fra lista
+- Tømme hele listen 
+- Ikke noe mer  
+
+
+**************Hjemside**************************
+Funksjonalitet:
+- Liste opp populære oppskrifter
+-- De med fleste likes knyttet til seg, orderby count(likes), group by Recipe_id
+- Liste opp de nyeste oppskriftene, order by recipe_id desc 
+
+
+
+************ Recipe List ********************
+Funksjonalitet:
+- Filter som gjør at man kan søke på flere ingredienser (si maks 3) og se om det er en rett som passer
+-- MINIMUM KRAV
+- Liste opp nye oppskrifter? enten her eller på hjemsiden 
+
+
+**************Recipe Details************''
+Funksjonalitet:
+- Liste opp 3 lignende oppskrifter
+-- Komme med anbefaling, som f.eks. Vi tror du også vil like disse oppskriftene
+--- Finne en sammenheng, kan f.eks. være tre random med likt land og kategori?
+
+
+*********** My user ******************
+Funksjonalitet: 
+- Se likte oppskrifter
+- Gå til shopping_list
+- Logge ut
+-- currentUser= {tom}
+
+
+Se likte oppskrifter: 
+
+GET: 
+SELECT recipe.name 
+FROM like_information JOIN recipe ON like_information.recipe_id = recipe.recipe_id
+WHERE like_information.likes = TRUE 
+AND like_information.user_id = ? 
+? = currentUser.user_id; 
+

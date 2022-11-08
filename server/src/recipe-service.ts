@@ -31,6 +31,7 @@ export type Step = {
 
 //gitt av vi har endret databasen
 export type User = {
+  user_id: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -175,7 +176,7 @@ class RecipeService {
   }
 
   createUser(email: string, first_name: string, last_name: string, password: string) {
-    // endre parametere til bare user?
+    // endre parametere til bare user? ^
     return new Promise((resolve, reject) => {
       pool.query(
         'INSERT INTO user SET email=?, first_name=?, last_name=?, passwrd=?',
@@ -186,6 +187,20 @@ class RecipeService {
           resolve(results);
         }
       );
+    });
+  }
+
+  getUser(email: string) {
+    return new Promise<User>((resolve, reject) => {
+      pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
+        if (error) return reject(error);
+
+        if (results.length > 0) {
+          resolve(results[0] as User);
+        } else {
+          reject('No user found');
+        }
+      });
     });
   }
 
