@@ -14,7 +14,7 @@ let currentUser: User = {
   password: '',
 };
 // halla bror, ta bort testdata når man har henta bruker
-// trenger nok id her
+// trenger nok id her ?? usikker på det faktisk
 // Sjekke om man kan lagre dette i local storage, er teit hvis man blir "logga ut" hvis man refresher siden
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
