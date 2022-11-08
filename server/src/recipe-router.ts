@@ -144,6 +144,13 @@ router.put('/recipes', (request, response) => {
   else response.status(400).send('Propperties are not valid');
 });
 
+router.delete('/recipes/:id', (request, response) => {
+  recipeService
+    .delete(Number(request.params.id))
+    .then((_result) => response.send())
+    .catch((error) => response.status(500).send(error));
+});
+
 // Example request body: { title: "Ny oppgave" }
 // // Example response body: { id: 4 }
 // router.post('/tasks', (request, response) => {

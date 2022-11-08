@@ -304,16 +304,50 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   addIngToShoppingList() {
     Alert.danger('Not yet implemented');
   }
+
+  saveRecipe() {
+    recipeService
+      .create(this.recipe.name, this.recipe.country, this.recipe.category)
+      .then((recipe_id) => history.push('/recipes/' + recipe_id))
+      .catch((error) => Alert.danger('Error creating task: ' + error.message));
+  }
 }
 
 export class RecipeAdd extends Component {
-  steps: Step[] = [];
-  ingredients: Ingredient[] = [];
+  // steps: Step[] = [];
+  step: Step = { step_id: 0, order_number: 0, description: '', recipe_id: 0 };
+  // ingredients: Ingredient[] = [];
+  ingredient: Ingredient = {
+    ingredient_id: 0,
+    name: '',
+    recipe_id: 0,
+    amount_per_person: 0,
+    measurement_unit: '',
+  };
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
   showIng: string = 'hidden';
   showSteps: string = 'hidden';
+  state = { numStepChildren: 2, numIngredientChildren: 2 };
 
   render() {
+    const furtherSteps = [];
+
+    for (let stepNumber = 2; stepNumber < this.state.numStepChildren; stepNumber += 1) {
+      furtherSteps.push(<Form.Input type="text" placeholder={`Step ${stepNumber}`}></Form.Input>);
+    }
+
+    const furtherIngredients = [];
+
+    for (
+      let ingredientNumber = 2;
+      ingredientNumber < this.state.numIngredientChildren;
+      ingredientNumber += 1
+    ) {
+      furtherIngredients.push(
+        <Form.Input type="text" placeholder={`Ingredient ${ingredientNumber}`}></Form.Input>
+      );
+    }
+
     return (
       <>
         <Card title="Add Recipe">
@@ -367,7 +401,13 @@ export class RecipeAdd extends Component {
           <Card title="Add ingredients">
             <Row>
               <Column width={2}>
-                <Form.Input type="text" placeholder={'Ingredient'}></Form.Input>
+                <Form.Input
+                  value={this.ingredient.name}
+                  type="text"
+                  placeholder="Ingredient 1"
+                  onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
+                ></Form.Input>
+                {furtherIngredients}
               </Column>
               <Column>
                 <Button.Light onClick={() => this.addIngredient()}>+ </Button.Light>
@@ -391,10 +431,16 @@ export class RecipeAdd extends Component {
           <Card title="Add steps">
             <Row>
               <Column width={2}>
-                <Form.Input placeholder="Step"></Form.Input>
+                <Form.Input
+                  value={this.step.description}
+                  type="text"
+                  placeholder="Step 1"
+                  onChange={(event) => (this.step.description = event.currentTarget.value)}
+                ></Form.Input>
+                {furtherSteps}
               </Column>
               <Column>
-                <Button.Light onClick={() => this.addStep()}>+</Button.Light>
+                <Button.Light onClick={() => this.addStepInput()}>+</Button.Light>
               </Column>
             </Row>
             <Row>
@@ -411,7 +457,7 @@ export class RecipeAdd extends Component {
   mounted() {}
 
   openIngredient() {
-    if (this.recipe.name == '' && this.recipe.country == '' && this.recipe.category == '') {
+    if (this.recipe.name == '' || this.recipe.country == '' || this.recipe.category == '') {
       Alert.danger('All fields must be filled in order to add ingredient');
     } else {
       this.showIng = 'visible';
@@ -426,23 +472,53 @@ export class RecipeAdd extends Component {
   }
 
   addIngredient() {
-    // TODO
-    // Åpne nytt tekstfelt
-    // Lagre når alle ingredienser er lagret
-    Alert.danger('ikke implementert');
+
+    this.setState({
+      numIngredientChildren: this.state.numIngredientChildren + 1,
+    });
+
   }
 
-  addStep() {
-    Alert.danger('Not yet implemented');
+  addStepInput() {
+    this.setState({
+      numStepChildren: this.state.numStepChildren + 1,
+    });
   }
 }
 
 export class ShoppingList extends Component {
+  recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
   ings: string[] = ['Cheese', 'Meat', 'Chicken'];
-
+  portions: number = 1;
+  ingredients: RecipeIngredient[] = [];
   render() {
     return (
       <Card title="Shopping List">
+        <Row>
+          <Card title="Ingredients">
+            <Column>Portions: </Column>
+            <Column>
+              <Form.Input
+                type="number"
+                value={this.portions}
+                onChange={(event) => (this.portions = Number(event.currentTarget.value))}
+                min={1}
+                max={50}
+              ></Form.Input>
+            </Column>
+          </Card>
+        </Row>
+        {this.ingredients.map((ingredients) => (
+          <Row key={ingredients.ingredient_id}>
+            <Column>
+              {ingredients.amount_per_person * this.portions +
+                ' ' +
+                ingredients.measurement_unit +
+                ' ' +
+                ingredients.name}
+            </Column>
+          </Row>
+        ))}
         {this.ings.map((ing, i) => (
           <Row key={i}>
             <Row>
@@ -765,7 +841,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
             </Button.Success>
           </Column>
           <Column right>
-            <Button.Danger onClick={() => Alert.info('Not yet implemented')}>Delete</Button.Danger>
+            <Button.Danger
+              onClick={() =>
+                recipeService.delete(this.recipe.recipe_id).then(() => history.push('/recipes/'))
+              }
+            >
+              Delete
+            </Button.Danger>
           </Column>
         </Row>
       </>

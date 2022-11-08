@@ -11,8 +11,8 @@ export type Recipe = {
 
 export type Step = {
   step_id: number;
-  description: string;
   order_number: number;
+  description: string;
   recipe_id: number;
 };
 
@@ -120,6 +120,12 @@ class RecipeService {
         password2: password2,
       })
       .then((response) => response.data);
+
+  /**
+   * Slett oppgave med en gitt id.
+   */
+  delete(recipe_id: number) {
+    return axios.delete('/recipes/' + recipe_id).then((response) => response.data);
   }
 }
 

@@ -190,6 +190,23 @@ class RecipeService {
   }
 
   /**
+   * Delete recipe with given id.
+   */
+  delete(recipe_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'DELETE FROM recipe WHERE recipe_id = ?',
+        [recipe_id],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+          if (results.affectedRows == 0) reject(new Error('No row deleted'));
+          resolve();
+        }
+      );
+    });
+  }
+
+  /**
    * Create new recipe.
    *h
    * Resolves the newly created recipe_id.

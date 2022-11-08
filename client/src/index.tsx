@@ -67,7 +67,8 @@ class Menu extends Component {
         console.log(data[1]['title']);
       };
 
-      // allowed == true ? getApi() : return
+      allowed == true ? getApi() : '';
+
     }
     getRecipesBulk(til100);
     // getRecipesBulk(til200)
