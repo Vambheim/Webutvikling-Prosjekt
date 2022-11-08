@@ -155,7 +155,7 @@ class RecipeService {
   }
 
   /**
-   * Delete task with given id.
+   * Delete recipe with given id.
    */
   delete(recipe_id: number) {
     return new Promise<void>((resolve, reject) => {

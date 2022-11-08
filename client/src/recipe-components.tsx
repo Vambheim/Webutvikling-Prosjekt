@@ -221,7 +221,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
         </Card>
         <Card title="Ingredients">
           <Row>
-            <Column width={2}>Select portions jajja:</Column>
+            <Column width={2}>Select amount of portions:</Column>
             <Column width={6}>
               <Form.Input
                 type="number"
@@ -291,6 +291,13 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
 
   addIngToShoppingList() {
     Alert.danger('Not yet implemented');
+  }
+
+  saveRecipe() {
+    recipeService
+      .create(this.recipe.name, this.recipe.country, this.recipe.category)
+      .then((recipe_id) => history.push('/recipes/' + recipe_id))
+      .catch((error) => Alert.danger('Error creating task: ' + error.message));
   }
 }
 
@@ -426,11 +433,38 @@ export class RecipeAdd extends Component {
 }
 
 export class ShoppingList extends Component {
+  recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
   ings: string[] = ['Cheese', 'Meat', 'Chicken'];
-
+  portions: number = 1;
+  ingredients: RecipeIngredient[] = [];
   render() {
     return (
       <Card title="Shopping List">
+        <Row>
+          <Card title="Ingredients">
+            <Column>Portions: </Column>
+            <Column>
+              <Form.Input
+                type="number"
+                value={this.portions}
+                onChange={(event) => (this.portions = Number(event.currentTarget.value))}
+                min={1}
+                max={50}
+              ></Form.Input>
+            </Column>
+          </Card>
+        </Row>
+        {this.ingredients.map((ingredients) => (
+          <Row key={ingredients.ingredient_id}>
+            <Column>
+              {ingredients.amount_per_person * this.portions +
+                ' ' +
+                ingredients.measurement_unit +
+                ' ' +
+                ingredients.name}
+            </Column>
+          </Row>
+        ))}
         {this.ings.map((ing, i) => (
           <Row key={i}>
             <Row>
