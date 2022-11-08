@@ -35,6 +35,19 @@ export type User = {
   password: string;
 };
 
+export type shoppingList = {
+  shopping_list_id: number;
+  user_id: number;
+};
+
+/* Ikke i bruk enda
+export type shoppingListRecipeIngredient = {
+  ingredient_id: number;
+  recipe_id: number;
+  shopping_list_id: number;
+};
+*/
+
 class RecipeService {
   /**
    * Get all recipes.
@@ -56,7 +69,7 @@ class RecipeService {
   get(recipe_id: number) {
     return new Promise<Recipe | undefined>((resolve, reject) => {
       pool.query(
-        'SELECT * FROM recipe WHERE recipe_id = ?',
+        'SELECT * FROM recipe WHERE recipe_id = ? ',
         [recipe_id],
         (error, results: RowDataPacket[]) => {
           if (error) return reject(error);
@@ -126,6 +139,7 @@ class RecipeService {
     });
   }
 
+  // Create recipe
   create(name: string, country: string, category: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
@@ -166,6 +180,43 @@ class RecipeService {
           if (error) return reject(error);
           if (results.affectedRows == 0) reject(new Error('No row deleted'));
           resolve();
+        }
+      );
+    });
+  }
+
+  /*   
+  create(name: string, country: string, category: string) {
+    return new Promise<number>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO recipe SET name = ?, category = ?,  country = ?',
+        [name, category, country],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+
+          resolve(results.insertId);
+        }
+      );
+    });
+  }
+  */
+
+  createShoppingList(
+    shopping_list__id: number,
+    recipe_id: number,
+    ingredient_id: number,
+    user_id: number,
+    amount_per_person: string,
+    measurement_unit: string
+  ) {
+    return new Promise<number>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO shopping_list SET shopping_list_id = ?, recipe_id = ?, ingredient_id = ?, user_id = ?, amount_per_person = ? , measurement_unit = ?',
+        [shopping_list__id, recipe_id, ingredient_id, user_id, amount_per_person, measurement_unit],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+
+          resolve(results.insertId);
         }
       );
     });

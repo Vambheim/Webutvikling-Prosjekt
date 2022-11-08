@@ -2,7 +2,14 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import recipeService, { Recipe, Step, RecipeIngredient, Ingredient, User } from './recipe-service';
+import recipeService, {
+  Recipe,
+  Step,
+  RecipeIngredient,
+  Ingredient,
+  User,
+  ShoppingListInfo,
+} from './recipe-service';
 import { createHashHistory } from 'history';
 
 //false as default
@@ -187,6 +194,14 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   steps: Step[] = [];
   ingredients: RecipeIngredient[] = [];
   portions: number = 1;
+  shoppingList: ShoppingListInfo = {
+    shopping_list_id: 0,
+    recipe_id: 0,
+    ingredient_id: 0,
+    user_id: 0,
+    amount_per_person: '',
+    measurement_unit: '',
+  };
 
   render() {
     return (
@@ -290,8 +305,27 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   }
 
   addIngToShoppingList() {
-    Alert.danger('Not yet implemented');
+    recipeService
+      .createShoppingList(
+        this.shoppingList.shopping_list_id,
+        this.shoppingList.recipe_id,
+        this.shoppingList.ingredient_id,
+        this.shoppingList.user_id,
+        this.shoppingList.amount_per_person,
+        this.shoppingList.measurement_unit
+      )
+      .then((shopping_list_id) => (this.shoppingList.shopping_list_id = shopping_list_id))
+      .catch((error) => Alert.danger('Error creating shoppinglist' + error.message));
   }
+
+  /* 
+recipeService.getAll().then((recipes) => (this.recipes = recipes));
+
+    recipeService
+      .get(this.props.match.params.id)
+      .then((recipe) => (this.recipe = recipe))
+      .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
+*/
 
   saveRecipe() {
     recipeService
@@ -460,11 +494,9 @@ export class RecipeAdd extends Component {
   }
 
   addIngredient() {
-
     this.setState({
       numIngredientChildren: this.state.numIngredientChildren + 1,
     });
-
   }
 
   addStepInput() {
@@ -474,11 +506,14 @@ export class RecipeAdd extends Component {
   }
 }
 
-export class ShoppingList extends Component {
+export class ShoppingList extends Component<{
+  match: { params: { shopping_list_id: number } };
+}> {
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
   ings: string[] = ['Cheese', 'Meat', 'Chicken'];
   portions: number = 1;
   ingredients: RecipeIngredient[] = [];
+  shoppingList: ShoppingListInfo[] = [];
   render() {
     return (
       <Card title="Shopping List">
@@ -495,6 +530,13 @@ export class ShoppingList extends Component {
               ></Form.Input>
             </Column>
           </Card>
+        </Row>
+        <Row>
+          {this.shoppingList.map((shoppingList) => (
+            <Row key={shoppingList.ingredient_id}>
+              <Column>{shoppingList.ingredient_id}</Column>
+            </Row>
+          ))}
         </Row>
         {this.ingredients.map((ingredients) => (
           <Row key={ingredients.ingredient_id}>

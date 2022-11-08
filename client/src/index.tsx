@@ -64,7 +64,6 @@ class Menu extends Component {
       };
 
       allowed == true ? getApi() : '';
-
     }
     getRecipesBulk(til100);
     // getRecipesBulk(til200)

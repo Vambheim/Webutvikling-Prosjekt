@@ -37,6 +37,15 @@ export type User = {
   email: string;
 };
 
+export type ShoppingListInfo = {
+  shopping_list_id: number;
+  recipe_id: number;
+  ingredient_id: number;
+  user_id: number;
+  amount_per_person: string;
+  measurement_unit: string;
+};
+
 class RecipeService {
   /**
    * Get recipe with given id.
@@ -108,6 +117,26 @@ class RecipeService {
    */
   delete(recipe_id: number) {
     return axios.delete('/recipes/' + recipe_id).then((response) => response.data);
+  }
+
+  createShoppingList(
+    shopping_list_id: number,
+    recipe_id: number,
+    ingredient_id: number,
+    user_id: number,
+    amount_per_person: string,
+    measurement_unit: string
+  ) {
+    return axios
+      .post<{ shopping_list_id: number }>('/recipes/cart', {
+        shopping_list_id: shopping_list_id,
+        recipe_id: recipe_id,
+        ingredient_id: ingredient_id,
+        user_id: user_id,
+        amount_per_person: amount_per_person,
+        measurement_unit: measurement_unit,
+      })
+      .then((response) => response.data.shopping_list_id);
   }
 }
 

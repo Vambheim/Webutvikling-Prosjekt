@@ -102,6 +102,22 @@ router.delete('/recipes/:id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+// Funksjon for å opprette handleliste
+router.post('/recipes/cart', (request, response) => {
+  const data = request.body;
+  recipeService
+    .createShoppingList(
+      data.shopping_list__id,
+      data.recipe_id,
+      data.ingredient_id,
+      data.user_id,
+      data.amount_per_person,
+      data.measurement_unit
+    )
+    .then((shopping_list_id) => response.send({ shopping_list_id: shopping_list_id }))
+    .catch((error) => response.status(500).send(error));
+});
+
 // Example request body: { title: "Ny oppgave" }
 // // Example response body: { id: 4 }
 // router.post('/tasks', (request, response) => {
