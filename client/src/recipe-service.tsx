@@ -156,17 +156,26 @@ class RecipeService {
   }
 
   /**
-   * Delete shoppingList with given user
+   * Delete shoppingList with given user_id
    */
   deleteShoppingList(user_id: number) {
     return axios.delete('/shoppinglist' + user_id).then((response) => response.data);
   }
 
   /**
-   * Delete item in shopping list with give shopping_list_id
+   * Delete item in shopping list with given shopping_list_id
    */
   deleteItemShoppingList(shopping_list_id: number) {
     return axios.delete('/shoppinglist' + shopping_list_id).then((response) => response.data);
+  }
+
+  /**
+   * Like a recipe with given recipe_id when logged in with user_id
+   */
+  likeRecipe(user_id: number, recipe_id: number) {
+    return axios
+      .post('/recipes/like', { user_id: user_id, recipe_id: recipe_id })
+      .then((response) => response.data);
   }
 }
 

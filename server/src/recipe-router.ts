@@ -157,6 +157,26 @@ router.delete('/recipes/:id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+router.post('/recipes/like', (request, response) => {
+  const data = request.body;
+  if (data && data.user_id != 0 && data.recipe_id != 0) {
+    recipeService
+      .likeRecipe(data.user_id, data.recipe_id)
+      .then((_results) => response.send('Recipe was liked'))
+      .catch((error) => response.status(500).send(error));
+  } else response.status(400).send('wrong parameters');
+});
+
+// router.post('/recipes', (request, response) => {
+//   const data = request.body;
+//   if (data && data.name != 0 && data.category != 0 && data.country != 0)
+//     recipeService
+//       .create(data.name, data.category, data.country)
+//       .then((recipe_id) => response.send({ recipe_id: recipe_id }))
+//       .catch((error) => response.status(500).send(error));
+//   else response.status(400).send('Missing recipe details');
+// });
+
 //////////////////INGREDIENTS
 router.get('/ingredients', (_request, response) => {
   recipeService

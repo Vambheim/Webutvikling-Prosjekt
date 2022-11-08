@@ -193,7 +193,6 @@ export class RecipeList extends Component {
     this.category = '';
     this.ingredient.name = '';
     this.filtered_recipes = this.recipes;
-    Alert.success('Filters have been removed');
   }
 }
 
@@ -219,9 +218,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             <Column width={2}>Country:</Column>
             <Column width={2}>{this.recipe.country}</Column>
           </Row>
-          <Button.Light onClick={() => this.loggedInCheck()}>
-            Like this recipe &#10084;
-          </Button.Light>
+          <Button.Light onClick={() => this.likeRecipe()}>Like this recipe &#10084;</Button.Light>
         </Card>
         <Card title="This is how you make it">
           <ol>
@@ -259,13 +256,13 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               </Column>
               <Column>
                 {/* Adds to shopping list, if logged in */}
-                <Button.Light onClick={() => this.loggedInCheck()}>&#128722;</Button.Light>
+                <Button.Light onClick={() => this.addItemToShoppingList()}>&#128722;</Button.Light>
               </Column>
             </Row>
           ))}
           <Row>
             <Column>
-              <Button.Success onClick={() => this.addIngToShoppingList()}>
+              <Button.Success onClick={() => this.addAllToShoppingList()}>
                 Add all ingredients to shopping list
               </Button.Success>
             </Column>
@@ -294,28 +291,34 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
       .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
 
-  loggedInCheck() {
+  likeRecipe() {
     if (!loggedIn) {
       Alert.info(`You have to log in to like this recipe`);
     } else {
-      Alert.info('Logged in');
-      // add code here
+      console.log(currentUser.user_id);
+      console.log(this.recipe.recipe_id);
+      recipeService
+        .likeRecipe(currentUser.user_id, this.recipe.recipe_id)
+        .then((response) => Alert.success(response.message))
+        // alt kræsjer hvis man får en annen sql-feil en at man ikke kan ha flere rader med samme nøkkel
+        .catch((error) => Alert.danger(error.response.data));
+    }
+  }
+
+  addItemToShoppingList() {
+    if (!loggedIn) {
+      Alert.info('Log in to add item to shopping list');
+    }
+  }
+
+  addAllToShoppingList() {
+    if (!loggedIn) {
+      Alert.info('Log in to add all items to shopping list');
     }
   }
 
   editRecipe() {
     history.push('/recipes/' + this.props.match.params.recipe_id + '/edit');
-  }
-
-  addIngToShoppingList() {
-    Alert.danger('Not yet implemented');
-  }
-
-  saveRecipe() {
-    recipeService
-      .create(this.recipe.name, this.recipe.country, this.recipe.category)
-      .then((recipe_id) => history.push('/recipes/' + recipe_id))
-      .catch((error) => Alert.danger('Error creating task: ' + error.message));
   }
 }
 

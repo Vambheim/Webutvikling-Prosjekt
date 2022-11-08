@@ -1,5 +1,5 @@
 import pool from './mysql-pool';
-import type { RowDataPacket, ResultSetHeader } from 'mysql2';
+import type { RowDataPacket, ResultSetHeader, OkPacket } from 'mysql2';
 
 export type Recipe = {
   recipe_id: number;
@@ -271,6 +271,25 @@ class RecipeService {
           if (error) return reject(error);
           if (results.affectedRows == 0) reject(new Error('No item in list deleted'));
 
+          resolve();
+        }
+      );
+    });
+  }
+
+  likeRecipe(user_id: number, recipe_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO like_information SET user_id=?, recipe_id=?, liked=?',
+        [user_id, recipe_id, 1],
+        (error, _results) => {
+          if (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+              return reject('You have already liked this recipe');
+            } else {
+              return reject(error);
+            }
+          }
           resolve();
         }
       );
