@@ -40,7 +40,7 @@ export type ShoppingListInfo = {
   shopping_list_id: number;
   recipe_id: number;
   ingredient_id: number;
-  name: string; 
+  name: string;
   amount: number;
   measurement_unit: string;
 };
@@ -186,7 +186,7 @@ class RecipeService {
     // endre parametere til bare user? ^
     return new Promise((resolve, reject) => {
       pool.query(
-        'INSERT INTO user SET email=?, first_name=?, last_name=?, passwrd=?',
+        'INSERT INTO user SET email=?, first_name=?, last_name=?, password=?',
         [email, first_name, last_name, password],
         (error, results) => {
           if (error) return reject(error);
