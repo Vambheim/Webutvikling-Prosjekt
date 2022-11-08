@@ -16,20 +16,18 @@ import { createHashHistory } from 'history';
 let loggedIn: boolean = false;
 let currentUser: User = {
   user_id: 0,
-  email: 'test@mail.com',
-  first_name: 'Ola',
-  last_name: 'Nordmann',
+  email: '',
+  first_name: '',
+  last_name: '',
   password: '',
 };
-// halla bror, ta bort testdata når man har henta bruker
-// trenger nok id her ?? usikker på det faktisk
 // Sjekke om man kan lagre dette i local storage, er teit hvis man blir "logga ut" hvis man refresher siden
 
-const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
-/**
- * Renders task list.
- */
+const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a recipe
 
+/**
+ * Renders recipe list.
+ */
 export class RecipeList extends Component {
   country: string = '';
   category: string = '';
