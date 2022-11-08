@@ -227,15 +227,13 @@ class RecipeService {
       );
     });
   }
-
   /**
    * Get shoppingList with give user_id
    */
-
   getShoppingList(user_id: number) {
     return new Promise<ShoppingListInfo[]>((resolve, reject) => {
       pool.query(
-        'SELECT shopping_list.shopping_list_id,shopping_list.recipe_id, ingredient.ingredient_id, ingredient.name, shopping_list.amount, shopping_list.measurement_unit FROM shopping_list JOIN user ON shopping_list.user_id=user.user_id JOIN ingredient ON shopping_list.ingredient_id = ingredient.ingredient_id WHERE user.user_id = 6',
+        'SELECT shopping_list.shopping_list_id,shopping_list.recipe_id, ingredient.ingredient_id, ingredient.name, shopping_list.amount, shopping_list.measurement_unit FROM shopping_list JOIN user ON shopping_list.user_id=user.user_id JOIN ingredient ON shopping_list.ingredient_id = ingredient.ingredient_id WHERE user.user_id = ?',
         [user_id],
         (error, results: RowDataPacket[]) => {
           resolve(results as ShoppingListInfo[]);
@@ -246,19 +244,38 @@ class RecipeService {
     });
   }
 
-  // getSteps(recipe_id: number) {
-  //   return new Promise<Step[]>((resolve, reject) => {
-  //     pool.query(
-  //       'SELECT * FROM step WHERE recipe_id = ?',
-  //       [recipe_id],
-  //       (error, results: RowDataPacket[]) => {
-  //         if (error) return reject(error);
+  /**
+   * Deletes items in shoppinglist with given user_id
+   */
+  deleteShoppingList(user_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'DELETE FROM shopping_list WHERE user_id=?',
+        [user_id],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+          if (results.affectedRows == 0) reject(new Error('No list deleted'));
 
-  //         resolve(results as Step[]);
-  //       }
-  //     );
-  //   });
-  // }
+          resolve();
+        }
+      );
+    });
+  }
+
+  deleteItemShoppingList(shopping_list_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'DELETE FROM shopping_list WHERE shopping_list_id=?',
+        [shopping_list_id],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+          if (results.affectedRows == 0) reject(new Error('No item in list deleted'));
+
+          resolve();
+        }
+      );
+    });
+  }
 
   /**
    * Create new recipe.

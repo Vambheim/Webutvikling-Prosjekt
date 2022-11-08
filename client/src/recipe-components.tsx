@@ -498,11 +498,11 @@ export class ShoppingList extends Component {
   render() {
     return (
       <Card title="Shopping List">
-        {this.shopping_list.map((list, i) => (
+        {this.shopping_list.map((list) => (
           <Row key={list.shopping_list_id}>
             <Column width={3}>{list.amount + ' ' + list.measurement_unit + ' ' + list.name}</Column>
             <Column width={1}>
-              <Button.Light onClick={() => this.removeOne(i, list.name)} small>
+              <Button.Light onClick={() => this.removeOne(list.shopping_list_id, list.name)} small>
                 &#128465;
               </Button.Light>
             </Column>
@@ -513,14 +513,7 @@ export class ShoppingList extends Component {
             this.removeAll();
           }}
         >
-          Reset Shopping List
-        </Button.Danger>
-        <Button.Danger
-          onClick={() => {
-            console.log(currentUser.user_id);
-          }}
-        >
-          Test{' '}
+          Remove items
         </Button.Danger>
       </Card>
     );
@@ -537,29 +530,33 @@ export class ShoppingList extends Component {
     }
   }
 
-  removeOne(i: number, ing: string) {
+  removeOne(shopping_list_id: number, name: string) {
     //må gjøres i database
-    if (confirm('Do you want to remove ' + ing + ' from the shopping list?')) {
+    if (confirm('Do you want to remove ' + name + ' from the shopping list?')) {
       // Called when OK is pressed
-      console.log('okeyy');
+      console.log(shopping_list_id);
+      Alert.info('Fungerer sikker som den skal, men vil ikke slette data enda heheh');
+      // recipeService
+      // .deleteItemShoppingList(shopping_list_id)
+      // .then(() => console.log('Item deleted'))
+      // .catch((error) => Alert.danger('Error deleting item in shopping list ' + error.message));
     } else {
       console.log('Cancel');
     }
   }
 
   removeAll() {
-    //må gjøres i database
+    if (!loggedIn) {
+      Alert.info('Please log in');
+    } else {
+      Alert.info('Vil ikke slette data fra databasen, men funksjonaliteten er lagt til');
+      // recipeService
+      //   .deleteShoppingList(currentUser.user_id)
+      //   .then(() => Alert.info('Shopping List was emptied successfully'))
+      //   .catch((error) => Alert.danger('Error deleting shopping list ' + error.message));
+    }
   }
 }
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 export class UserLogIn extends Component {
   email: string = '';
@@ -762,7 +759,6 @@ export class UserDetails extends Component {
   mounted() {
     if (!loggedIn) {
       history.push('/recipes/login');
-      Alert.info('Please log in');
     }
   }
 
