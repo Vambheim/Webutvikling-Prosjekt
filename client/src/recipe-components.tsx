@@ -619,7 +619,6 @@ export class ShoppingList extends Component {
 export class UserLogIn extends Component {
   email: string = '';
   password: string = '';
-  // user: User = { user_id: 0, email: '', first_name: '', last_name: '', password: '' };
 
   render() {
     return (
@@ -670,14 +669,17 @@ export class UserLogIn extends Component {
   //mounted() {}
 
   logIn() {
-    recipeService
-      .logIn(this.email, this.password)
-      .then((user) => (currentUser = user))
-      .then(() => (loggedIn = true))
-      .then(() => Alert.success('Logged in as ' + currentUser.email))
-      .then(() => history.push('/recipes/user'))
-      .catch((error) => Alert.danger(error.response.data));
-    //denne fungere ikke hvis man har tomt passord
+    if (this.email.length > 0 && this.password.length > 0) {
+      recipeService
+        .logIn(this.email, this.password)
+        .then((user) => (currentUser = user))
+        .then(() => (loggedIn = true))
+        .then(() => Alert.success('Logged in as ' + currentUser.email))
+        .then(() => history.push('/recipes/user'))
+        .catch((error) => Alert.danger(error.response.data));
+    } else {
+      Alert.danger('Please fill in all the fields');
+    }
   }
 
   clearInput() {

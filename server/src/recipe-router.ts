@@ -12,27 +12,21 @@ var salt = bcrypt.genSaltSync(10);
 router.get('/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
   const password = String(request.params.password);
-  // flere sjekker ?
-  //kanskje typeof = string ?
-  if (email.length > 0 && password.length > 0) {
-    recipeService
-      .getUser(email)
-      .then((user) => {
-        if (bcrypt.compareSync(password, String(user.password))) {
-          response.send(user);
-          return;
-        } else {
-          response.status(400).send('Incorrect Email and/or Password! ');
-          return;
-        }
-      })
-      .catch((error) => {
-        response.status(500).send(error);
+  recipeService
+    .getUser(email)
+    .then((user) => {
+      if (bcrypt.compareSync(password, String(user.password))) {
+        response.send(user);
         return;
-      });
-  } else {
-    response.status(400).send('Please enter email and password');
-  }
+      } else {
+        response.status(400).send('Incorrect Email and/or Password! ');
+        return;
+      }
+    })
+    .catch((error) => {
+      response.status(500).send(error);
+      return;
+    });
 });
 
 // sjekke over denne når du får tid Thomas, kan ryddes mye tror jeg
@@ -176,16 +170,6 @@ router.get('/recipes/:recipe_id/recommended/:category/:country', (request, respo
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
 });
-
-// router.post('/recipes', (request, response) => {
-//   const data = request.body;
-//   if (data && data.name != 0 && data.category != 0 && data.country != 0)
-//     recipeService
-//       .create(data.name, data.category, data.country)
-//       .then((recipe_id) => response.send({ recipe_id: recipe_id }))
-//       .catch((error) => response.status(500).send(error));
-//   else response.status(400).send('Missing recipe details');
-// });
 
 //////////////////INGREDIENTS
 router.get('/ingredients', (_request, response) => {
