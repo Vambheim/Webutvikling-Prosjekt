@@ -36,6 +36,16 @@ export type User = {
   password: string;
 };
 
+//endre fra info til details
+export type ShoppingListUserInfo = {
+  recipe_id: number;
+  ingredient_id: number;
+  user_id: number;
+  amount: number;
+  measurement_unit: string;
+};
+
+// endre fra info til details
 export type ShoppingListInfo = {
   shopping_list_id: number;
   recipe_id: number;
@@ -307,6 +317,20 @@ class RecipeService {
           if (error) reject(error);
 
           resolve(results as Recipe[]);
+        }
+      );
+    });
+  }
+
+  addToShoppingList(list: ShoppingListUserInfo) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO shopping_list SET recipe_id = ?, ingredient_id = ?, user_id = ?, amount = ?, measurement_unit = ?',
+        [list.recipe_id, list.ingredient_id, list.user_id, list.amount, list.measurement_unit],
+        (error, _results) => {
+          if (error) return reject(error);
+
+          resolve();
         }
       );
     });

@@ -262,7 +262,17 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               </Column>
               <Column>
                 {/* Adds to shopping list, if logged in */}
-                <Button.Light onClick={() => this.addItemToShoppingList()}>&#128722;</Button.Light>
+                <Button.Light
+                  onClick={() =>
+                    this.addItemToShoppingList(
+                      ing.ingredient_id,
+                      ing.amount_per_person,
+                      ing.measurement_unit
+                    )
+                  }
+                >
+                  &#128722;
+                </Button.Light>
               </Column>
             </Row>
           ))}
@@ -322,15 +332,43 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
     }
   }
 
-  addItemToShoppingList() {
+  addItemToShoppingList(
+    ingredient_id: number,
+    amount_per_person: number,
+    measurement_unit: string
+  ) {
     if (!loggedIn) {
-      Alert.info('Log in to add item to shopping list');
+      Alert.info('Log in to add ingredients to shopping list');
+    } else {
+      recipeService
+        .addToShoppingList(
+          this.recipe.recipe_id,
+          ingredient_id,
+          currentUser.user_id,
+          amount_per_person * this.portions,
+          measurement_unit
+        )
+        .then((response) => Alert.success(response))
+        .catch((error) => Alert.danger(error.message));
     }
   }
 
   addAllToShoppingList() {
     if (!loggedIn) {
-      Alert.info('Log in to add all items to shopping list');
+      Alert.info('Log in to add ingredients to shopping list');
+    } else {
+      this.ingredients.map((ingredient) => {
+        recipeService
+          .addToShoppingList(
+            this.recipe.recipe_id,
+            ingredient.ingredient_id,
+            currentUser.user_id,
+            ingredient.amount_per_person * this.portions,
+            ingredient.measurement_unit
+          )
+          .then((response) => Alert.success(response))
+          .catch((error) => Alert.danger(error.message));
+      });
     }
   }
 

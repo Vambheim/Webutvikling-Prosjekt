@@ -131,6 +131,24 @@ class RecipeService {
       .then((response) => response.data);
   }
 
+  addToShoppingList(
+    recipe_id: number,
+    ingredient_id: number,
+    user_id: number,
+    amount: number,
+    measurement_unit: string
+  ) {
+    return axios
+      .post('/shoppinglist', {
+        recipe_id: recipe_id,
+        ingredient_id: ingredient_id,
+        user_id: user_id,
+        amount: amount,
+        measurement_unit: measurement_unit,
+      })
+      .then((response) => response.data);
+  }
+
   /**
    *
    */
