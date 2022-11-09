@@ -167,6 +167,16 @@ router.post('/recipes/like', (request, response) => {
   } else response.status(400).send('wrong parameters');
 });
 
+router.get('/recipes/:recipe_id/recommended/:category/:country', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+  const category = String(request.params.category);
+  const country = String(request.params.country);
+  recipeService
+    .getRecomendedRecipes(recipe_id, category, country)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
 // router.post('/recipes', (request, response) => {
 //   const data = request.body;
 //   if (data && data.name != 0 && data.category != 0 && data.country != 0)

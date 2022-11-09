@@ -9,6 +9,11 @@ export type Recipe = {
   country: string;
 };
 
+export type RecipeName = {
+  recipe_id: number;
+  name: number;
+};
+
 export type Step = {
   step_id: number;
   order_number: number;
@@ -90,6 +95,12 @@ class RecipeService {
   getFilteredRecipes(country: string, category: string, ingredient: string) {
     return axios
       .get<Recipe[]>('/recipes/' + country + '/' + category + '/' + ingredient)
+      .then((response) => response.data);
+  }
+
+  getRecommendedRecipes(recipe_id: number, category: string, country: string) {
+    return axios
+      .get<Recipe[]>('/recipes/' + recipe_id + '/recommended/' + category + '/' + country)
       .then((response) => response.data);
   }
 

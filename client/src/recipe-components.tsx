@@ -9,6 +9,7 @@ import recipeService, {
   Ingredient,
   User,
   ShoppingListInfo,
+  RecipeName,
 } from './recipe-service';
 import { createHashHistory } from 'history';
 
@@ -122,11 +123,7 @@ export class RecipeList extends Component {
               placeholder="Search"
             ></Form.Input>
           </Column>
-          <Column>
-            {/* <Button.Light onClick={(event) => this.search(event.currentTarget.value)}>
-              Search
-            </Button.Light> */}
-          </Column>
+          <Column></Column>
         </Card>
         <Card title="Recepies">
           {this.filtered_recipes.map((recipe) => (
@@ -201,6 +198,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   steps: Step[] = [];
   ingredients: RecipeIngredient[] = [];
   portions: number = 1;
+  recomended_recipes: Recipe[] = [];
 
   render() {
     return (
@@ -218,7 +216,16 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             <Column width={2}>Country:</Column>
             <Column width={2}>{this.recipe.country}</Column>
           </Row>
-          <Button.Light onClick={() => this.likeRecipe()}>Like this recipe &#10084;</Button.Light>
+          <Row>
+            <Column>
+              <Button.Light onClick={() => this.likeRecipe()}>
+                Like this recipe &#10084;
+              </Button.Light>
+            </Column>
+            <Column right>
+              <Button.Success onClick={() => this.editRecipe()}>Edit</Button.Success>
+            </Column>
+          </Row>
         </Card>
         <Card title="This is how you make it">
           <ol>
@@ -244,7 +251,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               ></Form.Input>
             </Column>
           </Row>
-
           {this.ingredients.map((ing) => (
             <Row key={ing.ingredient_id}>
               <Column width={2}>
@@ -268,14 +274,15 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             </Column>
           </Row>
         </Card>
-
-        <Button.Success
-          onClick={() => {
-            this.editRecipe();
-          }}
-        >
-          Edit
-        </Button.Success>
+        <Card title="You may also like these recipes">
+          {this.recomended_recipes.map((recipe) => (
+            <Row key={recipe.recipe_id}>
+              <Column>
+                <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
+              </Column>
+            </Row>
+          ))}
+        </Card>
       </>
     );
   }
@@ -284,10 +291,20 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
     recipeService
       .get(this.props.match.params.recipe_id)
       .then((recipe) => (this.recipe = recipe))
+      //endre til navn getRecipeSteps
       .then(() => recipeService.getSteps(this.recipe.recipe_id))
       .then((steps) => (this.steps = steps))
       .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
       .then((ingredients) => (this.ingredients = ingredients))
+      .then(() => console.log(this.props.match.params.recipe_id))
+      .then(() =>
+        recipeService.getRecommendedRecipes(
+          this.props.match.params.recipe_id,
+          this.recipe.category,
+          this.recipe.country
+        )
+      )
+      .then((recipes) => (this.recomended_recipes = recipes))
       .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
 
@@ -532,15 +549,12 @@ export class ShoppingList extends Component {
   }
 
   removeOne(shopping_list_id: number, name: string) {
-    //må gjøres i database
     if (confirm('Do you want to remove ' + name + ' from the shopping list?')) {
-      // Called when OK is pressed
       console.log(shopping_list_id);
-      Alert.info('Fungerer sikker som den skal, men vil ikke slette data enda heheh');
-      // recipeService
-      // .deleteItemShoppingList(shopping_list_id)
-      // .then(() => console.log('Item deleted'))
-      // .catch((error) => Alert.danger('Error deleting item in shopping list ' + error.message));
+      recipeService
+        .deleteItemShoppingList(shopping_list_id)
+        .then(() => console.log('Item deleted'))
+        .catch((error) => Alert.danger('Error deleting item in shopping list ' + error.message));
     } else {
       console.log('Cancel');
     }

@@ -296,6 +296,22 @@ class RecipeService {
     });
   }
 
+  getRecomendedRecipes(recipe_id: number, category: string, country: string) {
+    return new Promise<Recipe[]>((resolve, reject) => {
+      pool.query(
+        'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN like_information ON recipe.recipe_id = like_information.recipe_id WHERE like_information.liked = TRUE AND recipe.category =? AND recipe.country =? AND recipe.recipe_id != ? GROUP BY recipe.recipe_id ORDER BY COUNT(like_information.liked) DESC LIMIT ?',
+        //Limits to three recommended recipes
+        //Also put out the three most popular recipes given the same category and country
+        [category, country, recipe_id, 3],
+        (error, results: RowDataPacket[]) => {
+          if (error) reject(error);
+
+          resolve(results as Recipe[]);
+        }
+      );
+    });
+  }
+
   /**
    * Create new recipe.
    *h
