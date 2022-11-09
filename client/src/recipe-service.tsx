@@ -30,6 +30,14 @@ export type Ingredient = {
 };
 
 export type ShoppingListInfo = {
+  recipe_id: number;
+  ingredient_id: number;
+  user_id: number;
+  amount: number;
+  measurement_unit: string;
+};
+
+export type ShoppingListUserInfo = {
   shopping_list_id: number;
   recipe_id: number;
   ingredient_id: number;
@@ -116,7 +124,25 @@ class RecipeService {
 
   getShoppingList(user_id: number) {
     return axios
-      .get<ShoppingListInfo[]>('/recipes/shoppinglist/' + user_id)
+      .get<ShoppingListUserInfo[]>('/recipes/shoppinglist/' + user_id)
+      .then((response) => response.data);
+  }
+
+  pushToShoppingList(
+    recipe_id: number,
+    ingredient_id: number,
+    user_id: number,
+    amount: number,
+    measurement_unit: string
+  ) {
+    return axios
+      .post('recipes/shoppinglist', {
+        recipe_id: recipe_id,
+        ingredient_id: ingredient_id,
+        user_id: user_id,
+        amount: amount,
+        measurement_unit: measurement_unit,
+      })
       .then((response) => response.data);
   }
 
@@ -153,6 +179,12 @@ class RecipeService {
    */
   delete(recipe_id: number) {
     return axios.delete('/recipes/' + recipe_id).then((response) => response.data);
+  }
+
+  deleteIngredientFromShoppingList(shopping_list_id: number) {
+    return axios
+      .delete('/recipes/shoppingcart' + shopping_list_id)
+      .then((response) => response.data);
   }
 }
 

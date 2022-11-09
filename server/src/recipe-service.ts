@@ -40,7 +40,7 @@ export type ShoppingListInfo = {
   shopping_list_id: number;
   recipe_id: number;
   ingredient_id: number;
-  name: string;
+  user_id: number;
   amount: number;
   measurement_unit: string;
 };
@@ -241,6 +241,41 @@ class RecipeService {
           resolve(results as ShoppingListInfo[]);
 
           if (error) return reject(error);
+        }
+      );
+    });
+  }
+
+  pushToShoppingList(
+    recipe_id: number,
+    ingredient_id: number,
+    user_id: number,
+    amount: number,
+    measurement_unit: string
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO shopping_list SET recipe_id = ?, ingredient_id = ?, user_id = ?, amount = ?, measurement_unit = ?',
+        [recipe_id, ingredient_id, user_id, amount, measurement_unit],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+
+  // Fjerne individuell ingrediens fra handlekurv
+  removeOne(shopping_list_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'DELETE FROM shopping_list WHERE shopping_list_id = ?',
+        [shopping_list_id],
+        (error) => {
+          if (error) return reject(error);
+
+          resolve();
         }
       );
     });

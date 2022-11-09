@@ -9,6 +9,7 @@ import recipeService, {
   Ingredient,
   User,
   ShoppingListInfo,
+  ShoppingListUserInfo,
 } from './recipe-service';
 import { createHashHistory } from 'history';
 
@@ -310,7 +311,15 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   }
 
   addIngToShoppingList() {
-    Alert.danger('Not yet implemented');
+    this.ingredients.map((ingredient) => {
+      recipeService.pushToShoppingList(
+        this.recipe.recipe_id,
+        ingredient.ingredient_id,
+        currentUser.user_id,
+        ingredient.amount_per_person,
+        ingredient.measurement_unit
+      );
+    });
   }
 
   saveRecipe() {
@@ -493,13 +502,14 @@ export class RecipeAdd extends Component {
 }
 
 export class ShoppingList extends Component {
-  shopping_list: ShoppingListInfo[] = [];
+  shopping_list: ShoppingListUserInfo[] = [];
+  // amount: ShoppingListInfo = { amount: 0, measurement_unit: '', shopping_list_id: 0 };
 
   render() {
     return (
       <Card title="Shopping List">
         {this.shopping_list.map((list, i) => (
-          <Row key={list.shopping_list_id}>
+          <Row key={list.recipe_id}>
             <Column width={3}>{list.amount + ' ' + list.measurement_unit + ' ' + list.name}</Column>
             <Column width={1}>
               <Button.Light onClick={() => this.removeOne(i, list.name)} small>
@@ -540,8 +550,7 @@ export class ShoppingList extends Component {
   removeOne(i: number, ing: string) {
     //må gjøres i database
     if (confirm('Do you want to remove ' + ing + ' from the shopping list?')) {
-      // Called when OK is pressed
-      console.log('okeyy');
+      Alert.success('Ingredient successfully deletede');
     } else {
       console.log('Cancel');
     }

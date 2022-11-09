@@ -114,6 +114,29 @@ router.get('/recipes/shoppinglist/:user_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+router.post('/recipes/shoppinglist', (request, response) => {
+  const data = request.body;
+  if (
+    data &&
+    data.recipe_id != 0 &&
+    data.ingredient_id != 0 &&
+    data.user_id != 0 &&
+    data.amount != 0 &&
+    data.measurement_unit != ''
+  )
+    recipeService
+      .pushToShoppingList(
+        data.recipe_id,
+        data.ingredient_id,
+        data.user_id,
+        data.amount,
+        data.measurement_unit
+      )
+      .then(() => response.send(response.status(201)))
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Missing ingredient details');
+});
+
 router.get('/recipes/:recipe_id/ingredients', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
   recipeService
@@ -182,6 +205,13 @@ router.put('/recipes', (request, response) => {
 router.delete('/recipes/:id', (request, response) => {
   recipeService
     .delete(Number(request.params.id))
+    .then((_result) => response.send())
+    .catch((error) => response.status(500).send(error));
+});
+
+router.delete('/recipes/shoppingcart/:id', (request, response) => {
+  recipeService
+    .removeOne(Number(request.params.id))
     .then((_result) => response.send())
     .catch((error) => response.status(500).send(error));
 });
