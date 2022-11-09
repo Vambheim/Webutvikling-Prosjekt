@@ -9,11 +9,6 @@ export type Recipe = {
   country: string;
 };
 
-export type RecipeName = {
-  recipe_id: number;
-  name: number;
-};
-
 export type Step = {
   step_id: number;
   order_number: number;

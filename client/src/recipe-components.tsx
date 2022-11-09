@@ -9,7 +9,6 @@ import recipeService, {
   Ingredient,
   User,
   ShoppingListInfo,
-  RecipeName,
 } from './recipe-service';
 import { createHashHistory } from 'history';
 
