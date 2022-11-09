@@ -188,16 +188,16 @@ class RecipeService {
    * Delete shoppingList with given user_id
    */
   deleteShoppingList(user_id: number) {
-    return axios.delete('/shoppinglist' + user_id).then((response) => response.data);
+    return axios.delete('/shoppinglist/' + user_id).then((response) => response.data);
   }
 
   /**
    * Delete item in shopping list with given shopping_list_id
    */
-  deleteItemShoppingList(shopping_list_id: number) {
-    return axios.delete('/shoppinglist' + shopping_list_id).then((response) => response.data);
-  }
 
+  deleteItemShoppingList(shopping_list_id: number) {
+    return axios.delete('/shoppinglistitem/' + shopping_list_id).then((response) => response.data);
+  }
   /**
    * Like a recipe with given recipe_id when logged in with user_id
    */

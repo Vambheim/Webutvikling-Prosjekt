@@ -306,7 +306,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
       .then((steps) => (this.steps = steps))
       .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
       .then((ingredients) => (this.ingredients = ingredients))
-      .then(() => console.log(this.props.match.params.recipe_id))
       .then(() =>
         recipeService.getRecommendedRecipes(
           this.props.match.params.recipe_id,
@@ -322,8 +321,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
     if (!loggedIn) {
       Alert.info(`You have to log in to like this recipe`);
     } else {
-      console.log(currentUser.user_id);
-      console.log(this.recipe.recipe_id);
       recipeService
         .likeRecipe(currentUser.user_id, this.recipe.recipe_id)
         .then((response) => Alert.success(response))
@@ -558,7 +555,7 @@ export class ShoppingList extends Component {
           <Row key={list.shopping_list_id}>
             <Column width={3}>{list.amount + ' ' + list.measurement_unit + ' ' + list.name}</Column>
             <Column width={1}>
-              <Button.Light onClick={() => this.removeOne(list.shopping_list_id, list.name)} small>
+              <Button.Light onClick={() => this.deleteOne(list.shopping_list_id, list.name)}>
                 &#128465;
               </Button.Light>
             </Column>
@@ -566,7 +563,7 @@ export class ShoppingList extends Component {
         ))}
         <Button.Danger
           onClick={() => {
-            this.removeAll();
+            this.deleteAll();
           }}
         >
           Remove items
@@ -586,27 +583,36 @@ export class ShoppingList extends Component {
     }
   }
 
-  removeOne(shopping_list_id: number, name: string) {
+  deleteOne(list_id: number, name: string) {
     if (confirm('Do you want to remove ' + name + ' from the shopping list?')) {
-      console.log(shopping_list_id);
+      console.log(list_id);
       recipeService
-        .deleteItemShoppingList(shopping_list_id)
-        .then(() => console.log('Item deleted'))
-        .catch((error) => Alert.danger('Error deleting item in shopping list ' + error.message));
+        .deleteItemShoppingList(list_id)
+        .then(() => Alert.success('Item deleted'))
+        .then(() => this.mounted()) // refreshes til items in shopping list
+        .catch((error) => Alert.danger('Error deleting item in shopping list: ' + error.message));
     } else {
-      console.log('Cancel');
+      console.log('Canceled');
     }
   }
 
-  removeAll() {
+  deleteAll() {
     if (!loggedIn) {
       Alert.info('Please log in');
     } else {
-      Alert.info('Vil ikke slette data fra databasen, men funksjonaliteten er lagt til');
-      // recipeService
-      //   .deleteShoppingList(currentUser.user_id)
-      //   .then(() => Alert.info('Shopping List was emptied successfully'))
-      //   .catch((error) => Alert.danger('Error deleting shopping list ' + error.message));
+      if (this.shopping_list.length > 0) {
+        if (confirm('Do you want to remove all items from shopping list?')) {
+          recipeService
+            .deleteShoppingList(currentUser.user_id)
+            .then(() => Alert.info('Shopping list was successfully deleted'))
+            .then(() => this.mounted())
+            .catch((error) => Alert.danger('Error deleting shopping list ' + error.message));
+        } else {
+          console.log('Canceled');
+        }
+      } else {
+        Alert.info('No items to delete');
+      }
     }
   }
 }

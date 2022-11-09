@@ -243,7 +243,8 @@ class RecipeService {
   getShoppingList(user_id: number) {
     return new Promise<ShoppingListInfo[]>((resolve, reject) => {
       pool.query(
-        'SELECT shopping_list.shopping_list_id,shopping_list.recipe_id, ingredient.ingredient_id, ingredient.name, shopping_list.amount, shopping_list.measurement_unit FROM shopping_list JOIN user ON shopping_list.user_id=user.user_id JOIN ingredient ON shopping_list.ingredient_id = ingredient.ingredient_id WHERE user.user_id = ?',
+        'SELECT shopping_list.shopping_list_id,shopping_list.recipe_id, ingredient.ingredient_id, ingredient.name, shopping_list.amount, shopping_list.measurement_unit FROM shopping_list JOIN user ON shopping_list.user_id=user.user_id JOIN ingredient ON shopping_list.ingredient_id = ingredient.ingredient_id WHERE user.user_id = ? ORDER BY shopping_list.shopping_list_id ASC',
+        //Newest ingredients are on the bottom of the list
         [user_id],
         (error, results: RowDataPacket[]) => {
           resolve(results as ShoppingListInfo[]);
