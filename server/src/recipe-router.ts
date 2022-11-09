@@ -246,7 +246,7 @@ router.delete('/shoppinglist/:user_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-router.delete('/shoppinglist/:shopping_list_id', (request, response) => {
+router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
   const shopping_list_id = Number(request.params.shopping_list_id);
   recipeService
     .deleteItemShoppingList(shopping_list_id)
