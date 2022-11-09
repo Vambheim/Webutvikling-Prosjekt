@@ -1,5 +1,5 @@
 import pool from './mysql-pool';
-import type { RowDataPacket, ResultSetHeader } from 'mysql2';
+import type { RowDataPacket, ResultSetHeader, OkPacket } from 'mysql2';
 
 export type Recipe = {
   recipe_id: number;
@@ -36,6 +36,16 @@ export type User = {
   password: string;
 };
 
+//endre fra info til details
+export type ShoppingListUserInfo = {
+  recipe_id: number;
+  ingredient_id: number;
+  user_id: number;
+  amount: number;
+  measurement_unit: string;
+};
+
+// endre fra info til details
 export type ShoppingListInfo = {
   shopping_list_id: number;
   recipe_id: number;
@@ -270,6 +280,55 @@ class RecipeService {
         (error, results: ResultSetHeader) => {
           if (error) return reject(error);
           if (results.affectedRows == 0) reject(new Error('No item in list deleted'));
+
+          resolve();
+        }
+      );
+    });
+  }
+
+  likeRecipe(user_id: number, recipe_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO like_information SET user_id=?, recipe_id=?, liked=?',
+        [user_id, recipe_id, 1],
+        (error, _results) => {
+          if (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+              return reject('You have already liked this recipe');
+            } else {
+              return reject(error);
+            }
+          }
+          resolve();
+        }
+      );
+    });
+  }
+
+  getRecomendedRecipes(recipe_id: number, category: string, country: string) {
+    return new Promise<Recipe[]>((resolve, reject) => {
+      pool.query(
+        'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN like_information ON recipe.recipe_id = like_information.recipe_id WHERE like_information.liked = TRUE AND recipe.category =? AND recipe.country =? AND recipe.recipe_id != ? GROUP BY recipe.recipe_id ORDER BY COUNT(like_information.liked) DESC LIMIT ?',
+        //Limits to three recommended recipes
+        //Also put out the three most popular recipes given the same category and country
+        [category, country, recipe_id, 3],
+        (error, results: RowDataPacket[]) => {
+          if (error) reject(error);
+
+          resolve(results as Recipe[]);
+        }
+      );
+    });
+  }
+
+  addToShoppingList(list: ShoppingListUserInfo) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO shopping_list SET recipe_id = ?, ingredient_id = ?, user_id = ?, amount = ?, measurement_unit = ?',
+        [list.recipe_id, list.ingredient_id, list.user_id, list.amount, list.measurement_unit],
+        (error, _results) => {
+          if (error) return reject(error);
 
           resolve();
         }

@@ -9,6 +9,11 @@ export type Recipe = {
   country: string;
 };
 
+export type RecipeName = {
+  recipe_id: number;
+  name: number;
+};
+
 export type Step = {
   step_id: number;
   order_number: number;
@@ -93,6 +98,12 @@ class RecipeService {
       .then((response) => response.data);
   }
 
+  getRecommendedRecipes(recipe_id: number, category: string, country: string) {
+    return axios
+      .get<Recipe[]>('/recipes/' + recipe_id + '/recommended/' + category + '/' + country)
+      .then((response) => response.data);
+  }
+
   //Rename to updateRecipe
   update(recipe: Recipe) {
     return axios.put('/recipes', recipe).then((response) => response.data);
@@ -117,6 +128,24 @@ class RecipeService {
   getShoppingList(user_id: number) {
     return axios
       .get<ShoppingListInfo[]>('/shoppinglist/' + user_id)
+      .then((response) => response.data);
+  }
+
+  addToShoppingList(
+    recipe_id: number,
+    ingredient_id: number,
+    user_id: number,
+    amount: number,
+    measurement_unit: string
+  ) {
+    return axios
+      .post('/shoppinglist', {
+        recipe_id: recipe_id,
+        ingredient_id: ingredient_id,
+        user_id: user_id,
+        amount: amount,
+        measurement_unit: measurement_unit,
+      })
       .then((response) => response.data);
   }
 
@@ -156,17 +185,26 @@ class RecipeService {
   }
 
   /**
-   * Delete shoppingList with given user
+   * Delete shoppingList with given user_id
    */
   deleteShoppingList(user_id: number) {
     return axios.delete('/shoppinglist' + user_id).then((response) => response.data);
   }
 
   /**
-   * Delete item in shopping list with give shopping_list_id
+   * Delete item in shopping list with given shopping_list_id
    */
   deleteItemShoppingList(shopping_list_id: number) {
     return axios.delete('/shoppinglist' + shopping_list_id).then((response) => response.data);
+  }
+
+  /**
+   * Like a recipe with given recipe_id when logged in with user_id
+   */
+  likeRecipe(user_id: number, recipe_id: number) {
+    return axios
+      .post('/recipes/like', { user_id: user_id, recipe_id: recipe_id })
+      .then((response) => response.data);
   }
 }
 

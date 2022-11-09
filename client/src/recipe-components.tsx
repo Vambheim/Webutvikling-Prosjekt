@@ -9,6 +9,7 @@ import recipeService, {
   Ingredient,
   User,
   ShoppingListInfo,
+  RecipeName,
 } from './recipe-service';
 import { createHashHistory } from 'history';
 
@@ -122,11 +123,7 @@ export class RecipeList extends Component {
               placeholder="Search"
             ></Form.Input>
           </Column>
-          <Column>
-            {/* <Button.Light onClick={(event) => this.search(event.currentTarget.value)}>
-              Search
-            </Button.Light> */}
-          </Column>
+          <Column></Column>
         </Card>
         <Card title="Recepies">
           {this.filtered_recipes.map((recipe) => (
@@ -193,7 +190,6 @@ export class RecipeList extends Component {
     this.category = '';
     this.ingredient.name = '';
     this.filtered_recipes = this.recipes;
-    Alert.success('Filters have been removed');
   }
 }
 
@@ -202,6 +198,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   steps: Step[] = [];
   ingredients: RecipeIngredient[] = [];
   portions: number = 1;
+  recomended_recipes: Recipe[] = [];
 
   render() {
     return (
@@ -219,9 +216,16 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             <Column width={2}>Country:</Column>
             <Column width={2}>{this.recipe.country}</Column>
           </Row>
-          <Button.Light onClick={() => this.loggedInCheck()}>
-            Like this recipe &#10084;
-          </Button.Light>
+          <Row>
+            <Column>
+              <Button.Light onClick={() => this.likeRecipe()}>
+                Like this recipe &#10084;
+              </Button.Light>
+            </Column>
+            <Column right>
+              <Button.Success onClick={() => this.editRecipe()}>Edit</Button.Success>
+            </Column>
+          </Row>
         </Card>
         <Card title="This is how you make it">
           <ol>
@@ -247,7 +251,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               ></Form.Input>
             </Column>
           </Row>
-
           {this.ingredients.map((ing) => (
             <Row key={ing.ingredient_id}>
               <Column width={2}>
@@ -259,26 +262,37 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               </Column>
               <Column>
                 {/* Adds to shopping list, if logged in */}
-                <Button.Light onClick={() => this.loggedInCheck()}>&#128722;</Button.Light>
+                <Button.Light
+                  onClick={() =>
+                    this.addItemToShoppingList(
+                      ing.ingredient_id,
+                      ing.amount_per_person,
+                      ing.measurement_unit
+                    )
+                  }
+                >
+                  &#128722;
+                </Button.Light>
               </Column>
             </Row>
           ))}
           <Row>
             <Column>
-              <Button.Success onClick={() => this.addIngToShoppingList()}>
+              <Button.Success onClick={() => this.addAllToShoppingList()}>
                 Add all ingredients to shopping list
               </Button.Success>
             </Column>
           </Row>
         </Card>
-
-        <Button.Success
-          onClick={() => {
-            this.editRecipe();
-          }}
-        >
-          Edit
-        </Button.Success>
+        <Card title="You may also like these recipes">
+          {this.recomended_recipes.map((recipe) => (
+            <Row key={recipe.recipe_id}>
+              <Column>
+                <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
+              </Column>
+            </Row>
+          ))}
+        </Card>
       </>
     );
   }
@@ -287,35 +301,79 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
     recipeService
       .get(this.props.match.params.recipe_id)
       .then((recipe) => (this.recipe = recipe))
+      //endre til navn getRecipeSteps
       .then(() => recipeService.getSteps(this.recipe.recipe_id))
       .then((steps) => (this.steps = steps))
       .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
       .then((ingredients) => (this.ingredients = ingredients))
+      .then(() => console.log(this.props.match.params.recipe_id))
+      .then(() =>
+        recipeService.getRecommendedRecipes(
+          this.props.match.params.recipe_id,
+          this.recipe.category,
+          this.recipe.country
+        )
+      )
+      .then((recipes) => (this.recomended_recipes = recipes))
       .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
 
-  loggedInCheck() {
+  likeRecipe() {
     if (!loggedIn) {
       Alert.info(`You have to log in to like this recipe`);
     } else {
-      Alert.info('Logged in');
-      // add code here
+      console.log(currentUser.user_id);
+      console.log(this.recipe.recipe_id);
+      recipeService
+        .likeRecipe(currentUser.user_id, this.recipe.recipe_id)
+        .then((response) => Alert.success(response))
+        // alt kræsjer hvis man får en annen sql-feil en at man ikke kan ha flere rader med samme nøkkel
+        .catch((error) => Alert.danger(error.response.data));
+    }
+  }
+
+  addItemToShoppingList(
+    ingredient_id: number,
+    amount_per_person: number,
+    measurement_unit: string
+  ) {
+    if (!loggedIn) {
+      Alert.info('Log in to add ingredients to shopping list');
+    } else {
+      recipeService
+        .addToShoppingList(
+          this.recipe.recipe_id,
+          ingredient_id,
+          currentUser.user_id,
+          amount_per_person * this.portions,
+          measurement_unit
+        )
+        .then((response) => Alert.success(response))
+        .catch((error) => Alert.danger(error.message));
+    }
+  }
+
+  addAllToShoppingList() {
+    if (!loggedIn) {
+      Alert.info('Log in to add ingredients to shopping list');
+    } else {
+      this.ingredients.map((ingredient) => {
+        recipeService
+          .addToShoppingList(
+            this.recipe.recipe_id,
+            ingredient.ingredient_id,
+            currentUser.user_id,
+            ingredient.amount_per_person * this.portions,
+            ingredient.measurement_unit
+          )
+          .then((response) => Alert.success(response))
+          .catch((error) => Alert.danger(error.message));
+      });
     }
   }
 
   editRecipe() {
     history.push('/recipes/' + this.props.match.params.recipe_id + '/edit');
-  }
-
-  addIngToShoppingList() {
-    Alert.danger('Not yet implemented');
-  }
-
-  saveRecipe() {
-    recipeService
-      .create(this.recipe.name, this.recipe.country, this.recipe.category)
-      .then((recipe_id) => history.push('/recipes/' + recipe_id))
-      .catch((error) => Alert.danger('Error creating task: ' + error.message));
   }
 }
 
@@ -529,15 +587,12 @@ export class ShoppingList extends Component {
   }
 
   removeOne(shopping_list_id: number, name: string) {
-    //må gjøres i database
     if (confirm('Do you want to remove ' + name + ' from the shopping list?')) {
-      // Called when OK is pressed
       console.log(shopping_list_id);
-      Alert.info('Fungerer sikker som den skal, men vil ikke slette data enda heheh');
-      // recipeService
-      // .deleteItemShoppingList(shopping_list_id)
-      // .then(() => console.log('Item deleted'))
-      // .catch((error) => Alert.danger('Error deleting item in shopping list ' + error.message));
+      recipeService
+        .deleteItemShoppingList(shopping_list_id)
+        .then(() => console.log('Item deleted'))
+        .catch((error) => Alert.danger('Error deleting item in shopping list ' + error.message));
     } else {
       console.log('Cancel');
     }
@@ -617,6 +672,7 @@ export class UserLogIn extends Component {
       .then(() => Alert.success('Logged in as ' + currentUser.email))
       .then(() => history.push('/recipes/user'))
       .catch((error) => Alert.danger(error.response.data));
+    //denne fungere ikke hvis man har tomt passord
   }
 
   clearInput() {

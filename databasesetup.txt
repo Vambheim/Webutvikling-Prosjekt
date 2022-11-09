@@ -19,15 +19,13 @@ PRIMARY KEY(user_id)
 )
 
 CREATE TABLE like_information(
-like_id INT NOT NULL AUTO_INCREMENT,
-liked BOOLEAN,
-user_id INT(50),
+user_id INT NOT NULL,
 recipe_id INT NOT NULL,
-PRIMARY KEY(like_id),
+liked BOOLEAN,
+PRIMARY KEY(user_id, recipe_id),
 FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE,
 FOREIGN KEY(recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE
 )
-
 
 CREATE TABLE shopping_list(
 shopping_list_id INT NOT NULL AUTO_INCREMENT,
@@ -42,9 +40,15 @@ FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id) ON DELETE CASCA
 FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 )
 
+SELECT recipe.name, COUNT(liked) as likes
+FROM like_information JOIN recipe ON like_information.recipe_id = recipe.recipe_id
+GROUP BY like_information.recipe_id
+ORDER BY likes DESC
 
 
 INSERT INTO:
+
+INSERT INTO like_information VALUES(6, 11, 1)
 
 
 
@@ -61,14 +65,12 @@ ON shopping_list_id
 join recipe_ingredient on ingredient_id
 join ingredient on ingredient_id
 
-
 //gitt endringene over
 INSERT INTO shopping_list_recipe_ingredient VALUES ()
 recipe_id= this.match.props.params 
 user_id = hente fra global currentUser 
 ingredient_id = henter fra row id??
 amount = amount per person * porsjoner valgt i recipe_details
-
 
 Utskirft: 
 - Liste over alle ingredients gitt user_id i currentUser
@@ -79,13 +81,11 @@ Funksjonalitet:
 - Tømme hele listen 
 - Ikke noe mer  
 
-
 **************Hjemside**************************
 Funksjonalitet:
 - Liste opp populære oppskrifter
 -- De med fleste likes knyttet til seg, orderby count(likes), group by Recipe_id
 - Liste opp de nyeste oppskriftene, order by recipe_id desc 
-
 
 
 ************ Recipe List ********************
@@ -99,23 +99,25 @@ Funksjonalitet:
 Funksjonalitet:
 - Liste opp 3 lignende oppskrifter
 -- Komme med anbefaling, som f.eks. Vi tror du også vil like disse oppskriftene
---- Finne en sammenheng, kan f.eks. være tre random med likt land og kategori?
+--- Finne en sammenheng, kan f.eks. være tre random med likt land og kategori? 
+GJORT AV THOMAS
+
 
 
 *********** My user ******************
 Funksjonalitet: 
 - Se likte oppskrifter
 - Gå til shopping_list
-- Logge ut
--- currentUser= {tom}
 
 
 Se likte oppskrifter: 
 
 GET: 
-SELECT recipe.name 
+
+SELECT recipe.name, recipe.recipe_id
 FROM like_information JOIN recipe ON like_information.recipe_id = recipe.recipe_id
-WHERE like_information.likes = TRUE 
-AND like_information.user_id = ? 
-? = currentUser.user_id; 
+WHERE like_information.liked = TRUE 
+AND like_information.user_id =?
+
+currentUser= ?
 

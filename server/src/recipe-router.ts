@@ -157,6 +157,36 @@ router.delete('/recipes/:id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+router.post('/recipes/like', (request, response) => {
+  const data = request.body;
+  if (data && data.user_id != 0 && data.recipe_id != 0) {
+    recipeService
+      .likeRecipe(data.user_id, data.recipe_id)
+      .then((_results) => response.send('Recipe was liked'))
+      .catch((error) => response.status(500).send(error));
+  } else response.status(400).send('wrong parameters');
+});
+
+router.get('/recipes/:recipe_id/recommended/:category/:country', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+  const category = String(request.params.category);
+  const country = String(request.params.country);
+  recipeService
+    .getRecomendedRecipes(recipe_id, category, country)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+// router.post('/recipes', (request, response) => {
+//   const data = request.body;
+//   if (data && data.name != 0 && data.category != 0 && data.country != 0)
+//     recipeService
+//       .create(data.name, data.category, data.country)
+//       .then((recipe_id) => response.send({ recipe_id: recipe_id }))
+//       .catch((error) => response.status(500).send(error));
+//   else response.status(400).send('Missing recipe details');
+// });
+
 //////////////////INGREDIENTS
 router.get('/ingredients', (_request, response) => {
   recipeService
@@ -189,6 +219,23 @@ router.get('/shoppinglist/:user_id', (request, response) => {
     .getShoppingList(user_id)
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
+});
+
+router.post('/shoppinglist', (request, response) => {
+  const data = request.body;
+  if (
+    data &&
+    data.recipe_id != 0 &&
+    data.ingredient_id != 0 &&
+    data.user_id != 0 &&
+    data.amount != 0 &&
+    data.measurement_unit != ''
+  )
+    recipeService
+      .addToShoppingList(data)
+      .then(() => response.send('Added to shopping list'))
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Missing ingredient details');
 });
 
 router.delete('/shoppinglist/:user_id', (request, response) => {
