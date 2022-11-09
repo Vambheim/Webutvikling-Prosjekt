@@ -171,6 +171,20 @@ class RecipeService {
     });
   }
 
+  createStep(order_number: string, description: string, recipe_id: string) {
+    return new Promise<number>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO step SET order_number = ?, description = ?,  recipe_id = ?',
+        [order_number, description, recipe_id],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+
+          resolve(results.insertId);
+        }
+      );
+    });
+  }
+
   /**
    * Create new recipe.
    *h

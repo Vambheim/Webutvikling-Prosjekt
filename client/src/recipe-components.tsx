@@ -2,8 +2,16 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { Alert, Card, Row, Column, Form, Button } from './widgets';
 import { NavLink } from 'react-router-dom';
-import recipeService, { Recipe, Step, RecipeIngredient, Ingredient, User } from './recipe-service';
+import recipeService, {
+  Recipe,
+  Step,
+  RecipeIngredient,
+  Ingredient,
+  User,
+  AddedIngredient,
+} from './recipe-service';
 import { createHashHistory } from 'history';
+import { placeholder } from '@babel/types';
 
 //false as default
 export let loggedIn: boolean = false;
@@ -297,37 +305,74 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
 export class RecipeAdd extends Component {
   // steps: Step[] = [];
   step: Step = { step_id: 0, order_number: 0, description: '', recipe_id: 0 };
-  // ingredients: Ingredient[] = [];
-  ingredient: Ingredient = {
+  ingredients: Ingredient[] = [];
+  ingredient: RecipeIngredient = {
     ingredient_id: 0,
     name: '',
     recipe_id: 0,
-    amount_per_person: 0,
+    //Typescript feilen under er nødvendig for at placeholder skal vise "Amount" og ikke "0"
+    amount_per_person: '',
     measurement_unit: '',
   };
+
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
   showIng: string = 'hidden';
   showSteps: string = 'hidden';
-  state = { numStepChildren: 2, numIngredientChildren: 2 };
+  addedIngredients: AddedIngredient[] = [];
+  portion: number;
+  addedIngrendients: Array<number | string> = [];
+  addedSteps: Array<number | string> = [];
+
+  // state = { numStepChildren: 2, numIngredientChildren: 2 };
 
   render() {
-    const furtherSteps = [];
+    // const furtherIngredients = [];
 
-    for (let stepNumber = 2; stepNumber < this.state.numStepChildren; stepNumber += 1) {
-      furtherSteps.push(<Form.Input type="text" placeholder={`Step ${stepNumber}`}></Form.Input>);
-    }
+    // for (
+    //   let ingredientNumber = 2;
+    //   ingredientNumber < this.state.numIngredientChildren;
+    //   ingredientNumber += 1
+    // ) {
+    //   furtherIngredients.push(
+    //     <Form.Input
+    //       value={this.ingredient.name}
+    //       type="text"
+    //       placeholder={`Ingredient ${ingredientNumber}`}
+    //       onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
+    //     ></Form.Input>
+    //   );
+    // }
 
-    const furtherIngredients = [];
+    // console.log(this.ingredient.name);
 
-    for (
-      let ingredientNumber = 2;
-      ingredientNumber < this.state.numIngredientChildren;
-      ingredientNumber += 1
-    ) {
-      furtherIngredients.push(
-        <Form.Input type="text" placeholder={`Ingredient ${ingredientNumber}`}></Form.Input>
-      );
-    }
+    // furtherIngredients.map((furtherIngredient) => {
+    //   <Row>
+    //     <Form.Input
+    //       value={furtherIngredient.props.name}
+    //       onChange={(event) => (furtherIngredient.props.name = event.currentTarget.value)}
+    //     />
+    //     ;
+    //   </Row>;
+
+    //   console.log(furtherIngredient.props.value);
+    // });
+
+    // const furtherSteps = [];
+
+    // for (let stepNumber = 2; stepNumber < this.state.numStepChildren; stepNumber += 1) {
+    //   furtherSteps.push(
+    //     <Form.Input
+    //       value={this.step.description}
+    //       type="text"
+    //       placeholder={`Step ${stepNumber}`}
+    //       onChange={(event) => (this.step.description = event.currentTarget.value)}
+    //     ></Form.Input>
+    //   );
+    // }
+
+    // furtherSteps.map((furtherStep) => {
+    //   <Form.Input value={furtherStep.props.value} />;
+    // });
 
     return (
       <>
@@ -336,7 +381,7 @@ export class RecipeAdd extends Component {
             <Column>You can add your favourite recipe here</Column>
           </Row>
           <Row>
-            <Column width={2}>
+            <Column width={5}>
               <Form.Input
                 value={this.recipe.name}
                 type="text"
@@ -346,7 +391,7 @@ export class RecipeAdd extends Component {
             </Column>
           </Row>
           <Row>
-            <Column width={2}>
+            <Column width={5}>
               <Form.Input
                 value={this.recipe.category}
                 type="text"
@@ -356,7 +401,7 @@ export class RecipeAdd extends Component {
             </Column>
           </Row>
           <Row>
-            <Column width={2}>
+            <Column width={5}>
               <Form.Input
                 value={this.recipe.country}
                 type="text"
@@ -365,6 +410,19 @@ export class RecipeAdd extends Component {
               ></Form.Input>
             </Column>
           </Row>
+          <Row>
+            <Column width={5}>
+              <Form.Input
+                value={this.portion}
+                type="number"
+                placeholder="Portion"
+                onChange={(event) => (this.portion = Number(event.currentTarget.value))}
+                min={1}
+                max={50}
+              ></Form.Input>
+            </Column>
+          </Row>
+
           <Row>
             <Column>
               <Button.Light onClick={() => this.openIngredient()}>
@@ -381,14 +439,47 @@ export class RecipeAdd extends Component {
         >
           <Card title="Add ingredients">
             <Row>
-              <Column width={2}>
-                <Form.Input
-                  value={this.ingredient.name}
-                  type="text"
-                  placeholder="Ingredient 1"
-                  onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
-                ></Form.Input>
-                {furtherIngredients}
+              <Column width={5}>
+                <ul>
+                  {this.addedIngredients.map((addedIngredient) => (
+                    <Row>
+                      <Column>
+                        <li>
+                          {addedIngredient.amount +
+                            ' ' +
+                            addedIngredient.measurement_unit +
+                            ' ' +
+                            addedIngredient.name}
+                        </li>
+                      </Column>
+                    </Row>
+                  ))}
+                </ul>
+                <Row>
+                  <Form.Input
+                    value={this.ingredient.amount_per_person}
+                    type="number"
+                    placeholder="Amount"
+                    onChange={(event) =>
+                      (this.ingredient.amount_per_person = Number(event.currentTarget.value))
+                    }
+                  ></Form.Input>
+                  <Form.Input
+                    value={this.ingredient.measurement_unit}
+                    type="text"
+                    placeholder="Measurement unit"
+                    onChange={(event) =>
+                      (this.ingredient.measurement_unit = event.currentTarget.value)
+                    }
+                  ></Form.Input>
+                  <Form.Input
+                    value={this.ingredient.name}
+                    type="text"
+                    placeholder="Ingredient"
+                    onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
+                  ></Form.Input>
+                  {/* {furtherIngredients} */}
+                </Row>
               </Column>
               <Column>
                 <Button.Light onClick={() => this.addIngredient()}>+ </Button.Light>
@@ -411,17 +502,26 @@ export class RecipeAdd extends Component {
         >
           <Card title="Add steps">
             <Row>
-              <Column width={2}>
+              <Column width={5}>
+                <ol>
+                  {this.addedSteps.map((addedStep) => (
+                    <Row>
+                      <Column>
+                        <li>{addedStep.description}</li>
+                      </Column>
+                    </Row>
+                  ))}
+                </ol>
                 <Form.Input
                   value={this.step.description}
                   type="text"
                   placeholder="Step 1"
                   onChange={(event) => (this.step.description = event.currentTarget.value)}
                 ></Form.Input>
-                {furtherSteps}
+                {/* {furtherSteps} */}
               </Column>
               <Column>
-                <Button.Light onClick={() => this.addStepInput()}>+</Button.Light>
+                <Button.Light onClick={() => this.addStep()}>+</Button.Light>
               </Column>
             </Row>
             <Row>
@@ -438,11 +538,13 @@ export class RecipeAdd extends Component {
   mounted() {}
 
   openIngredient() {
-    if (this.recipe.name == '' || this.recipe.country == '' || this.recipe.category == '') {
-      Alert.danger('All fields must be filled in order to add ingredient');
-    } else {
-      this.showIng = 'visible';
-    }
+    // if (this.recipe.name == '' || this.recipe.country == '' || this.recipe.category == '') {
+    //   Alert.danger('All fields must be filled in order to add ingredient');
+    // } else {
+    //   this.showIng = 'visible';
+    // }
+
+    this.showIng = 'visible';
   }
 
   saveRecipe() {
@@ -453,17 +555,32 @@ export class RecipeAdd extends Component {
   }
 
   addIngredient() {
+    let addedIngredient = {
+      amount: this.ingredient.amount_per_person,
+      measurement_unit: this.ingredient.measurement_unit,
+      name: this.ingredient.name,
+    };
 
-    this.setState({
-      numIngredientChildren: this.state.numIngredientChildren + 1,
-    });
+    this.addedIngredients.push(addedIngredient);
+    console.log(this.addedIngredients);
 
+    // this.setState({
+    //   numIngredientChildren: this.state.numIngredientChildren + 1,
+    // });
   }
 
-  addStepInput() {
-    this.setState({
-      numStepChildren: this.state.numStepChildren + 1,
-    });
+  addStep() {
+    this.step.order_number += 1;
+
+    let addedStep = { order_number: this.step.order_number, description: this.step.description };
+
+    this.addedSteps.push(addedStep);
+
+    console.log(this.step.order_number);
+
+    //   this.setState({
+    //     numStepChildren: this.state.numStepChildren + 1,
+    //   });
   }
 }
 
