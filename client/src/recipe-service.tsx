@@ -98,9 +98,18 @@ class RecipeService {
   /**
    * Get filtered recipes
    */
+
+  /*
   getFilteredRecipes(country: string, category: string, ingredient: string) {
     return axios
       .get<Recipe[]>('/recipes/' + country + '/' + category + '/' + ingredient)
+      .then((response) => response.data);
+  }
+  */
+
+  getFilteredByCountryAndCategory(country: string, category: string) {
+    return axios
+      .get<Recipe[]>('/countryandcategoryfilter/' + country + '/' + category)
       .then((response) => response.data);
   }
 
