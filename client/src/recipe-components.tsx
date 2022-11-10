@@ -34,6 +34,8 @@ export class RecipeList extends Component {
   category: string = '';
 
   ingredient: Ingredient = { ingredient_id: 0, name: '' };
+  secondingredient: Ingredient = { ingredient_id: 0, name: '' };
+  thirdingredient: Ingredient = { ingredient_id: 0, name: '' };
   ingredients: Ingredient[] = [];
 
   recipes: Recipe[] = []; // original, do not change
@@ -44,11 +46,10 @@ export class RecipeList extends Component {
   render() {
     return (
       <>
-        <Card title="Filter">
+        <Card title="Filter by country and category">
           <Row>
             <Column width={3}>Country:</Column>
             <Column width={3}>Category:</Column>
-            <Column width={3}>Ingredients:</Column>
           </Row>
           <Row>
             <Column width={3}>
@@ -88,6 +89,18 @@ export class RecipeList extends Component {
                   ))}
               </Form.Select>
             </Column>
+          </Row>
+          <Button.Success onClick={() => this.addCountryAndCategoryFilter()}>
+            Add filters
+          </Button.Success>
+        </Card>
+        <Card title="Filter by ingredient">
+          <Row>
+            <Column width={3}>Ingredient</Column>
+            <Column width={3}>Ingredient</Column>
+            <Column width={3}>Ingredient</Column>
+          </Row>
+          <Row>
             <Column width={3}>
               <Form.Select
                 value={this.ingredient['name']}
@@ -106,14 +119,50 @@ export class RecipeList extends Component {
                   ))}
               </Form.Select>
             </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Button.Success onClick={() => this.addFilter()}>Add filters</Button.Success>
-              <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
+            <Column width={3}>
+              <Form.Select
+                value={this.secondingredient['name']}
+                onChange={(event) => (this.secondingredient['name'] = event.currentTarget.value)}
+              >
+                <option key={'blankChoice'} hidden>
+                  {'Choose ingredient: '}
+                </option>
+                {this.ingredients
+                  .map((ing) => ing.name)
+                  .filter((ing, index, array) => array.indexOf(ing) === index)
+                  .map((ing, i) => (
+                    <option key={i} value={ing}>
+                      {this.firstLetterUpperCase(ing)}
+                    </option>
+                  ))}
+              </Form.Select>
+            </Column>
+            <Column width={3}>
+              <Form.Select
+                value={this.thirdingredient['name']}
+                onChange={(event) => (this.thirdingredient['name'] = event.currentTarget.value)}
+              >
+                <option key={'blankChoice'} hidden>
+                  {'Choose ingredient: '}
+                </option>
+                {this.ingredients
+                  .map((ing) => ing.name)
+                  .filter((ing, index, array) => array.indexOf(ing) === index)
+                  .map((ing, i) => (
+                    <option key={i} value={ing}>
+                      {this.firstLetterUpperCase(ing)}
+                    </option>
+                  ))}
+              </Form.Select>
             </Column>
           </Row>
         </Card>
+        <Row>
+          <Column>
+            {/*<Button.Success onClick={() => this.addFilter()}>Add filters</Button.Success> */}
+            <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
+          </Column>
+        </Row>
         <Card title="Search">
           <Column>
             <Form.Input
@@ -123,7 +172,6 @@ export class RecipeList extends Component {
               placeholder="Search"
             ></Form.Input>
           </Column>
-          <Column></Column>
         </Card>
         <Card title="Recepies">
           {this.filtered_recipes.map((recipe) => (
@@ -174,9 +222,14 @@ export class RecipeList extends Component {
     this.filtered_recipes = searchRecipe;
   }
 
+  /*
   addFilter() {
-    if (this.country.length == 0 || this.category.length == 0 || this.ingredient.name.length == 0) {
-      Alert.danger('Please choose all filters');
+    if (
+      this.country.length == 0 && // alternativt || hvis man vil filterne skal være avhengige av hverandre
+      this.category.length == 0 &&
+      this.ingredient.name.length == 0
+    ) {
+      Alert.danger('Please choose a filter');
     } else {
       recipeService
         .getFilteredRecipes(this.country, this.category, this.ingredient.name)
@@ -184,11 +237,27 @@ export class RecipeList extends Component {
         .catch((error) => Alert.danger('Error getting filtered recipes: ' + error.message));
     }
   }
+*/
+  addCountryAndCategoryFilter() {
+    if (this.country.length == 0 && this.category.length == 0) {
+      Alert.danger('Please choose both filters before applying changes');
+    } else {
+      recipeService
+        .getFilteredByCountryAndCategory(this.country, this.category)
+        .then((recipe) => (this.filtered_recipes = recipe))
+        .then(() => console.log(this.country))
+        .catch((error) => Alert.danger('Error filtering recipies: ' + error.message));
+      console.log(this.country);
+      console.log(this.category);
+    }
+  }
 
   removeFilter() {
     this.country = '';
     this.category = '';
     this.ingredient.name = '';
+    this.secondingredient.name = '';
+    this.thirdingredient.name = '';
     this.filtered_recipes = this.recipes;
   }
 }

@@ -195,6 +195,7 @@ router.get('/ingredients', (_request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+/*
 ///////////////////FILTER
 //Example request params: { country: "China" }
 //Example request params: { category: "Asian" }
@@ -207,6 +208,18 @@ router.get('/recipes/:country/:category/:ingredient', (request, response) => {
   if (country && category && ingredient) {
     recipeService
       .getFilteredRecipe(country, category, ingredient)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  }
+});
+*/
+
+router.get('/countryandcategoryfilter/:country/:category', (request, response) => {
+  const country = String(request.params.country);
+  const category = String(request.params.category);
+  if (country && category) {
+    recipeService
+      .getFilterCountryAndCategory(country, category)
       .then((rows) => response.send(rows))
       .catch((error) => response.status(500).send(error));
   }
