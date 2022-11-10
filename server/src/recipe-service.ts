@@ -163,7 +163,6 @@ class RecipeService {
     });
   }
 
-
   createRecipe(name: string, country: string, category: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
@@ -214,7 +213,7 @@ class RecipeService {
         [order_number, description, recipe_id],
         (error, _results) => {
           if (error) return reject(error);
-// trenger jeg å bruke noe av resultatet her nå eller?
+          // trenger jeg å bruke noe av resultatet her nå eller?
           resolve();
         }
       );

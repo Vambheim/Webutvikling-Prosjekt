@@ -179,7 +179,6 @@ router.get('/ingredients', (_request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-
 router.post('/ingredients', (request, response) => {
   const data = request.body;
   if (typeof data.name == 'string' && data.name.length != 0) {
@@ -218,7 +217,6 @@ router.post('/recipe/ingredients', (request, response) => {
 });
 
 /////////////Steps
-
 router.post('/steps', (request, response) => {
   const data = request.body;
   if (
@@ -238,24 +236,20 @@ router.post('/steps', (request, response) => {
   }
 });
 
-
 ///////////////////FILTER
-//Example request params: { country: "China" }
-//Example request params: { category: "Asian" }
-//Example request params: { ingredient: "Carrot" }
-router.get('/recipes/:country/:category/:ingredient', (request, response) => {
-  // vurdere å endre sti til "recipes/filter" ? og data = request.body
-  const country = String(request.params.country);
-  const category = String(request.params.category);
-  const ingredient = String(request.params.ingredient);
-  if (country && category && ingredient) {
-    recipeService
-      .getFilteredRecipe(country, category, ingredient)
-      .then((rows) => response.send(rows))
-      .catch((error) => response.status(500).send(error));
-  }
-});
-*/
+
+// router.get('/recipes/:country/:category/:ingredient', (request, response) => {
+//   // vurdere å endre sti til "recipes/filter" ? og data = request.body
+//   const country = String(request.params.country);
+//   const category = String(request.params.category);
+//   const ingredient = String(request.params.ingredient);
+//   if (country && category && ingredient) {
+//     recipeService
+//       .getFilteredRecipe(country, category, ingredient)
+//       .then((rows) => response.send(rows))
+//       .catch((error) => response.status(500).send(error));
+//   }
+// });
 
 router.get('/countryandcategoryfilter/:country/:category', (request, response) => {
   const country = String(request.params.country);
