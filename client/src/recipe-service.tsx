@@ -29,6 +29,17 @@ export type Ingredient = {
   name: string;
 };
 
+export type addIngredient = {
+  name: string;
+  amount: number;
+  measurement_unit: string;
+};
+
+export type addStep = {
+  description: string;
+  order_number: number;
+};
+
 export type ShoppingListInfo = {
   shopping_list_id: number;
   recipe_id: number;
@@ -109,8 +120,7 @@ class RecipeService {
    *
    * Resolves the newly created task id.
    */
-  //endre til createRecipe
-  create(name: string, category: string, country: string) {
+  createRecipe(name: string, category: string, country: string) {
     return axios
       .post<{ recipe_id: number }>('/recipes', {
         name: name,
@@ -118,6 +128,40 @@ class RecipeService {
         country: country,
       })
       .then((response) => response.data.recipe_id);
+  }
+
+  createIngredient(name: string) {
+    return axios
+      .post<{ ingredient_id: number }>('/ingredients', {
+        name: name,
+      })
+      .then((response) => response.data.ingredient_id);
+  }
+
+  createRecipeIngredients(
+    ingredient_id: number,
+    recipe_id: number,
+    amount_per_person: number,
+    measurement_unit: string
+  ) {
+    return axios
+      .post('/recipe/ingredients', {
+        ingredient_id: ingredient_id,
+        recipe_id: recipe_id,
+        amount_per_person: amount_per_person,
+        measurement_unit: measurement_unit,
+      })
+      .then((response) => response.data);
+  }
+
+  createStep(order_number: number, description: string, recipe_id: number) {
+    return axios
+      .post('/steps', {
+        order_number: order_number,
+        description: description,
+        recipe_id: recipe_id,
+      })
+      .then((response) => response.data);
   }
 
   getShoppingList(user_id: number) {
