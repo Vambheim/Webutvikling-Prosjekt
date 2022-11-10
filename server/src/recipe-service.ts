@@ -149,6 +149,21 @@ class RecipeService {
     });
   }
 
+  getFilterCountryAndCategory(country: string, category: string) {
+    return new Promise<Recipe[]>((resolve, reject) => {
+      pool.query(
+        'SELECT * FROM recipe WHERE country=? AND category=?',
+        [country, category],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
+
+          resolve(results as Recipe[]);
+        }
+      );
+    });
+  }
+
+
   createRecipe(name: string, country: string, category: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
