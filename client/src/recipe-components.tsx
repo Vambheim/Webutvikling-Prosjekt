@@ -9,6 +9,8 @@ import recipeService, {
   Ingredient,
   User,
   ShoppingListInfo,
+  addIngredient,
+  addStep,
 } from './recipe-service';
 import { createHashHistory } from 'history';
 
@@ -253,7 +255,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
           {this.ingredients.map((ing) => (
             <Row key={ing.ingredient_id}>
               <Column width={2}>
-                {ing.amount_per_person * this.portions +
+                {(ing.amount_per_person * this.portions).toFixed(2) +
                   ' ' +
                   ing.measurement_unit +
                   ' ' +
@@ -300,7 +302,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
     recipeService
       .get(this.props.match.params.recipe_id)
       .then((recipe) => (this.recipe = recipe))
-      //endre til navn getRecipeSteps
+      //endre til navn getRecipeSteps ?
       .then(() => recipeService.getSteps(this.recipe.recipe_id))
       .then((steps) => (this.steps = steps))
       .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
@@ -374,40 +376,20 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
 }
 
 export class RecipeAdd extends Component {
-  // steps: Step[] = [];
-  step: Step = { step_id: 0, order_number: 0, description: '', recipe_id: 0 };
-  // ingredients: Ingredient[] = [];
-  ingredient: RecipeIngredient = {
-    ingredient_id: 0,
-    name: '',
-    recipe_id: 0,
-    amount_per_person: 0,
-    measurement_unit: '',
-  };
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
-  showIng: string = 'hidden';
-  showSteps: string = 'hidden';
-  state = { numStepChildren: 2, numIngredientChildren: 2 };
+  portions: number = 1;
+  showIng: string = 'visible';
+  showSteps: string = 'visible';
+
+  ingredients: addIngredient[] = [];
+  ingredient: addIngredient = { name: '', amount: 1, measurement_unit: '' };
+  //amount må være number, men da fungerer ikke placeholder
+
+  stepCounter: number = 1;
+  steps: addStep[] = [];
+  step: addStep = { description: '', order_number: this.stepCounter };
 
   render() {
-    const furtherSteps = [];
-
-    for (let stepNumber = 2; stepNumber < this.state.numStepChildren; stepNumber += 1) {
-      furtherSteps.push(<Form.Input type="text" placeholder={`Step ${stepNumber}`}></Form.Input>);
-    }
-
-    const furtherIngredients = [];
-
-    for (
-      let ingredientNumber = 2;
-      ingredientNumber < this.state.numIngredientChildren;
-      ingredientNumber += 1
-    ) {
-      furtherIngredients.push(
-        <Form.Input type="text" placeholder={`Ingredient ${ingredientNumber}`}></Form.Input>
-      );
-    }
-
     return (
       <>
         <Card title="Add Recipe">
@@ -415,7 +397,7 @@ export class RecipeAdd extends Component {
             <Column>You can add your favourite recipe here</Column>
           </Row>
           <Row>
-            <Column width={2}>
+            <Column width={3}>
               <Form.Input
                 value={this.recipe.name}
                 type="text"
@@ -425,8 +407,9 @@ export class RecipeAdd extends Component {
             </Column>
           </Row>
           <Row>
-            <Column width={2}>
+            <Column width={3}>
               <Form.Input
+                // vurdere å endre denne til drop down /select
                 value={this.recipe.category}
                 type="text"
                 placeholder="Category"
@@ -435,12 +418,26 @@ export class RecipeAdd extends Component {
             </Column>
           </Row>
           <Row>
-            <Column width={2}>
+            <Column width={3}>
               <Form.Input
                 value={this.recipe.country}
                 type="text"
                 placeholder="Country"
                 onChange={(event) => (this.recipe.country = event.currentTarget.value)}
+              ></Form.Input>
+            </Column>
+          </Row>
+          <Row>
+            <Row>
+              <Column>Choose the number of portions for this recipe:</Column>
+            </Row>
+            <Column width={3}>
+              <Form.Input
+                value={this.portions}
+                type="number"
+                // placeholder={'Number of portions'}
+                min={1}
+                onChange={(event) => (this.portions = Number(event.currentTarget.value))}
               ></Form.Input>
             </Column>
           </Row>
@@ -454,34 +451,65 @@ export class RecipeAdd extends Component {
         </Card>
         <div
           style={{
-            //@ts-ignore
+            // @ts-ignore
             visibility: this.showIng,
           }}
         >
           <Card title="Add ingredients">
             <Row>
-              <Column width={2}>
+              <Column>Choose amount for this ingredient:</Column>
+            </Row>
+            <Row>
+              <Column width={3}>
                 <Form.Input
-                  value={this.ingredient.name}
-                  type="text"
-                  placeholder="Ingredient 1"
-                  onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
+                  value={this.ingredient.amount}
+                  type="number"
+                  min={1}
+                  onChange={(event) => (this.ingredient.amount = Number(event.currentTarget.value))}
                 ></Form.Input>
-                {furtherIngredients}
-              </Column>
-              <Column>
-                <Button.Light onClick={() => this.addIngredient()}>+ </Button.Light>
               </Column>
             </Row>
             <Row>
+              <Column width={3}>
+                <Form.Input
+                  value={this.ingredient.measurement_unit}
+                  type="text"
+                  placeholder="Measurement unit"
+                  // HADDE VÆRT BEST MED PRE-DEFINERTE ENHETER OG DROP DOWN
+                  onChange={(event) =>
+                    (this.ingredient.measurement_unit = event.currentTarget.value)
+                  }
+                ></Form.Input>
+              </Column>
+            </Row>
+            <Row>
+              <Column width={3}>
+                <Form.Input
+                  value={this.ingredient.name}
+                  type="text"
+                  placeholder="Ingredient"
+                  onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
+                ></Form.Input>
+              </Column>
               <Column>
-                <Button.Light onClick={() => (this.showSteps = 'visible')}>
-                  Continue to add steps
-                </Button.Light>
+                <Button.Light onClick={() => this.addIngredient()}>+ </Button.Light>
+                <Button.Light onClick={() => this.undoIngredient()}>&#x1F519;</Button.Light>
+              </Column>
+            </Row>
+            {this.ingredients.map((ing, i) => (
+              <Row key={i}>
+                <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
+              </Row>
+            ))}
+
+            <Row>
+              <Column>
+                <Button.Light onClick={() => this.openStep()}>Continue to add steps</Button.Light>
               </Column>
             </Row>
           </Card>
         </div>
+
         <div
           style={{
             //@ts-ignore
@@ -490,19 +518,24 @@ export class RecipeAdd extends Component {
         >
           <Card title="Add steps">
             <Row>
-              <Column width={2}>
+              <Column width={3}>
                 <Form.Input
                   value={this.step.description}
                   type="text"
-                  placeholder="Step 1"
+                  placeholder="Step"
                   onChange={(event) => (this.step.description = event.currentTarget.value)}
                 ></Form.Input>
-                {furtherSteps}
               </Column>
               <Column>
-                <Button.Light onClick={() => this.addStepInput()}>+</Button.Light>
+                <Button.Light onClick={() => this.addStep()}>+</Button.Light>
+                <Button.Light onClick={() => this.undoStep()}>&#x1F519;</Button.Light>
               </Column>
             </Row>
+            {this.steps.map((step) => (
+              <Row key={step.order_number}>
+                <Column>{step.order_number + ': ' + step.description}</Column>
+              </Row>
+            ))}
             <Row>
               <Column>
                 <Button.Success onClick={() => this.saveRecipe()}>Save recipe</Button.Success>
@@ -514,33 +547,88 @@ export class RecipeAdd extends Component {
     );
   }
 
-  mounted() {}
+  // mounted() {}
 
   openIngredient() {
-    if (this.recipe.name == '' || this.recipe.country == '' || this.recipe.category == '') {
-      Alert.danger('All fields must be filled in order to add ingredient');
+    if (
+      this.recipe.name == '' ||
+      this.recipe.country == '' ||
+      this.recipe.category == '' ||
+      this.portions <= 0
+    ) {
+      Alert.danger('All fields must be filled in order to continue');
     } else {
       this.showIng = 'visible';
     }
   }
 
+  addIngredient() {
+    if (this.ingredient.amount <= 0 || this.ingredient.name == '') {
+      Alert.danger('All required fields must be filled in order to add ingredient');
+    } else {
+      this.ingredients.push(this.ingredient);
+      this.ingredient = { name: '', amount: 1, measurement_unit: '' };
+    }
+  }
+
+  undoIngredient() {
+    this.ingredients.pop();
+  }
+
+  openStep() {
+    if (this.ingredients.length >= 1) {
+      this.showSteps = 'visible';
+    } else {
+      Alert.danger('Add some ingredients to continue');
+    }
+  }
+
+  addStep() {
+    if (this.step.description == '') {
+      Alert.danger('All fields must be filled in order to add step');
+    } else {
+      this.steps.push(this.step);
+      this.stepCounter += 1;
+      this.step = { description: '', order_number: this.stepCounter };
+    }
+  }
+
+  undoStep() {
+    this.steps.pop();
+    this.stepCounter -= 1;
+    this.step.order_number = this.stepCounter;
+  }
+
   saveRecipe() {
     recipeService
-      .create(this.recipe.name, this.recipe.country, this.recipe.category)
-      .then((recipe_id) => history.push('/recipes/' + recipe_id))
+      .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
+      .then((recipe_id) => {
+        this.ingredients.map((ing) =>
+          recipeService
+            .createIngredient(ing.name)
+            .then((ingredient_id) => {
+              recipeService
+                .createRecipeIngredients(
+                  ingredient_id,
+                  recipe_id,
+                  ing.amount / this.portions,
+                  ing.measurement_unit
+                )
+                .then((response) => console.log(response.message))
+                .catch((error) => Alert.danger(error.message));
+            })
+            .catch((error) => console.log(error.message))
+        );
+        this.steps.map((step) => {
+          recipeService
+            .createStep(step.order_number, step.description, recipe_id)
+            .then((response) => console.log(response.message))
+            .catch((error) => Alert.danger(error.message));
+        });
+        Alert.success('Recipe for ' + this.recipe.name + ' was created');
+        history.push('/recipes/' + recipe_id);
+      })
       .catch((error) => Alert.danger('Error creating task: ' + error.message));
-  }
-
-  addIngredient() {
-    this.setState({
-      numIngredientChildren: this.state.numIngredientChildren + 1,
-    });
-  }
-
-  addStepInput() {
-    this.setState({
-      numStepChildren: this.state.numStepChildren + 1,
-    });
   }
 }
 

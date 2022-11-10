@@ -149,8 +149,7 @@ class RecipeService {
     });
   }
 
-  // endre navn til createRecipe
-  create(name: string, country: string, category: string) {
+  createRecipe(name: string, country: string, category: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
         'INSERT INTO recipe SET name = ?, category = ?,  country = ?',
@@ -163,6 +162,53 @@ class RecipeService {
       );
     });
   }
+
+  /////FØRSTE LEDD
+  createIngredient(name: string) {
+    return new Promise<number>((resolve, reject) => {
+      pool.query('INSERT INTO ingredient SET name=?', [name], (error, results: ResultSetHeader) => {
+        if (error) return reject(error);
+
+        resolve(results.insertId);
+      });
+    });
+  }
+
+
+  //// ANDRE LEDD
+  createRecipeIngredient(
+    ingredient_id: number,
+    recipe_id: number,
+    amount_per_person: number,
+    measurement_unit: number
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO recipe_ingredient SET ingredient_id=?, recipe_id=?, amount_per_person=?, measurement_unit=?',
+        [ingredient_id, recipe_id, amount_per_person, measurement_unit],
+        (error, _results) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+
+  createStep(order_number: number, description: string, recipe_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO step SET order_number=?, description=?, recipe_id=?',
+        [order_number, description, recipe_id],
+        (error, _results) => {
+          if (error) return reject(error);
+// trenger jeg å bruke noe av resultatet her nå eller?
+          resolve();
+        }
+      );
+    });
+  }
+
   // endre navn til updateRecipe
   update(recipe: Recipe) {
     return new Promise<void>((resolve, reject) => {
