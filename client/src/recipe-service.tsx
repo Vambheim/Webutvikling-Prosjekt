@@ -9,6 +9,14 @@ export type Recipe = {
   country: string;
 };
 
+export type RecipeDetailed = {
+  recipe_id: number;
+  name: string;
+  category: string;
+  country: string;
+  ingriedients: Array<Ingredient>;
+}
+
 export type Step = {
   step_id: number;
   description: string;
@@ -78,13 +86,36 @@ class RecipeService {
   //     .then((response) => response.data.id);
   // }
 
-  PostSpoonacularRecipes(data: Recipe) {
-    console.log(data.name)
+  //Poster Recipes
+  PostSpoonacularRecipes(recipes: Array<RecipeDetailed>) {
     return axios
-      .post<Recipe>('/recipes/', { data })
+      .post<Array<RecipeDetailed>>('/recipes/', { recipes })
+      .then((response) => response.data);
+  }
+
+  //Poster ingridienser
+  PostSpoonacularIngriedents(ingridients: Array<Ingredient>) {
+    return axios
+      .post<Array<Ingredient>>('/ingridients/', { ingridients })
+      .then((response) => response.data);
+  }
+
+  //Poster data for mange til mange tabellen mellom ingridienser og oppskrifter 
+  PostSpoonacularRecipeIngriedents(data: Array<RecipeDetailed>) {
+    var ingridients = []
+
+    for (let i = 0; i < data.length;) {
+      ingridients.push(data[i].ingriedients)
+      i++
+    }
+    ingridients = ingridients.flat()
+
+    return axios
+      .post<Array<Ingredient>>('/ingridients-recipes/', { ingridients })
       .then((response) => response.data);
   }
 }
+
 
 const recipeService = new RecipeService();
 export default recipeService;

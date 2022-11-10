@@ -112,20 +112,74 @@ class RecipeService {
   }
 
   PostSpoonacularRecipes(data: any) {
-    console.log(data['recipe_id'], data['name'], data['category'], data['country']);
-    return new Promise<number>((resolve, reject) => {
-      pool.query(
-        'INSERT INTO recipe SET recipe_id=?, name=?, category=?, country=?',
-        [data['recipe_id'], data['name'], data['category'], data['country']],
-        (error, results: ResultSetHeader) => {
-          if (error) return reject(error);
+    return new Promise<void>((resolve, reject) => {
+      for (let i = 0; i < data.length; ) {
+        pool.query(
+          'INSERT INTO recipe SET recipe_id=?, name=?, category=?, country=? ON DUPLICATE KEY UPDATE recipe_id=?, name=?, category=?, country=?',
+          [
+            data[i]['recipe_id'],
+            data[i]['name'],
+            data[i]['category'],
+            data[i]['country'],
+            data[i]['name'],
+            data[i]['category'],
+            data[i]['country'],
+          ],
+          (error, results: ResultSetHeader) => {
+            if (error) return reject(error);
+          }
+        );
 
-          resolve(results.insertId);
-        }
-      );
+        i++;
+      }
+
+      resolve();
     });
   }
 
+  PostSpoonacularIngridients(data: any) {
+    return new Promise<void>((resolve, reject) => {
+      for (let i = 0; i < data.length; ) {
+        pool.query(
+          'INSERT INTO ingredient SET ingredient_id=?, name=? ON DUPLICATE KEY UPDATE ingredient_id=?, name=?',
+          [data[i]['ingredient_id'], data[i]['name'], data[i]['name']],
+          (error, results: ResultSetHeader) => {
+            if (error) return reject(error);
+          }
+        );
+
+        i++;
+      }
+
+      resolve();
+    });
+  }
+
+  PostSpoonacularRecipesIngridients(data: any) {
+    return new Promise<void>((resolve, reject) => {
+      for (let i = 0; i < data.length; ) {
+        pool.query(
+          'INSERT INTO recipe_ingredient SET recipe_id=?, ingredient_id=?, amount_per_person=?, measurement_unit=? ON DUPLICATE KEY UPDATE ingredient_id=?, amount_per_person=?, measurement_unit=?',
+          [
+            data[i]['recipe_id'],
+            data[i]['ingredient_id'],
+            data[i]['amount_per_person'],
+            data[i]['measurement_unit'],
+            data[i]['ingredient_id'],
+            data[i]['amount_per_person'],
+            data[i]['measurement_unit'],
+          ],
+          (error, results: ResultSetHeader) => {
+            if (error) return reject(error);
+          }
+        );
+
+        i++;
+      }
+
+      resolve();
+    });
+  }
   /**
    * Create new recipe.
    *h

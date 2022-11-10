@@ -64,21 +64,49 @@ router.put('/recipes', (request, response) => {
   else response.status(400).send('Propperties are not valid');
 });
 
-// Example response body: { id: 4 }
+// Poster spørring til tabell Recipe
 router.post('/recipes', (request, response) => {
   var data = request.body;
-  console.log(data);
-  data = JSON.stringify(data).slice(8, -1);
 
-  var recipe = JSON.parse(data);
-  console.log(recipe['name']);
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(11, -1);
+  var recipes = JSON.parse(json);
 
   if (data != null)
     recipeService
-      .PostSpoonacularRecipes(recipe)
+      .PostSpoonacularRecipes(recipes)
       .then(() => response.send())
-      .catch((error) => response.status(500).send(error + 'post malæone'));
-  else response.status(666).send('satan');
+      .catch((error) => response.status(500).send(error));
+});
+
+// Poster spørring til tabell Ingridient
+router.post('/ingridients', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(15, -1);
+  var ingridients = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularIngridients(ingridients)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+//Poster spørring til tabell recipe_ingrident
+router.post('/ingridients-recipes', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(15, -1);
+  var ingridients = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularRecipesIngridients(ingridients)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
 });
 
 // router.delete('/tasks/:id', (request, response) => {
