@@ -12,27 +12,21 @@ var salt = bcrypt.genSaltSync(10);
 router.get('/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
   const password = String(request.params.password);
-  // flere sjekker ?
-  //kanskje typeof = string ?
-  if (email.length > 0 && password.length > 0) {
-    recipeService
-      .getUser(email)
-      .then((user) => {
-        if (bcrypt.compareSync(password, String(user.password))) {
-          response.send(user);
-          return;
-        } else {
-          response.status(400).send('Incorrect Email and/or Password! ');
-          return;
-        }
-      })
-      .catch((error) => {
-        response.status(500).send(error);
+  recipeService
+    .getUser(email)
+    .then((user) => {
+      if (bcrypt.compareSync(password, String(user.password))) {
+        response.send(user);
         return;
-      });
-  } else {
-    response.status(400).send('Please enter email and password');
-  }
+      } else {
+        response.status(400).send('Incorrect Email and/or Password! ');
+        return;
+      }
+    })
+    .catch((error) => {
+      response.status(500).send(error);
+      return;
+    });
 });
 
 // sjekke over denne når du får tid Thomas, kan ryddes mye tror jeg
@@ -120,7 +114,7 @@ router.post('/recipes', (request, response) => {
   const data = request.body;
   if (data && data.name != 0 && data.category != 0 && data.country != 0)
     recipeService
-      .create(data.name, data.category, data.country)
+      .createRecipe(data.name, data.category, data.country)
       .then((recipe_id) => response.send({ recipe_id: recipe_id }))
       .catch((error) => response.status(500).send(error));
   else response.status(400).send('Missing recipe details');
@@ -177,16 +171,6 @@ router.get('/recipes/:recipe_id/recommended/:category/:country', (request, respo
     .catch((error) => response.status(500).send(error));
 });
 
-// router.post('/recipes', (request, response) => {
-//   const data = request.body;
-//   if (data && data.name != 0 && data.category != 0 && data.country != 0)
-//     recipeService
-//       .create(data.name, data.category, data.country)
-//       .then((recipe_id) => response.send({ recipe_id: recipe_id }))
-//       .catch((error) => response.status(500).send(error));
-//   else response.status(400).send('Missing recipe details');
-// });
-
 //////////////////INGREDIENTS
 router.get('/ingredients', (_request, response) => {
   recipeService
@@ -195,7 +179,66 @@ router.get('/ingredients', (_request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-/*
+
+router.post('/ingredients', (request, response) => {
+  const data = request.body;
+  if (typeof data.name == 'string' && data.name.length != 0) {
+    recipeService
+      .createIngredient(data.name)
+      .then((ingredient_id) => response.send({ ingredient_id: ingredient_id }))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+router.post('/recipe/ingredients', (request, response) => {
+  const data = request.body;
+  if (
+    typeof data.ingredient_id == 'number' &&
+    data.ingredient_id.length != 0 &&
+    typeof data.recipe_id == 'number' &&
+    data.recipe_id.length != 0 &&
+    typeof data.amount_per_person == 'number' &&
+    data.amount_per_person.length != 0 &&
+    typeof data.measurement_unit == 'string'
+  ) {
+    recipeService
+      .createRecipeIngredient(
+        data.ingredient_id,
+        data.recipe_id,
+        data.amount_per_person,
+        data.measurement_unit
+      )
+      .then(() => response.send('Added successfully'))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+/////////////Steps
+
+router.post('/steps', (request, response) => {
+  const data = request.body;
+  if (
+    typeof data.order_number == 'number' &&
+    data.order_number.length != 0 &&
+    typeof data.description == 'string' &&
+    data.description.length != 0 &&
+    typeof data.recipe_id == 'number' &&
+    data.recipe_id.length != 0
+  ) {
+    recipeService
+      .createStep(data.order_number, data.description, data.recipe_id)
+      .then(() => response.send('Added successfully'))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+
 ///////////////////FILTER
 //Example request params: { country: "China" }
 //Example request params: { category: "Asian" }
@@ -241,8 +284,7 @@ router.post('/shoppinglist', (request, response) => {
     data.recipe_id != 0 &&
     data.ingredient_id != 0 &&
     data.user_id != 0 &&
-    data.amount != 0 &&
-    data.measurement_unit != ''
+    data.amount != 0
   )
     recipeService
       .addToShoppingList(data)
@@ -259,7 +301,7 @@ router.delete('/shoppinglist/:user_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-router.delete('/shoppinglist/:shopping_list_id', (request, response) => {
+router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
   const shopping_list_id = Number(request.params.shopping_list_id);
   recipeService
     .deleteItemShoppingList(shopping_list_id)

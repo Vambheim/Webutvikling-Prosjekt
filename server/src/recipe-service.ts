@@ -163,8 +163,8 @@ class RecipeService {
     });
   }
 
-  // endre navn til createRecipe
-  create(name: string, country: string, category: string) {
+
+  createRecipe(name: string, country: string, category: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
         'INSERT INTO recipe SET name = ?, category = ?,  country = ?',
@@ -177,6 +177,53 @@ class RecipeService {
       );
     });
   }
+
+  /////FØRSTE LEDD
+  createIngredient(name: string) {
+    return new Promise<number>((resolve, reject) => {
+      pool.query('INSERT INTO ingredient SET name=?', [name], (error, results: ResultSetHeader) => {
+        if (error) return reject(error);
+
+        resolve(results.insertId);
+      });
+    });
+  }
+
+
+  //// ANDRE LEDD
+  createRecipeIngredient(
+    ingredient_id: number,
+    recipe_id: number,
+    amount_per_person: number,
+    measurement_unit: number
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO recipe_ingredient SET ingredient_id=?, recipe_id=?, amount_per_person=?, measurement_unit=?',
+        [ingredient_id, recipe_id, amount_per_person, measurement_unit],
+        (error, _results) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+
+  createStep(order_number: number, description: string, recipe_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO step SET order_number=?, description=?, recipe_id=?',
+        [order_number, description, recipe_id],
+        (error, _results) => {
+          if (error) return reject(error);
+// trenger jeg å bruke noe av resultatet her nå eller?
+          resolve();
+        }
+      );
+    });
+  }
+
   // endre navn til updateRecipe
   update(recipe: Recipe) {
     return new Promise<void>((resolve, reject) => {
@@ -257,7 +304,8 @@ class RecipeService {
   getShoppingList(user_id: number) {
     return new Promise<ShoppingListInfo[]>((resolve, reject) => {
       pool.query(
-        'SELECT shopping_list.shopping_list_id,shopping_list.recipe_id, ingredient.ingredient_id, ingredient.name, shopping_list.amount, shopping_list.measurement_unit FROM shopping_list JOIN user ON shopping_list.user_id=user.user_id JOIN ingredient ON shopping_list.ingredient_id = ingredient.ingredient_id WHERE user.user_id = ?',
+        'SELECT shopping_list.shopping_list_id,shopping_list.recipe_id, ingredient.ingredient_id, ingredient.name, shopping_list.amount, shopping_list.measurement_unit FROM shopping_list JOIN user ON shopping_list.user_id=user.user_id JOIN ingredient ON shopping_list.ingredient_id = ingredient.ingredient_id WHERE user.user_id = ? ORDER BY shopping_list.shopping_list_id ASC',
+        //Newest ingredients are on the bottom of the list
         [user_id],
         (error, results: RowDataPacket[]) => {
           resolve(results as ShoppingListInfo[]);
