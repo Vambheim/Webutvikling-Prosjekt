@@ -163,7 +163,6 @@ class RecipeService {
     });
   }
 
-  /////FØRSTE LEDD
   createIngredient(name: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query('INSERT INTO ingredient SET name=?', [name], (error, results: ResultSetHeader) => {
@@ -174,8 +173,6 @@ class RecipeService {
     });
   }
 
-
-  //// ANDRE LEDD
   createRecipeIngredient(
     ingredient_id: number,
     recipe_id: number,

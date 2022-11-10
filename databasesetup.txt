@@ -121,3 +121,12 @@ AND like_information.user_id =?
 
 currentUser= ?
 
+SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country
+FROM ingredient JOIN recipe_ingredient ON ingredient.ingredient_id = recipe_ingredient.ingredient_id
+JOIN recipe ON recipe_ingredient.recipe_id = recipe.recipe_id
+WHERE ingredient.name NOT IN (
+    SELECT ingredient.name FROM ingredient
+	WHERE name!=? && name!=? && name!=?
+) 
+GROUP BY recipe.recipe_id
+HAVING count(recipe.recipe_id) = ?
