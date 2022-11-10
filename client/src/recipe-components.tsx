@@ -378,8 +378,8 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
 export class RecipeAdd extends Component {
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
   portions: number = 1;
-  showIng: string = 'visible';
-  showSteps: string = 'visible';
+  showIng: string = 'hidden';
+  showSteps: string = 'hidden';
 
   ingredients: addIngredient[] = [];
   ingredient: addIngredient = { name: '', amount: 1, measurement_unit: '' };
@@ -576,7 +576,7 @@ export class RecipeAdd extends Component {
   }
 
   openStep() {
-    if (this.ingredients.length >= 1) {
+    if (this.ingredients.length != 0) {
       this.showSteps = 'visible';
     } else {
       Alert.danger('Add some ingredients to continue');
