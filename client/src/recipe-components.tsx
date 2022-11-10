@@ -247,8 +247,6 @@ export class RecipeList extends Component {
         .then((recipe) => (this.filtered_recipes = recipe))
         .then(() => console.log(this.country))
         .catch((error) => Alert.danger('Error filtering recipies: ' + error.message));
-      console.log(this.country);
-      console.log(this.category);
     }
   }
 
