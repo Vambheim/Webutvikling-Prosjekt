@@ -102,6 +102,17 @@ router.delete('/recipes/:id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+//Add ingredient:
+router.post('/ingredients', (request, response) => {
+  const data = request.body;
+  if (data && data.name != 0)
+    recipeService
+      .createIngredient(data.name)
+      .then(() => response.send('Status 201'))
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Missing recipe details');
+});
+
 // Example request body: { title: "Ny oppgave" }
 // // Example response body: { id: 4 }
 // router.post('/tasks', (request, response) => {

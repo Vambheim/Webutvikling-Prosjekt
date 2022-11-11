@@ -89,7 +89,7 @@ class RecipeService {
   }
 
   /**
-   * Create new task having the given title.
+   * Create new recipe with the given name, category and country.
    *
    * Resolves the newly created task id.
    */
@@ -101,6 +101,19 @@ class RecipeService {
         country: country,
       })
       .then((response) => response.data.recipe_id);
+  }
+
+  /**
+   * Create new recipe with the given name, category and country.
+   *
+   * Resolves the newly created task id.
+   */
+  createIngredient(name: string) {
+    return axios
+      .post('/recipes', {
+        name: name,
+      })
+      .then((response) => response.data);
   }
 
   /**

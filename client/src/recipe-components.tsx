@@ -551,7 +551,12 @@ export class RecipeAdd extends Component {
     recipeService
       .create(this.recipe.name, this.recipe.country, this.recipe.category)
       .then((recipe_id) => history.push('/recipes/' + recipe_id))
-      .catch((error) => Alert.danger('Error creating task: ' + error.message));
+      .catch((error) => Alert.danger('Error creating recipe: ' + error.message));
+
+    recipeService
+      .createIngredient(this.ingredient.name)
+      .then((ingredient_id) => history.push('/recipes/' + ingredient_id))
+      .catch((error) => Alert.danger('Error creating ingredient: ' + error.message));
   }
 
   addIngredient() {

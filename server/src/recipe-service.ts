@@ -171,6 +171,35 @@ class RecipeService {
     });
   }
 
+  createIngredient(name: string) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query('INSERT INTO ingredient SET name = ?', [name], (error) => {
+        if (error) return reject(error);
+
+        resolve();
+      });
+    });
+  }
+
+  createRecipeIngredient(
+    ingredient_id: number,
+    recipe_id: number,
+    amount_per_person: number,
+    measurement_unit: string
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO recipe_ingredient SET ingredient_id = ?, recipe_id, amount_per_person, measurement_unit',
+        [ingredient_id, recipe_id, amount_per_person, measurement_unit],
+        (error) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+
   createStep(order_number: string, description: string, recipe_id: string) {
     return new Promise<number>((resolve, reject) => {
       pool.query(
@@ -180,6 +209,20 @@ class RecipeService {
           if (error) return reject(error);
 
           resolve(results.insertId);
+        }
+      );
+    });
+  }
+
+  createRecipeStep(order_number: string, description: string, recipe_id: string) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO step SET order_number = ?, description = ?,  recipe_id = ?',
+        [order_number, description, recipe_id],
+        (error) => {
+          if (error) return reject(error);
+
+          resolve();
         }
       );
     });
