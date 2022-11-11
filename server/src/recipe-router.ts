@@ -109,6 +109,20 @@ router.post('/ingridients-recipes', (request, response) => {
       .catch((error) => response.status(500).send(error));
 });
 
+//Poster spørring til tabell Step
+router.post('/steps', (request, response) => {
+  var data = request.body;
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(9, -1);
+  var steps = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularSteps(steps)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
 // router.delete('/tasks/:id', (request, response) => {
 //   taskService
 //     .delete(Number(request.params.id))

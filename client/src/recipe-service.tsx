@@ -114,7 +114,16 @@ class RecipeService {
       .post<Array<Ingredient>>('/ingridients-recipes/', { ingridients })
       .then((response) => response.data);
   }
+
+  //Poster data for steps
+  PostSpoonacularSteps(steps: Array<Step>) {
+    return axios
+      .post<Array<Step>>('/steps/', { steps })
+      .then((response) => response.data);
+  }
 }
+
+
 
 
 const recipeService = new RecipeService();

@@ -14,83 +14,42 @@ import {
   UserDetails,
   loggedIn,
 } from './recipe-components';
-import RecipeService, { Ingredient, RecipeDetailed } from './recipe-service';
+import RecipeService, { Ingredient, RecipeDetailed, Step } from './recipe-service';
 
 class Menu extends Component {
   //henter data fra spoonacular når komponentet lastes
   mounted() {
 
-    //kan løses "cleanere" med et array med objekter og funksjonell programmering men ok løsning for nå:
-    var string = '';
-    var til100 = '';
-    var til200 = '';
-    var til300 = '';
-    var til400 = '';
-    var til500 = '';
-    var til600 = '';
-    var til700 = '';
-    for (let i = 0; i <= 500; i++) {
-      string = string.concat(`${i},`);
-      switch (i) {
-        //sett inn heller noe sånt som under med funksjon med casen som parameter 
-        // function acase(case){
-        //   case case:
-        //     array[`${case}`] = string.slice(0, -1);
-        //     string = '';
-        //     break;
-        // }
-        case 100:
-          til100 = string.slice(0, -1);
-          string = '';
-          break;
-        case 200:
-          til200 = string.slice(0, -1);
-          string = '';
-          break;
-        case 300:
-          til300 = string.slice(0, -1);
-          string = '';
-          break;
-        case 400:
-          til400 = string.slice(0, -1);
-          string = '';
-          break;
-        case 500:
-          til500 = string.slice(0, -1);
-          string = '';
-          break;
-        case 600:
-          til600 = string.slice(0, -1);
-          string = '';
-          break;
-        case 700:
-          til700 = string.slice(0, -1);
-          string = '';
-          break;
-      }
-    }
-
-    async function getRecipesBulk(ids: String) {
-      const getApi = async (): Promise<[Array<RecipeDetailed>, Array<Ingredient>]> => { //Typescript krever et promise som returner en tuppel med to Arrays
+    //funksjonen kan vel defineres en annen plass som er mer hensiktsmessig og ryddig 
+    async function getRecipesBulk() {
+      const getApi = async (): Promise<[Array<RecipeDetailed>, Array<Ingredient>, Array<Step>]> => { //Typescript krever et promise som returner en tuppel med to Arrays
         const api = await fetch(
           //'https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772'
 
           //`https://api.spoonacular.com/recipes/informationBulk?apiKey=${process.env.REACT_APP_API_KEY}&ids=${ids}`
 
-          `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=500`
+          `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=50`
         );
         //${process.env.REACT_APP_API_KEY}
         const data = await api.json();
+        const recipeJSON = data["recipes"]
+
 
         //lagerer objekter i array for å sende videre i API-et
         var recipes: Array<RecipeDetailed> = [];
         var ingriedientsUnique: Array<Ingredient> = [];
+        var steps: Array<Step> = []
+        var ingriedients: Array<Ingredient> = [];
 
-        for (let i = 0; i < data.length;) {
-
+        for (let i = 0; i < recipeJSON.length;) {
           //variabler for å lagre ingridienser knyttt en oppskrift
-          var recipeIngriedents = data[i]['extendedIngredients'];
-          var ingriedients: Array<Ingredient> = [];
+          const recipeIngriedents = recipeJSON[i]['extendedIngredients'];
+          var recipeSteps = []
+
+          //recipesteps er ikke alltid inkludert så må håndtere tilfellet det ikke er 
+          if (recipeJSON[i]["analyzedInstructions"].length != 0 && recipeJSON[i]["analyzedInstructions"] != undefined && recipeJSON[i]["analyzedInstructions"] && recipeJSON[i]["analyzedInstructions"] != null) {
+            recipeSteps = recipeJSON[i]["analyzedInstructions"][0]["steps"]
+          }
 
           //traverserer ingredienser i oppskriften
           for (let y = 0; y < recipeIngriedents.length;) {
@@ -99,12 +58,13 @@ class Menu extends Component {
             const ingriedent: Ingredient = {
               ingredient_id: recipeIngriedents[y]['id'],
               name: recipeIngriedents[y]['name'],
-              recipe_id: data[i]['id'],
+              recipe_id: recipeJSON[i]['id'],
               amount_per_person: recipeIngriedents[y]['amount'],
               measurement_unit: recipeIngriedents[y]['unit'],
             };
 
-            if (data[i]['cuisines'] && data[i]['cuisines'][0] != undefined) ingriedients.push(ingriedent);
+            //setter inn ingridients
+            if (recipeJSON[i]['cuisines'] && recipeJSON[i]['cuisines'][0] != undefined && recipeJSON[i]['dishTypes'] && recipeJSON[i]['dishTypes'][0] != undefined && recipeSteps != null) ingriedients.push(ingriedent);
 
             //lager en liste over unike id-er for å unngå dobbeltlagring av ingridienser 
             if (!ingriedientsUnique.some(e => e.ingredient_id == recipeIngriedents[y]['id'])) ingriedientsUnique.push(ingriedent)
@@ -114,38 +74,56 @@ class Menu extends Component {
 
           //Lager et objekt med utvalgt data for Recipe fra JSON
           const recipe: RecipeDetailed = {
-            recipe_id: data[i]['id'],
-            name: data[i]['title'],
-            category: data[i]['dishTypes'] ? data[i]['dishTypes'][0] : null, // Henter den første dishtype hvis det eksisterer
-            country: data[i]['cuisines'] ? data[i]['cuisines'][0] : null, // Henter den første cuisine hvis det eksisterer
+            recipe_id: recipeJSON[i]['id'],
+            name: recipeJSON[i]['title'],
+            category: recipeJSON[i]['dishTypes'] ? recipeJSON[i]['dishTypes'][0] : null, // Henter den første dishtype hvis det eksisterer
+            country: recipeJSON[i]['cuisines'] ? recipeJSON[i]['cuisines'][0] : null, // Henter den første cuisine hvis det eksisterer
             ingriedients: ingriedients // Legger til listen over ingridiens objekter
           };
 
-          if (recipe.country != null && recipe.country != undefined) recipes.push(recipe);
+          if (recipe.country != null && recipe.country != undefined && recipe.category != null && recipe.category != undefined && recipeSteps != null) {
+            //Pusher recipe i array
+            recipes.push(recipe);
 
+            //Traverserer steps for hver oppskrift og putter det i array
+            for (let z = 0; z < recipeSteps.length;) {
+              const step: Step = {
+                step_id: 1,
+                description: recipeSteps[z]["step"],
+                order_number: recipeSteps[z]["number"],
+                recipe_id: recipe.recipe_id
+              }
+
+              steps.push(step)
+              z++
+            }
+          }
           i++;
         }
 
-        return [recipes, ingriedientsUnique];
+        //returnerer tre ulike array som kan refereres til avhengig av hvilke som trengs 
+        return [recipes, ingriedientsUnique, steps];
       };
 
       const result = await getApi()
-
+      //Kaller REST API for hver enkelt tabell i databasen  
       RecipeService.PostSpoonacularRecipes(result[0]);
       RecipeService.PostSpoonacularIngriedents(result[1]);
       RecipeService.PostSpoonacularRecipeIngriedents(result[0]);
+      RecipeService.PostSpoonacularSteps(result[2]);
 
     }
-    setTimeout(() => {
-      clearInterval(setInterval(() => getRecipesBulk(""), 1000))
-    }, 10000);
-    // getRecipesBulk(til100);
-    // getRecipesBulk(til200);
-    // getRecipesBulk(til300);
-    // getRecipesBulk(til400);
-    // getRecipesBulk(til500);
-    // getRecipesBulk(til600);
-    // getRecipesBulk(til700);
+
+
+    //Endre denne for å skru av og på kall til API-et 
+    const retrieveFromApi = false
+
+    if (retrieveFromApi) {
+      const intervalAPI = setInterval(() => getRecipesBulk(), 1500)
+      setTimeout(() => {
+        clearInterval(intervalAPI)
+      }, 7500);
+    }
   }
 
   render() {
