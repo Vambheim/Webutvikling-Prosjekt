@@ -271,7 +271,7 @@ export class RecipeList extends Component {
       recipeService
         .getFilterBy2Ingredients(
           this.ingredient1.name ? this.ingredient1.name : this.ingredient2.name,
-          this.ingredient2.name ? this.ingredient2.name : this.ingredient3.name
+          this.ingredient3.name ? this.ingredient3.name : this.ingredient2.name
         )
         .then((recipe) => (this.filtered_recipes = recipe))
         .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
