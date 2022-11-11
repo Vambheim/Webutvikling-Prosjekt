@@ -149,15 +149,23 @@ class RecipeService {
   //   });
   // }
 
-  getFilterByIngredients(ingredient1: string, ingredient2: string, ingredient3: string, activeFilters: number) {
+  getFilterByIngredients(
+    ingredient1: string,
+    ingredient2: string,
+    ingredient3: string,
+    activeFilters: number
+  ) {
     return new Promise<Recipe[]>((resolve, reject) => {
-      pool.query("SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM ingredient JOIN recipe_ingredient ON ingredient.ingredient_id = recipe_ingredient.ingredient_id JOIN recipe ON recipe_ingredient.recipe_id = recipe.recipe_id WHERE ingredient.name NOT IN (SELECT ingredient.name FROM ingredient WHERE name!=? && name!=? && name!=?) GROUP BY recipe.recipe_id HAVING count(recipe.recipe_id) = ?" 
-      ,[ingredient1, ingredient2, ingredient3, activeFilters], (error, results: RowDataPacket[]) => {
-        if (error) return reject(error); 
+      pool.query(
+        'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM ingredient JOIN recipe_ingredient ON ingredient.ingredient_id = recipe_ingredient.ingredient_id JOIN recipe ON recipe_ingredient.recipe_id = recipe.recipe_id WHERE ingredient.name NOT IN (SELECT ingredient.name FROM ingredient WHERE name!=? && name!=? && name!=?) GROUP BY recipe.recipe_id HAVING count(recipe.recipe_id) = ?',
+        [ingredient1, ingredient2, ingredient3, activeFilters],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
 
-        resolve(results as Recipe[])
-      })
-    })
+          resolve(results as Recipe[]);
+        }
+      );
+    });
   }
 
   getFilterByCountryAndCategory(country: string, category: string) {
@@ -237,6 +245,39 @@ class RecipeService {
       pool.query(
         'UPDATE recipe SET name=?, category=?, country=? WHERE recipe_id=?',
         [recipe.name, recipe.category, recipe.country, recipe.recipe_id],
+        (error, _results) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+
+  updateRecipeIngredients(
+    amount_per_person: number,
+    measurement_unit: string,
+    recipe_id: number,
+    ingredient_id: number
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'UPDATE recipe_ingredient SET amount_per_person=?, measurement_unit=? WHERE recipe_id=? AND ingredient_id=?',
+        [amount_per_person, measurement_unit, recipe_id, ingredient_id],
+        (error, _results) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+
+  updateSteps(step: Step) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'UPDATE step SET order_number=?, description=? WHERE step_id AND recipe_id=?',
+        [step.order_number, step.description, step.step_id, step.recipe_id],
         (error, _results) => {
           if (error) return reject(error);
 

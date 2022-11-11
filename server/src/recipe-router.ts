@@ -120,6 +120,7 @@ router.post('/recipes', (request, response) => {
   else response.status(400).send('Missing recipe details');
 });
 
+//Her må det legges til "/:recipe_id"
 router.put('/recipes', (request, response) => {
   const data = request.body;
   if (
@@ -140,6 +141,31 @@ router.put('/recipes', (request, response) => {
         country: data.country,
       })
       .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Propperties are not valid');
+});
+
+router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response) => {
+  const data = request.body;
+  const recipe_id = Number(request.params.recipe_id);
+  const ingredient_id = Number(request.params.ingredient_id);
+
+  if (
+    typeof data.amount_per_person == 'string' &&
+    data.amount_per_person.length != 0 &&
+    typeof data.measurement_unit == 'string' &&
+    data.measurement_unit != 0 &&
+    typeof recipe_id == 'number' &&
+    typeof ingredient_id == 'number'
+  )
+    recipeService
+      .updateRecipeIngredients(
+        data.amount_per_person,
+        data.measurement_unit,
+        ingredient_id,
+        recipe_id
+      )
+      .then(() => response.send('Ingredient was updated'))
       .catch((error) => response.status(500).send(error));
   else response.status(400).send('Propperties are not valid');
 });

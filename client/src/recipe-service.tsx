@@ -144,6 +144,20 @@ class RecipeService {
     return axios.put('/recipes', recipe).then((response) => response.data);
   }
 
+  updateRecipeIngredient(
+    amount_per_person: number,
+    measurement_unit: string,
+    recipe_id: number,
+    ingredient_id: number
+  ) {
+    return axios
+      .put('/recipes/' + recipe_id + '/ingredients/' + ingredient_id, {
+        amount_per_person: amount_per_person,
+        measurement_unit: measurement_unit,
+      })
+      .then((response) => response.data);
+  }
+
   /**
    * Create new recipe.
    *
