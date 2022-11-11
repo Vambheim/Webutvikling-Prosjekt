@@ -10,7 +10,7 @@
 const path = require('path');
 var webpack = require('webpack');
 
-process.env.REACT_APP_API_KEY = 'a7b2c8f9104041eb91db1dfa26cedafd'; //'5c39dc6c79e241b98a16a72d451d56e6'; //'5b7869e75f75481a8f5005bc7bffd3a8'; //`6eb9e61e0bc642e6840888923fdd6d66`;
+process.env.REACT_APP_API_KEY = '5b7869e75f75481a8f5005bc7bffd3a8';
 
 // const test = require('dotenv').config();
 // console.log(test);
