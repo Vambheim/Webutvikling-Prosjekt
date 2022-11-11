@@ -254,6 +254,101 @@ class RecipeService {
     });
   }
 
+  //API Recipe -> Database Ingridients
+  PostSpoonacularRecipes(data: any) {
+    return new Promise<void>((resolve, reject) => {
+      for (let i = 0; i < data.length; ) {
+        pool.query(
+          'INSERT INTO recipe SET recipe_id=?, name=?, category=?, country=? ON DUPLICATE KEY UPDATE name=?, category=?, country=?',
+          [
+            data[i]['recipe_id'],
+            data[i]['name'],
+            data[i]['category'],
+            data[i]['country'],
+            data[i]['name'],
+            data[i]['category'],
+            data[i]['country'],
+          ],
+          (error, results: ResultSetHeader) => {
+            if (error) return reject(error);
+          }
+        );
+
+        i++;
+      }
+
+      resolve();
+    });
+  }
+  //API Ingridients -> Database Ingridients
+  PostSpoonacularIngridients(data: any) {
+    return new Promise<void>((resolve, reject) => {
+      for (let i = 0; i < data.length; ) {
+        pool.query(
+          'INSERT INTO ingredient SET ingredient_id=?, name=? ON DUPLICATE KEY UPDATE name=?',
+          [data[i]['ingredient_id'], data[i]['name'], data[i]['name']],
+          (error, results: ResultSetHeader) => {
+            if (error) return reject(error);
+          }
+        );
+
+        i++;
+      }
+
+      resolve();
+    });
+  }
+
+  //API RecipesIngridients -> Database RecipesIngridients
+  PostSpoonacularRecipesIngridients(data: any) {
+    return new Promise<void>((resolve, reject) => {
+      for (let i = 0; i < data.length; ) {
+        pool.query(
+          'INSERT INTO recipe_ingredient SET recipe_id=?, ingredient_id=?, amount_per_person=?, measurement_unit=? ON DUPLICATE KEY UPDATE amount_per_person=?, measurement_unit=?',
+          [
+            data[i]['recipe_id'],
+            data[i]['ingredient_id'],
+            data[i]['amount_per_person'],
+            data[i]['measurement_unit'],
+            data[i]['amount_per_person'],
+            data[i]['measurement_unit'],
+          ],
+          (error, results: ResultSetHeader) => {
+            if (error) return reject(error);
+          }
+        );
+
+        i++;
+      }
+
+      resolve();
+    });
+  }
+
+  //API Steps -> Database Step
+  PostSpoonacularSteps(data: any) {
+    return new Promise<void>((resolve, reject) => {
+      for (let i = 0; i < data.length; ) {
+        pool.query(
+          'INSERT INTO step SET order_number=?, description=?, recipe_id=? ON DUPLICATE KEY UPDATE order_number=?, description=?, recipe_id=?',
+          [
+            data[i]['order_number'],
+            data[i]['description'],
+            data[i]['recipe_id'],
+            data[i]['order_number'],
+            data[i]['description'],
+            data[i]['recipe_id'],
+          ],
+          (error, results: ResultSetHeader) => {
+            if (error) return reject(error);
+          }
+        );
+
+        i++;
+      }
+
+      resolve();
+      
   userExistsCheck(email: string) {
     return new Promise<User | undefined>((resolve, reject) => {
       pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
@@ -425,6 +520,7 @@ class RecipeService {
           resolve();
         }
       );
+
     });
   }
 
