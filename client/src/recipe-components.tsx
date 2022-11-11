@@ -11,7 +11,6 @@ import recipeService, {
   ShoppingListInfo,
   addIngredient,
   addStep,
-  getLikedRecipes,
 } from './recipe-service';
 import { createHashHistory } from 'history';
 
