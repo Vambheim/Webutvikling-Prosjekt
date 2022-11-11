@@ -11,6 +11,7 @@ import recipeService, {
   ShoppingListInfo,
   addIngredient,
   addStep,
+  getLikedRecipes,
 } from './recipe-service';
 import { createHashHistory } from 'history';
 
@@ -158,15 +159,16 @@ export class RecipeList extends Component {
               </Form.Select>
             </Column>
           </Row>
+          <Row>
+            <Column>
+              <Button.Success onClick={() => this.addIngredientFilter()}>
+                Add ing filters
+              </Button.Success>
+              <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
+            </Column>
+          </Row>
         </Card>
-        <Row>
-          <Column>
-            <Button.Success onClick={() => this.addIngredientFilter()}>
-              Add ing filters
-            </Button.Success>
-            <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
-          </Column>
-        </Row>
+
         <Card title="Search">
           <Column>
             <Form.Input
@@ -983,6 +985,7 @@ export class RegisterUser extends Component {
 }
 
 export class UserDetails extends Component {
+  likedRecipes: Recipe[] = [];
   render() {
     return (
       <>
@@ -1004,7 +1007,15 @@ export class UserDetails extends Component {
             </Column>
           </Row>
         </Card>
-        <Card title="Liked recipes"></Card>
+        <Card title="Liked recipes">
+          {this.likedRecipes.map((recipe) => (
+            <Row key={recipe.recipe_id}>
+              <Column>
+                <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
+              </Column>
+            </Row>
+          ))}
+        </Card>
       </>
     );
   }
@@ -1012,6 +1023,11 @@ export class UserDetails extends Component {
   mounted() {
     if (!loggedIn) {
       history.push('/recipes/login');
+    } else {
+      recipeService
+        .getLikedRecipes(currentUser.user_id)
+        .then((recipes) => (this.likedRecipes = recipes))
+        .catch((error) => Alert.danger(error.message));
     }
   }
 

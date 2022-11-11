@@ -149,15 +149,23 @@ class RecipeService {
   //   });
   // }
 
-  getFilterByIngredients(ingredient1: string, ingredient2: string, ingredient3: string, activeFilters: number) {
+  getFilterByIngredients(
+    ingredient1: string,
+    ingredient2: string,
+    ingredient3: string,
+    activeFilters: number
+  ) {
     return new Promise<Recipe[]>((resolve, reject) => {
-      pool.query("SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM ingredient JOIN recipe_ingredient ON ingredient.ingredient_id = recipe_ingredient.ingredient_id JOIN recipe ON recipe_ingredient.recipe_id = recipe.recipe_id WHERE ingredient.name NOT IN (SELECT ingredient.name FROM ingredient WHERE name!=? && name!=? && name!=?) GROUP BY recipe.recipe_id HAVING count(recipe.recipe_id) = ?" 
-      ,[ingredient1, ingredient2, ingredient3, activeFilters], (error, results: RowDataPacket[]) => {
-        if (error) return reject(error); 
+      pool.query(
+        'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM ingredient JOIN recipe_ingredient ON ingredient.ingredient_id = recipe_ingredient.ingredient_id JOIN recipe ON recipe_ingredient.recipe_id = recipe.recipe_id WHERE ingredient.name NOT IN (SELECT ingredient.name FROM ingredient WHERE name!=? && name!=? && name!=?) GROUP BY recipe.recipe_id HAVING count(recipe.recipe_id) = ?',
+        [ingredient1, ingredient2, ingredient3, activeFilters],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
 
-        resolve(results as Recipe[])
-      })
-    })
+          resolve(results as Recipe[]);
+        }
+      );
+    });
   }
 
   getFilterByCountryAndCategory(country: string, category: string) {
@@ -251,6 +259,7 @@ class RecipeService {
       pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
         if (error) return reject(error);
 
+        //rejects if user exists and resolves if it does not
         if (results.length > 0) {
           return reject();
         } else {
@@ -375,6 +384,20 @@ class RecipeService {
     });
   }
 
+  getLikedRecipes(user_id: number) {
+    return new Promise<Recipe[]>((resolve, reject) => {
+      pool.query(
+        'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM like_information JOIN recipe ON like_information.recipe_id = recipe.recipe_id WHERE like_information.liked = TRUE AND like_information.user_id = ?',
+        [user_id],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
+
+          resolve(results as Recipe[]);
+        }
+      );
+    });
+  }
+
   getRecomendedRecipes(recipe_id: number, category: string, country: string) {
     return new Promise<Recipe[]>((resolve, reject) => {
       pool.query(
@@ -383,7 +406,7 @@ class RecipeService {
         //Also put out the three most popular recipes given the same category and country
         [category, country, recipe_id, 3],
         (error, results: RowDataPacket[]) => {
-          if (error) reject(error);
+          if (error) return reject(error);
 
           resolve(results as Recipe[]);
         }
