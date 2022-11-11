@@ -139,6 +139,10 @@ class RecipeService {
       .then((response) => response.data);
   }
 
+  getLikedRecipes(user_id: number) {
+    return axios.get<Recipe[]>('/likedRecipes/' + user_id).then((response) => response.data);
+  }
+
   //Rename to updateRecipe
   update(recipe: Recipe) {
     return axios.put('/recipes', recipe).then((response) => response.data);

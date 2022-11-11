@@ -29,51 +29,47 @@ router.get('/login/:email/:password', (request, response) => {
     });
 });
 
-// sjekke over denne når du får tid Thomas, kan ryddes mye tror jeg
 router.post('/user/add', (request, response) => {
   const data = request.body;
-  let errors = [];
-
   //Check required fields
   if (!data.first_name || !data.last_name || !data.email || !data.password || !data.password2) {
-    errors.push({ msg: 'Please fill in all the fields' });
     response.send('Please fill in all the fields');
+    return;
   }
-
   //Check passwords match
   if (data.password != data.password2) {
-    errors.push({ msg: 'Passwords dont match' });
     response.send('Passwords does not match, please try again');
+    return;
   }
-
-  function register() {
-    bcrypt.hash(data.password, salt, (error, hash) => {
-      if (error) throw error;
-      data.password = hash;
-      // Store hash in your password DB.
-      recipeService
-        .createUser(data.email, data.first_name, data.last_name, data.password)
-        .then((rows) => response.send(rows))
-        .catch((error) => response.status(500).send(error));
-      return;
-    });
-  }
-
-  if (errors.length > 0) {
-    response.send('Error found, please try again');
+  //Check if email-adress has @
+  if (data.email.includes('@')) {
+    recipeService
+      .userExistsCheck(data.email)
+      .then(() => {
+        bcrypt.hash(data.password, salt, (error, hash) => {
+          if (error) throw error;
+          data.password = hash;
+          recipeService
+            .createUser(data.email, data.first_name, data.last_name, data.password)
+            .then((rows) => response.send(rows))
+            .catch((error) => response.status(500).send(error));
+          return;
+        });
+      })
+      .catch(() => response.send('Email: ' + data.email + ' is already in use'));
     return;
   } else {
-    if (data.email.includes('@')) {
-      recipeService
-        .userExistsCheck(data.email)
-        .then(() => register())
-        .catch(() => response.send('Email: ' + data.email + ' is already in use'));
-      return;
-    } else {
-      response.send('Not a valid email address');
-      return;
-    }
+    response.send('Not a valid email address');
+    return;
   }
+});
+
+router.get('/likedRecipes/:user_id', (request, response) => {
+  const user_id = Number(request.params.user_id);
+  recipeService
+    .getLikedRecipes(user_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
 });
 
 ///////////////////RECIPES
