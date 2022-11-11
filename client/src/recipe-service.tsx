@@ -107,9 +107,29 @@ class RecipeService {
   }
   */
 
-  getFilteredByCountryAndCategory(country: string, category: string) {
+  getFilterByCountryAndCategory(country: string, category: string) {
     return axios
       .get<Recipe[]>('/countryandcategoryfilter/' + country + '/' + category)
+      .then((response) => response.data);
+  }
+
+  getFilterByOneIngredient(ingredient1: string) {
+    return axios
+      .get<Recipe[]>('/oneingredientfilter/' + ingredient1)
+      .then((response) => response.data);
+  }
+
+  getFilterBy2Ingredients(ingredient1: string, ingredient2: string) {
+    return axios
+      .get<Recipe[]>('/twoingredientsfilter/' + ingredient1 + '/' + ingredient2)
+      .then((response) => response.data);
+  }
+
+  getFilterBy3Ingredients(ingredient1: string, ingredient2: string, ingredient3: string) {
+    return axios
+      .get<Recipe[]>(
+        '/threeingredientsfilter/' + ingredient1 + '/' + ingredient2 + '/' + ingredient3
+      )
       .then((response) => response.data);
   }
 

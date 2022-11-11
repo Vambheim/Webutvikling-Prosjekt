@@ -135,21 +135,32 @@ class RecipeService {
     });
   }
 
-  getFilteredRecipe(country: string, category: string, ingredient: string) {
-    return new Promise<Recipe[]>((resolve, reject) => {
-      pool.query(
-        'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN recipe_ingredient ON recipe.recipe_id = recipe_ingredient.recipe_id JOIN ingredient ON recipe_ingredient.ingredient_id = ingredient.ingredient_id WHERE recipe.country=? AND recipe.category=? AND ingredient.name=?',
-        [country, category, ingredient],
-        (error, results: RowDataPacket[]) => {
-          if (error) return reject(error);
+  // getFilteredRecipe(country: string, category: string, ingredient: string) {
+  //   return new Promise<Recipe[]>((resolve, reject) => {
+  //     pool.query(
+  //       'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN recipe_ingredient ON recipe.recipe_id = recipe_ingredient.recipe_id JOIN ingredient ON recipe_ingredient.ingredient_id = ingredient.ingredient_id WHERE recipe.country=? AND recipe.category=? AND ingredient.name=?',
+  //       [country, category, ingredient],
+  //       (error, results: RowDataPacket[]) => {
+  //         if (error) return reject(error);
 
-          resolve(results as Recipe[]);
-        }
-      );
-    });
+  //         resolve(results as Recipe[]);
+  //       }
+  //     );
+  //   });
+  // }
+
+  getFilterByIngredients(ingredient1: string, ingredient2: string, ingredient3: string, activeFilters: number) {
+    return new Promise<Recipe[]>((resolve, reject) => {
+      pool.query("SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM ingredient JOIN recipe_ingredient ON ingredient.ingredient_id = recipe_ingredient.ingredient_id JOIN recipe ON recipe_ingredient.recipe_id = recipe.recipe_id WHERE ingredient.name NOT IN (SELECT ingredient.name FROM ingredient WHERE name!=? && name!=? && name!=?) GROUP BY recipe.recipe_id HAVING count(recipe.recipe_id) = ?" 
+      ,[ingredient1, ingredient2, ingredient3, activeFilters], (error, results: RowDataPacket[]) => {
+        if (error) return reject(error); 
+
+        resolve(results as Recipe[])
+      })
+    })
   }
 
-  getFilterCountryAndCategory(country: string, category: string) {
+  getFilterByCountryAndCategory(country: string, category: string) {
     return new Promise<Recipe[]>((resolve, reject) => {
       pool.query(
         'SELECT * FROM recipe WHERE country=? AND category=?',

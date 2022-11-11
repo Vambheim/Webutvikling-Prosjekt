@@ -251,12 +251,66 @@ router.post('/steps', (request, response) => {
 //   }
 // });
 
+router.get('/oneingredientfilter/:ingredient1', (request, response) => {
+  const ingredient1 = String(request.params.ingredient1);
+  if (typeof ingredient1 == 'string' && ingredient1.length != 0) {
+    recipeService
+      .getFilterByIngredients(ingredient1, '', '', 1)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+router.get('/twoingredientsfilter/:ingredient1/:ingredient2', (request, response) => {
+  const ingredient1 = String(request.params.ingredient1);
+  const ingredient2 = String(request.params.ingredient2);
+  if (
+    typeof ingredient1 == 'string' &&
+    typeof ingredient2 == 'string' &&
+    ingredient1.length != 0 &&
+    ingredient2.length != 0
+  ) {
+    recipeService
+      .getFilterByIngredients(ingredient1, ingredient2, '', 2)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+router.get(
+  '/threeingredientsfilter/:ingredient1/:ingredient2/:ingredient3',
+  (request, response) => {
+    const ingredient1 = String(request.params.ingredient1);
+    const ingredient2 = String(request.params.ingredient2);
+    const ingredient3 = String(request.params.ingredient3);
+    if (
+      typeof ingredient1 == 'string' &&
+      typeof ingredient2 == 'string' &&
+      typeof ingredient3 == 'string' &&
+      ingredient1.length != 0 &&
+      ingredient2.length != 0 &&
+      ingredient3.length != 0
+    ) {
+      recipeService
+        .getFilterByIngredients(ingredient1, ingredient2, ingredient3, 3)
+        .then((rows) => response.send(rows))
+        .catch((error) => response.status(500).send(error));
+    } else {
+      response.status(400).send('Propperties are not valid');
+    }
+  }
+);
+
 router.get('/countryandcategoryfilter/:country/:category', (request, response) => {
   const country = String(request.params.country);
   const category = String(request.params.category);
   if (country && category) {
     recipeService
-      .getFilterCountryAndCategory(country, category)
+      .getFilterByCountryAndCategory(country, category)
       .then((rows) => response.send(rows))
       .catch((error) => response.status(500).send(error));
   }

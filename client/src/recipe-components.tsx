@@ -34,9 +34,10 @@ export class RecipeList extends Component {
   country: string = '';
   category: string = '';
 
-  ingredient: Ingredient = { ingredient_id: 0, name: '' };
-  secondingredient: Ingredient = { ingredient_id: 0, name: '' };
-  thirdingredient: Ingredient = { ingredient_id: 0, name: '' };
+  ingredient1: Ingredient = { ingredient_id: 0, name: '' };
+  ingredient2: Ingredient = { ingredient_id: 0, name: '' };
+  ingredient3: Ingredient = { ingredient_id: 0, name: '' };
+  activeIngredientFilters: number = 0;
   ingredients: Ingredient[] = [];
 
   recipes: Recipe[] = []; // original, do not change
@@ -104,8 +105,8 @@ export class RecipeList extends Component {
           <Row>
             <Column width={3}>
               <Form.Select
-                value={this.ingredient['name']}
-                onChange={(event) => (this.ingredient['name'] = event.currentTarget.value)}
+                value={this.ingredient1['name']}
+                onChange={(event) => (this.ingredient1['name'] = event.currentTarget.value)}
               >
                 <option key={'blankChoice'} hidden>
                   {'Choose ingredient: '}
@@ -122,8 +123,8 @@ export class RecipeList extends Component {
             </Column>
             <Column width={3}>
               <Form.Select
-                value={this.secondingredient['name']}
-                onChange={(event) => (this.secondingredient['name'] = event.currentTarget.value)}
+                value={this.ingredient2['name']}
+                onChange={(event) => (this.ingredient2['name'] = event.currentTarget.value)}
               >
                 <option key={'blankChoice'} hidden>
                   {'Choose ingredient: '}
@@ -140,8 +141,8 @@ export class RecipeList extends Component {
             </Column>
             <Column width={3}>
               <Form.Select
-                value={this.thirdingredient['name']}
-                onChange={(event) => (this.thirdingredient['name'] = event.currentTarget.value)}
+                value={this.ingredient3['name']}
+                onChange={(event) => (this.ingredient3['name'] = event.currentTarget.value)}
               >
                 <option key={'blankChoice'} hidden>
                   {'Choose ingredient: '}
@@ -160,7 +161,9 @@ export class RecipeList extends Component {
         </Card>
         <Row>
           <Column>
-            {/*<Button.Success onClick={() => this.addFilter()}>Add filters</Button.Success> */}
+            <Button.Success onClick={() => this.addIngredientFilter()}>
+              Add ing filters
+            </Button.Success>
             <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
           </Column>
         </Row>
@@ -223,41 +226,75 @@ export class RecipeList extends Component {
     this.filtered_recipes = searchRecipe;
   }
 
-  /*
-  addFilter() {
-    if (
-      this.country.length == 0 && // alternativt || hvis man vil filterne skal være avhengige av hverandre
-      this.category.length == 0 &&
-      this.ingredient.name.length == 0
-    ) {
-      Alert.danger('Please choose a filter');
-    } else {
-      recipeService
-        .getFilteredRecipes(this.country, this.category, this.ingredient.name)
-        .then((recipe) => (this.filtered_recipes = recipe))
-        .catch((error) => Alert.danger('Error getting filtered recipes: ' + error.message));
-    }
-  }
-*/
   addCountryAndCategoryFilter() {
-    if (this.country.length == 0 && this.category.length == 0) {
-      Alert.danger('Please choose both filters before applying changes');
-    } else {
+    if (this.country.length != 0 && this.category.length != 0) {
       recipeService
-        .getFilteredByCountryAndCategory(this.country, this.category)
+        .getFilterByCountryAndCategory(this.country, this.category)
         .then((recipe) => (this.filtered_recipes = recipe))
         .then(() => console.log(this.country))
-        .catch((error) => Alert.danger('Error filtering recipies: ' + error.message));
+        .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
+    } else {
+      Alert.danger('Please choose both filters before applying changes');
+    }
+  }
+
+  activeFilterCount() {
+    let count: number = 0;
+    if (
+      (!this.ingredient1.name && this.ingredient2.name && !this.ingredient3.name) ||
+      (this.ingredient1.name && !this.ingredient2.name && !this.ingredient3.name) ||
+      (!this.ingredient1.name && !this.ingredient2.name && this.ingredient3.name)
+    ) {
+      count = 1;
+    } else if (this.ingredient1.name && this.ingredient2.name && this.ingredient3.name) {
+      count = 3;
+    } else if (!this.ingredient1.name && !this.ingredient2.name && !this.ingredient3.name) {
+      count = 0;
+    } else {
+      count = 2;
+    }
+    this.activeIngredientFilters = count;
+  }
+
+  addIngredientFilter() {
+    this.activeFilterCount();
+    if (this.activeIngredientFilters == 3) {
+      recipeService
+        .getFilterBy3Ingredients(
+          this.ingredient1.name,
+          this.ingredient2.name,
+          this.ingredient3.name
+        )
+        .then((recipe) => (this.filtered_recipes = recipe))
+        .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
+    } else if (this.activeIngredientFilters == 2) {
+      recipeService
+        .getFilterBy2Ingredients(
+          this.ingredient1.name ? this.ingredient1.name : this.ingredient2.name,
+          this.ingredient2.name ? this.ingredient2.name : this.ingredient3.name
+        )
+        .then((recipe) => (this.filtered_recipes = recipe))
+        .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
+    } else if (this.activeIngredientFilters == 1) {
+      recipeService
+        .getFilterByOneIngredient(
+          this.ingredient1.name + this.ingredient2.name + this.ingredient3.name
+        )
+        .then((recipe) => (this.filtered_recipes = recipe))
+        .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
+    } else {
+      Alert.info('No selected filters');
     }
   }
 
   removeFilter() {
     this.country = '';
     this.category = '';
-    this.ingredient.name = '';
-    this.secondingredient.name = '';
-    this.thirdingredient.name = '';
+    this.ingredient1.name = '';
+    this.ingredient2.name = '';
+    this.ingredient3.name = '';
     this.filtered_recipes = this.recipes;
+    this.activeIngredientFilters = 0;
   }
 }
 
