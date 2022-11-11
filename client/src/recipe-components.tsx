@@ -68,7 +68,7 @@ export class RecipeList extends Component {
                   .filter((country, index, array) => array.indexOf(country) === index)
                   .map((country, i) => (
                     <option key={i} value={country}>
-                      {country}
+                      {this.firstLetterUpperCase(country)}
                     </option>
                   ))}
               </Form.Select>
@@ -86,7 +86,7 @@ export class RecipeList extends Component {
                   .filter((category, index, array) => array.indexOf(category) === index)
                   .map((category, i) => (
                     <option key={i} value={category}>
-                      {category}
+                      {this.firstLetterUpperCase(category)}
                     </option>
                   ))}
               </Form.Select>
