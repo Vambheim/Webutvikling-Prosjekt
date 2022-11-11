@@ -12,14 +12,12 @@ import {
   UserLogIn,
   RegisterUser,
   UserDetails,
-  loggedIn,
 } from './recipe-components';
 import RecipeService, { Ingredient, RecipeDetailed, Step } from './recipe-service';
 
 class Menu extends Component {
   //henter data fra spoonacular når komponentet lastes
   mounted() {
-
     //funksjonen kan vel defineres en annen plass som er mer hensiktsmessig og ryddig 
     async function getRecipesBulk() {
       const getApi = async (): Promise<[Array<RecipeDetailed>, Array<Ingredient>, Array<Step>]> => { //Typescript krever et promise som returner en tuppel med to Arrays
@@ -128,18 +126,11 @@ class Menu extends Component {
 
   render() {
     return (
-      //En link for oppskriftene,
-      //en for å legge til nye oppskrifter
-      //en for handleliste
       <NavBar brand="/ˈres.A.PI/ -An app">
         <NavBar.Link to="/recipes">Recipes</NavBar.Link>
         <NavBar.Link to="/recipes/add">Add Recipes</NavBar.Link>
-        <NavBar.Link to="/recipes/cart">Shopping List</NavBar.Link>
-        {loggedIn ? (
-          <NavBar.Link to="/recipes/user">My user</NavBar.Link>
-        ) : (
-          <NavBar.Link to="/recipes/login">Log in</NavBar.Link>
-        )}
+        <NavBar.Link to="/recipes/shoppinglist">Shopping List</NavBar.Link>
+        <NavBar.Link to="/recipes/user">{'User 👤'}</NavBar.Link>
       </NavBar>
     );
   }
@@ -149,6 +140,7 @@ class Home extends Component {
   render() {
     return <Card title="Welcome">This is your favourite food recipe app</Card>;
   }
+  // legg til spoontacular her i stedet for i menyen
 }
 
 ReactDOM.render(
@@ -159,10 +151,11 @@ ReactDOM.render(
       <Route exact path="/" component={Home} />
       <Route exact path="/recipes" component={RecipeList} />
       <Route exact path="/recipes/add" component={RecipeAdd} />
-      <Route exact path="/recipes/cart" component={ShoppingList} />
+      <Route exact path="/recipes/shoppinglist" component={ShoppingList} />
       <Route exact path="/recipes/login" component={UserLogIn} />
       <Route exact path="/recipes/register" component={RegisterUser} />
-      <Route exact path="/recipes/user/:email" component={UserDetails} />
+      <Route exact path="/recipes/user" component={UserDetails} />
+      {/* // her må vi endre noe ^ */}
       <Route exact path="/recipes/:recipe_id(\d+)" component={RecipeDetails} />
       <Route exact path="/recipes/:id(\d+)/edit" component={RecipeEdit} />
     </div>

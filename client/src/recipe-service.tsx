@@ -19,12 +19,12 @@ export type RecipeDetailed = {
 
 export type Step = {
   step_id: number;
-  description: string;
   order_number: number;
+  description: string;
   recipe_id: number;
 };
 
-export type Ingredient = {
+export type RecipeIngredient = {
   ingredient_id: number;
   name: string;
   recipe_id: number;
@@ -32,12 +32,37 @@ export type Ingredient = {
   measurement_unit: string;
 };
 
+export type Ingredient = {
+  ingredient_id: number;
+  name: string;
+};
+
+export type addIngredient = {
+  name: string;
+  amount: number;
+  measurement_unit: string;
+};
+
+export type addStep = {
+  description: string;
+  order_number: number;
+};
+
+export type ShoppingListInfo = {
+  shopping_list_id: number;
+  recipe_id: number;
+  ingredient_id: number;
+  name: string;
+  amount: number;
+  measurement_unit: string;
+};
+
 export type User = {
-  username: string;
+  user_id: number;
+  email: string;
   first_name: string;
   last_name: string;
   password: string;
-  email: string;
 };
 
 class RecipeService {
@@ -65,12 +90,68 @@ class RecipeService {
   /**
    * Get ingredients with given id
    */
-  getIngredients(recipe_id: number) {
+  getRecipeIngredients(recipe_id: number) {
     return axios
-      .get<Ingredient[]>('/recipes/' + recipe_id + '/ingredients')
+      .get<RecipeIngredient[]>('/recipes/' + recipe_id + '/ingredients')
       .then((response) => response.data);
   }
 
+  /**
+   * Get all ingredients in the database
+   */
+  getAllIngredients() {
+    return axios.get<Ingredient[]>('/ingredients').then((response) => response.data);
+  }
+
+  /**
+   * Get filtered recipes
+   */
+
+  /*
+  getFilteredRecipes(country: string, category: string, ingredient: string) {
+    return axios
+      .get<Recipe[]>('/recipes/' + country + '/' + category + '/' + ingredient)
+      .then((response) => response.data);
+  }
+  */
+
+  getFilterByCountryAndCategory(country: string, category: string) {
+    return axios
+      .get<Recipe[]>('/countryandcategoryfilter/' + country + '/' + category)
+      .then((response) => response.data);
+  }
+
+  getFilterByOneIngredient(ingredient1: string) {
+    return axios
+      .get<Recipe[]>('/oneingredientfilter/' + ingredient1)
+      .then((response) => response.data);
+  }
+
+  getFilterBy2Ingredients(ingredient1: string, ingredient2: string) {
+    return axios
+      .get<Recipe[]>('/twoingredientsfilter/' + ingredient1 + '/' + ingredient2)
+      .then((response) => response.data);
+  }
+
+  getFilterBy3Ingredients(ingredient1: string, ingredient2: string, ingredient3: string) {
+    return axios
+      .get<Recipe[]>(
+        '/threeingredientsfilter/' + ingredient1 + '/' + ingredient2 + '/' + ingredient3
+      )
+      .then((response) => response.data);
+  }
+
+  getRecommendedRecipes(recipe_id: number, category: string, country: string) {
+    return axios
+      .get<Recipe[]>('/recipes/' + recipe_id + '/recommended/' + category + '/' + country)
+      .then((response) => response.data);
+  }
+
+  getLikedRecipes(user_id: number) {
+    return axios.get<Recipe[]>('/likedRecipes/' + user_id).then((response) => response.data);
+  }
+
+  //Rename to updateRecipe
   update(recipe: Recipe) {
     return axios.put('/recipes', recipe).then((response) => response.data);
   }
@@ -89,14 +170,14 @@ class RecipeService {
   //Poster Recipes
   PostSpoonacularRecipes(recipes: Array<RecipeDetailed>) {
     return axios
-      .post<Array<RecipeDetailed>>('/recipes/', { recipes })
+      .post<Array<RecipeDetailed>>('/spoonacular/recipes/', { recipes })
       .then((response) => response.data);
   }
 
   //Poster ingridienser
   PostSpoonacularIngriedents(ingridients: Array<Ingredient>) {
     return axios
-      .post<Array<Ingredient>>('/ingridients/', { ingridients })
+      .post<Array<Ingredient>>('/spoonacular/ingridients/', { ingridients })
       .then((response) => response.data);
   }
 
@@ -111,19 +192,17 @@ class RecipeService {
     ingridients = ingridients.flat()
 
     return axios
-      .post<Array<Ingredient>>('/ingridients-recipes/', { ingridients })
+      .post<Array<Ingredient>>('/spoonacular/ingridients-recipes/', { ingridients })
       .then((response) => response.data);
   }
 
   //Poster data for steps
   PostSpoonacularSteps(steps: Array<Step>) {
     return axios
-      .post<Array<Step>>('/steps/', { steps })
+      .post<Array<Step>>('/spoonacular/steps/', { steps })
       .then((response) => response.data);
   }
 }
-
-
 
 
 const recipeService = new RecipeService();
