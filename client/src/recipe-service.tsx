@@ -9,6 +9,14 @@ export type Recipe = {
   country: string;
 };
 
+export type RecipeDetailed = {
+  recipe_id: number;
+  name: string;
+  category: string;
+  country: string;
+  ingriedients: Array<Ingredient>;
+}
+
 export type Step = {
   step_id: number;
   order_number: number;
@@ -276,6 +284,42 @@ class RecipeService {
   likeRecipe(user_id: number, recipe_id: number) {
     return axios
       .post('/recipes/like', { user_id: user_id, recipe_id: recipe_id })
+      .then((response) => response.data);
+  }
+
+  //Poster Recipes
+  PostSpoonacularRecipes(recipes: Array<RecipeDetailed>) {
+    return axios
+      .post<Array<RecipeDetailed>>('/spoonacular/recipes/', { recipes })
+      .then((response) => response.data);
+  }
+
+  //Poster ingridienser
+  PostSpoonacularIngriedents(ingridients: Array<RecipeIngredient>) {
+    return axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients/', { ingridients })
+      .then((response) => response.data);
+  }
+
+  //Poster data for mange til mange tabellen mellom ingridienser og oppskrifter 
+  PostSpoonacularRecipeIngriedents(data: Array<RecipeDetailed>) {
+    var ingridients = []
+
+    for (let i = 0; i < data.length;) {
+      ingridients.push(data[i].ingriedients)
+      i++
+    }
+    ingridients = ingridients.flat()
+
+    return axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients-recipes/', { ingridients })
+      .then((response) => response.data);
+  }
+
+  //Poster data for steps
+  PostSpoonacularSteps(steps: Array<Step>) {
+    return axios
+      .post<Array<Step>>('/spoonacular/steps/', { steps })
       .then((response) => response.data);
   }
 }

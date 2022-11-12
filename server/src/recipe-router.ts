@@ -353,6 +353,65 @@ router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+// Poster spørring til tabell Recipe
+router.post('/spoonacular/recipes', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(11, -1);
+  var recipes = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularRecipes(recipes)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+// Poster spørring til tabell Ingridient
+router.post('/spoonacular/ingridients', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(15, -1);
+  var ingridients = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularIngridients(ingridients)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+//Poster spørring til tabell recipe_ingrident
+router.post('/spoonacular/ingridients-recipes', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(15, -1);
+  var ingridients = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularRecipesIngridients(ingridients)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+//Poster spørring til tabell Step
+router.post('/spoonacular/steps', (request, response) => {
+  var data = request.body;
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(9, -1);
+  var steps = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularSteps(steps)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
 // Example request body: { title: "Ny oppgave" }
 // // Example response body: { id: 4 }
 // router.post('/tasks', (request, response) => {
