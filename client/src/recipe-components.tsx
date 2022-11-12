@@ -1102,7 +1102,7 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
             </Row>
           </Card>
 
-          <Card title="Ingredient information">
+          <Card title="Ingredients">
             <Row>
               <Column width={2}>
                 Amount per Person
@@ -1110,7 +1110,7 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                   <Row key={recipeIngredient.ingredient_id}>
                     <Form.Input
                       value={recipeIngredient.amount_per_person}
-                      type="text"
+                      type="number"
                       onChange={(event) =>
                         (recipeIngredient.amount_per_person = Number(event.currentTarget.value))
                       }
@@ -1187,83 +1187,35 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
     recipeService
       .get(this.props.match.params.id)
       .then((recipe) => (this.recipe = recipe))
-      .then(() =>
-        recipeService
-          .getRecipeIngredients(this.recipe.recipe_id)
-          .then((recipeIngredients) => (this.recipeIngredients = recipeIngredients))
-      )
-      .then(() =>
-        recipeService.getSteps(this.recipe.recipe_id).then((steps) => (this.steps = steps))
-      )
+      .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
+      .then((recipeIngredients) => (this.recipeIngredients = recipeIngredients))
+      .then(() => recipeService.getSteps(this.recipe.recipe_id))
+      .then((steps) => (this.steps = steps))
       .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
+
   deleteRecipe() {
     recipeService.delete(this.recipe.recipe_id).then(() => history.push('/recipes/'));
   }
 
   updateRecipe() {
-    let ingredientNotEqual = false;
-
-    recipeService.update(this.recipe).then(() => history.push('/recipes/' + this.recipe.recipe_id));
-
     recipeService
-      .getAllIngredients()
-      .then((ingredients) => (this.ingredients = ingredients))
+      .update(this.recipe)
       .then(() => {
-        function ingredientsNotEqual(
-          ingredients: Ingredient[],
-          recipeIngredients: RecipeIngredient[]
-        ) {
-          for (let name in ingredients) {
-            if (ingredients[name] !== recipeIngredients[name]) {
-              ingredientNotEqual = true;
-              break;
-            }
-          }
-          return ingredientsNotEqual;
-        }
-
-        ingredientsNotEqual(this.ingredients, this.recipeIngredients);
-
-        this.recipeIngredients.map((recipeIngredient) => {
-          if (ingredientNotEqual) {
-            recipeService.createIngredient(recipeIngredient.name);
-          }
-        });
-      })
-
-      .then(
-        () =>
-          this.recipeIngredients.map((recipeIngredient) => {
-            recipeService.updateRecipeIngredient(
-              recipeIngredient.amount_per_person,
-              recipeIngredient.measurement_unit,
+        this.recipeIngredients.map((ing) => {
+          recipeService
+            .updateRecipeIngredient(
+              ing.amount_per_person,
+              ing.measurement_unit,
               this.recipe.recipe_id,
-              this.ingredient.ingredient_id
-            );
-          })
-
-        // .catch((error) => Alert.danger('Error in updating recipe: ' + error.message);
-
-        // recipeService
-        //   .getAllIngredients()
-        //   .then((ingredients) => (this.ingredients = ingredients))
-        //   .then(() => {
-        //     this.recipeIngredients.map((recipeIngredient) => {
-        //       if (!this.ingredients.includes(recipeIngredient.name)) {
-        //         recipeService.createIngredient(recipeIngredient.name);
-        //       }
-        //     });
-        //   });
-      );
+              ing.ingredient_id,
+              ing.name
+            )
+            .then(() => console.log('Gikk gjennom'))
+            .catch((error) => console.log(error.message));
+        });
+      }) // legge til for steps også her
+      .then(() => history.push('/recipes/' + this.recipe.recipe_id))
+      .catch((error) => Alert.danger(error.message + 'Could not update'));
   }
 }
-
-// this.search_input = input;
-// let searchRecipe: Recipe[] = [];
-
-// this.recipes.map((recipe) => {
-//   if (recipe.name.toLowerCase().includes(this.search_input.toLowerCase())) {
-//     searchRecipe.push(recipe);
-//   }
-// });

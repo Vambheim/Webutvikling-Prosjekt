@@ -135,20 +135,6 @@ class RecipeService {
     });
   }
 
-  // getFilteredRecipe(country: string, category: string, ingredient: string) {
-  //   return new Promise<Recipe[]>((resolve, reject) => {
-  //     pool.query(
-  //       'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN recipe_ingredient ON recipe.recipe_id = recipe_ingredient.recipe_id JOIN ingredient ON recipe_ingredient.ingredient_id = ingredient.ingredient_id WHERE recipe.country=? AND recipe.category=? AND ingredient.name=?',
-  //       [country, category, ingredient],
-  //       (error, results: RowDataPacket[]) => {
-  //         if (error) return reject(error);
-
-  //         resolve(results as Recipe[]);
-  //       }
-  //     );
-  //   });
-  // }
-
   getFilterByIngredients(
     ingredient1: string,
     ingredient2: string,
@@ -206,25 +192,6 @@ class RecipeService {
     });
   }
 
-  createRecipeIngredient(
-    ingredient_id: number,
-    recipe_id: number,
-    amount_per_person: number,
-    measurement_unit: number
-  ) {
-    return new Promise<void>((resolve, reject) => {
-      pool.query(
-        'INSERT INTO recipe_ingredient SET ingredient_id=?, recipe_id=?, amount_per_person=?, measurement_unit=?',
-        [ingredient_id, recipe_id, amount_per_person, measurement_unit],
-        (error, _results) => {
-          if (error) return reject(error);
-
-          resolve();
-        }
-      );
-    });
-  }
-
   createStep(order_number: number, description: string, recipe_id: number) {
     return new Promise<void>((resolve, reject) => {
       pool.query(
@@ -254,7 +221,62 @@ class RecipeService {
     });
   }
 
-  updateRecipeIngredients(
+  ingredientExistsCheck(name: string) {
+    return new Promise<Ingredient>((resolve, reject) => {
+      pool.query(
+        'SELECT * FROM ingredient WHERE name=?',
+        [name],
+        (error, results: RowDataPacket[]) => {
+          if (error) return reject(error);
+
+          if (results.length == 1) {
+            return resolve(results[0] as Ingredient);
+          } else {
+            return reject();
+          }
+        }
+      );
+    });
+  }
+
+  deleteRecipeIngredient(ingredient_id: number, recipe_id: number) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'DELETE FROM recipe_ingredient WHERE ingredient_id=? AND recipe_id=?',
+        [ingredient_id, recipe_id],
+        (error, results: ResultSetHeader) => {
+          if (error) return reject(error);
+          if (results.affectedRows == 0) reject(new Error('No row deleted'));
+
+          resolve();
+        }
+      );
+    });
+  }
+
+  createRecipeIngredient(
+    ingredient_id: number,
+    recipe_id: number,
+    amount_per_person: number,
+    measurement_unit: number
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'INSERT INTO recipe_ingredient SET ingredient_id=?, recipe_id=?, amount_per_person=?, measurement_unit=?',
+        [ingredient_id, recipe_id, amount_per_person, measurement_unit],
+        (error, _results) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+  
+
+  // denne er ikke nødvendig lenger, kan like greit slette og legge til ny rad ved endringer
+  // dette er fordi man ikke kan endre navnet på ingrediens her uten å slette rad først
+  updateRecipeIngredient(
     amount_per_person: number,
     measurement_unit: string,
     recipe_id: number,
@@ -264,6 +286,26 @@ class RecipeService {
       pool.query(
         'UPDATE recipe_ingredient SET amount_per_person=?, measurement_unit=? WHERE recipe_id=? AND ingredient_id=?',
         [amount_per_person, measurement_unit, recipe_id, ingredient_id],
+        (error, _results) => {
+          if (error) return reject(error);
+
+          resolve();
+        }
+      );
+    });
+  }
+
+  // trenger ikke denne heller, samme grunn som over ^
+  updateRecipeNewIngredient(
+    ingredient_id: number,
+    amount_per_person: number,
+    measurement_unit: string,
+    recipe_id: number
+  ) {
+    return new Promise<void>((resolve, reject) => {
+      pool.query(
+        'UPDATE recipe_ingredient SET ingredient_id=?, amount_per_person=?, measurement_unit=? WHERE recipe_id=?',
+        [ingredient_id, amount_per_person, measurement_unit, recipe_id],
         (error, _results) => {
           if (error) return reject(error);
 
