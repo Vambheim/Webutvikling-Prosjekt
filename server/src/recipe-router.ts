@@ -50,7 +50,6 @@ router.post('/user/add', (request, response) => {
     bcrypt.hash(data.password, salt, (error, hash) => {
       if (error) throw error;
       data.password = hash;
-      // Store hash in your password DB.
       recipeService
         .createUser(data.email, data.first_name, data.last_name, data.password)
         .then((rows) => response.send(rows))
@@ -119,6 +118,8 @@ router.post('/recipes', (request, response) => {
       .catch((error) => response.status(500).send(error));
   else response.status(400).send('Missing recipe details');
 });
+
+router.post("/")
 
 //Her må det legges til "/:recipe_id"
 router.put('/recipes', (request, response) => {

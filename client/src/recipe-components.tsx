@@ -705,10 +705,14 @@ export class RecipeAdd extends Component {
 
   saveRecipe() {
     recipeService
+    // denne må være alene
       .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
       .then((recipe_id) => {
         this.ingredients.map((ing) =>
           recipeService
+          // kjøre en egen her for createRecipeIngredient som først sjekker om ingrediens eksisterer
+          // med toLowerCase(): hvis ja -> bruk ing_id for å lagre resten
+          // hvis nei: lag ny ingrediens som returnerer en ny id; bruk denne til å lagre resten.
             .createIngredient(ing.name)
             .then((ingredient_id) => {
               recipeService
@@ -723,6 +727,7 @@ export class RecipeAdd extends Component {
             })
             .catch((error) => console.log(error.message))
         );
+        // denne er grei
         this.steps.map((step) => {
           recipeService
             .createStep(step.order_number, step.description, recipe_id)
@@ -843,10 +848,8 @@ export class UserLogIn extends Component {
           </Column>
         </Row>
         <Row>
-          <Column width={1}>
+          <Column>
             <Button.Success onClick={() => this.logIn()}>Log in</Button.Success>
-          </Column>
-          <Column width={3}>
             <Button.Light onClick={() => this.clearInput()}>Clear</Button.Light>
           </Column>
         </Row>
@@ -944,10 +947,6 @@ export class RegisterUser extends Component {
         <Row>
           <Column>
             <Button.Success onClick={() => this.createUser()}>Create user</Button.Success>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
             <Button.Light onClick={() => this.clearInput()}>Clear</Button.Light>
           </Column>
         </Row>
@@ -982,18 +981,17 @@ export class RegisterUser extends Component {
   }
 }
 
+//her må det endres litt greier vvvvvvvv
 export class UserDetails extends Component {
   render() {
     return (
       <>
-        <Card title={'User details for ' + currentUser.first_name + ' ' + currentUser.last_name}>
+        <Card title={'User page for ' + currentUser.first_name + ' ' + currentUser.last_name}>
           <Row>
             <Column>Welcome to your unique user page</Column>
           </Row>
           <Row>
-            <Column>
-              Functions on this page: Go to your shopping list and watch your liked recipes
-            </Column>
+            <Column>Tips for this website:</Column>
           </Row>
           <Row>
             <Column>Email: {currentUser.email}</Column>
@@ -1022,9 +1020,6 @@ export class UserDetails extends Component {
   }
 }
 
-/**
- * Renders form to edit a specific task.
- */
 export class RecipeEdit extends Component<{ match: { params: { id: number } } }> {
   // recipeIngredient: RecipeIngredient = {
   //   ingredient_id: 0,
@@ -1148,7 +1143,6 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               </Column>
             </Row>
           </Card>
-
           <Card title="Steps">
             <Column>
               <ol>
@@ -1183,7 +1177,6 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
 
   mounted() {
     recipeService.getAll().then((recipes) => (this.recipes = recipes));
-
     recipeService
       .get(this.props.match.params.id)
       .then((recipe) => (this.recipe = recipe))

@@ -175,14 +175,16 @@ class RecipeService {
       .then((response) => response.data.recipe_id);
   }
 
-  createIngredient(name: string) {
-    return axios
-      .post<{ ingredient_id: number }>('/ingredients', {
-        name: name,
-      })
-      .then((response) => response.data.ingredient_id);
-  }
+  // tror egt denne ikke trengs 
+  // createIngredient(name: string) {
+  //   return axios
+  //     .post<{ ingredient_id: number }>('/ingredients', {
+  //       name: name,
+  //     })
+  //     .then((response) => response.data.ingredient_id);
+  // }
 
+  // denne må endres, kjøhhhhhh
   createRecipeIngredients(
     ingredient_id: number,
     recipe_id: number,
