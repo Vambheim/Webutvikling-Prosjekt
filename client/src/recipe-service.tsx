@@ -160,6 +160,15 @@ class RecipeService {
       .then((response) => response.data);
   }
 
+  updateStep(recipe_id: number, step_id: number, order_number: number, description: string) {
+    return axios
+      .put('recipes/' + recipe_id + '/steps/' + step_id, {
+        order_number: order_number,
+        description: description,
+      })
+      .then((response) => response.data);
+  }
+
   /**
    * Create new recipe.
    *

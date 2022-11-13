@@ -196,7 +196,7 @@ router.put('/recipes', (request, response) => {
         category: data.category,
         country: data.country,
       })
-      .then(() => response.send())
+      .then(() => response.send('Recipe was updated'))
       .catch((error) => response.status(500).send(error));
   else response.status(400).send('Propperties are not valid');
 });
@@ -208,6 +208,10 @@ router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
   const step_id = Number(request.params.step_id);
 
   if (data && recipe_id && step_id) {
+    recipeService
+      .updateSteps(data.order_number, data.description, step_id, recipe_id)
+      .then(() => response.send('Step was updated'))
+      .catch((error) => response.status(500).send(error));
   }
 });
 

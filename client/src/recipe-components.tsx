@@ -1201,7 +1201,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               ing.name
             )
             .then((response) => console.log(response))
-            .catch((error) => Alert.danger(error.message));
+            .catch((error) => Alert.danger('Error updating ingredient: ' + error.message));
+        });
+        this.steps.map((step) => {
+          recipeService
+            .updateStep(this.recipe.recipe_id, step.step_id, step.order_number, step.description)
+            .then((response) => console.log(response))
+            .catch((error) => Alert.danger('Error updating step: ' + error.message));
         });
       }) // legge til for steps også her
       .then(() => history.push('/recipes/' + this.recipe.recipe_id))

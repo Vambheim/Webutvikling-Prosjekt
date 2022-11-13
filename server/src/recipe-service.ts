@@ -314,11 +314,11 @@ class RecipeService {
     });
   }
 
-  updateSteps(step: Step) {
+  updateSteps(order_number: number, description: string, step_id: number, recipe_id: number) {
     return new Promise<void>((resolve, reject) => {
       pool.query(
         'UPDATE step SET order_number=?, description=? WHERE step_id=? AND recipe_id=?',
-        [step.order_number, step.description, step.step_id, step.recipe_id],
+        [order_number, description, step_id, recipe_id],
         (error, _results) => {
           if (error) return reject(error);
 
