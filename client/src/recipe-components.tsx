@@ -13,6 +13,7 @@ import recipeService, {
   addStep,
 } from './recipe-service';
 import { createHashHistory } from 'history';
+import { thisTypeAnnotation } from '@babel/types';
 
 //false as default
 let loggedIn: boolean = false;
@@ -1184,6 +1185,8 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
   mounted() {
     recipeService.getAll().then((recipes) => (this.recipes = recipes));
 
+    recipeService.getAllIngredients().then((ingredients) => (this.ingredients = ingredients));
+
     recipeService
       .get(this.props.match.params.id)
       .then((recipe) => (this.recipe = recipe))
@@ -1197,73 +1200,71 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
       )
       .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
+
   deleteRecipe() {
     recipeService.delete(this.recipe.recipe_id).then(() => history.push('/recipes/'));
   }
 
   updateRecipe() {
-    let ingredientNotEqual = false;
+    let recipeIngredientsNotInIngredients = [];
 
-    recipeService.update(this.recipe).then(() => history.push('/recipes/' + this.recipe.recipe_id));
+    for (let i = 0; i < this.recipeIngredients.length; i++) {
+      let ingredientIsEqual = false;
 
-    recipeService
-      .getAllIngredients()
-      .then((ingredients) => (this.ingredients = ingredients))
-      .then(() => {
-        function ingredientsNotEqual(
-          ingredients: Ingredient[],
-          recipeIngredients: RecipeIngredient[]
-        ) {
-          for (let name in ingredients) {
-            if (ingredients[name] !== recipeIngredients[name]) {
-              ingredientNotEqual = true;
-              break;
-            }
-          }
-          return ingredientsNotEqual;
+      for (let j = 0; j < this.ingredients.length; j++) {
+        if (this.recipeIngredients[i] == this.ingredients[j]) {
+          ingredientIsEqual = true;
+          console.log(this.recipeIngredients[i]);
+          console.log(this.ingredients[j]);
+          break;
         }
+      }
 
-        ingredientsNotEqual(this.ingredients, this.recipeIngredients);
+      if (!ingredientIsEqual) {
+        recipeIngredientsNotInIngredients.push(this.recipeIngredients[i]);
+      }
+      console.log(ingredientIsEqual);
+    }
 
-        this.recipeIngredients.map((recipeIngredient) => {
-          if (ingredientNotEqual) {
-            recipeService.createIngredient(recipeIngredient.name);
-          }
-        });
-      })
+    console.log(recipeIngredientsNotInIngredients);
 
-      .then(
-        () =>
-          this.recipeIngredients.map((recipeIngredient) => {
-            recipeService.updateRecipeIngredient(
-              recipeIngredient.amount_per_person,
-              recipeIngredient.measurement_unit,
-              this.recipe.recipe_id,
-              this.ingredient.ingredient_id
-            );
-          })
+    // recipeService.update(this.recipe).then(() => history.push('/recipes/' + this.recipe.recipe_id));
 
-        // .catch((error) => Alert.danger('Error in updating recipe: ' + error.message);
+    // .then(() => {
+    //   function ingredientsNotEqual(
+    //     ingredients: Ingredient[],
+    //     recipeIngredients: RecipeIngredient[]
+    //   ) {
+    //     for (let element in ingredients) {
+    //       if (ingredients[element].name !== recipeIngredients[element].name) {
+    //         console.log(ingredients[element].name);
+    //         ingredientNotEqual = true;
+    //         break;
+    //       }
+    //     }
+    //     return ingredientNotEqual;
+    //   }
 
-        // recipeService
-        //   .getAllIngredients()
-        //   .then((ingredients) => (this.ingredients = ingredients))
-        //   .then(() => {
-        //     this.recipeIngredients.map((recipeIngredient) => {
-        //       if (!this.ingredients.includes(recipeIngredient.name)) {
-        //         recipeService.createIngredient(recipeIngredient.name);
-        //       }
-        //     });
-        //   });
-      );
+    //   ingredientsNotEqual(this.ingredients, this.recipeIngredients);
+
+    //   this.recipeIngredients.map((recipeIngredient) => {
+    //     if (ingredientNotEqual) {
+    //       recipeService.createIngredient(recipeIngredient.name);
+    //     }
+    //   });
+    // })
+
+    // .then(
+    //   () =>
+    //     this.recipeIngredients.map((recipeIngredient) => {
+    //       recipeService.updateRecipeIngredient(
+    //         recipeIngredient.amount_per_person,
+    //         recipeIngredient.measurement_unit,
+    //         this.recipe.recipe_id,
+    //         this.ingredient.ingredient_id
+    //       );
+    //     })
+
+    // .catch((error) => Alert.danger('Error in updating recipe: ' + error.message);
   }
 }
-
-// this.search_input = input;
-// let searchRecipe: Recipe[] = [];
-
-// this.recipes.map((recipe) => {
-//   if (recipe.name.toLowerCase().includes(this.search_input.toLowerCase())) {
-//     searchRecipe.push(recipe);
-//   }
-// });
