@@ -624,12 +624,12 @@ export class RecipeAdd extends Component {
           <Card title="Add steps">
             <Row>
               <Column width={3}>
-                <Form.Input
+                <Form.Textarea
                   value={this.step.description}
                   type="text"
                   placeholder="Step"
                   onChange={(event) => (this.step.description = event.currentTarget.value)}
-                ></Form.Input>
+                ></Form.Textarea>
               </Column>
               <Column>
                 <Button.Light onClick={() => this.addStep()}>+</Button.Light>
@@ -710,19 +710,14 @@ export class RecipeAdd extends Component {
       .then((recipe_id) => {
         this.ingredients.map((ing) =>
           recipeService
-            .createIngredient(ing.name)
-            .then((ingredient_id) => {
-              recipeService
-                .createRecipeIngredients(
-                  ingredient_id,
-                  recipe_id,
-                  ing.amount / this.portions,
-                  ing.measurement_unit
-                )
-                .then((response) => console.log(response.message))
-                .catch((error) => Alert.danger(error.message));
-            })
-            .catch((error) => console.log(error.message))
+            .createRecipeIngredients(
+              ing.name,
+              recipe_id,
+              ing.amount / this.portions,
+              ing.measurement_unit
+            )
+            .then((response) => console.log(response.message))
+            .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
         );
         this.steps.map((step) => {
           recipeService
@@ -733,7 +728,7 @@ export class RecipeAdd extends Component {
         Alert.success('Recipe for ' + this.recipe.name + ' was created');
         history.push('/recipes/' + recipe_id);
       })
-      .catch((error) => Alert.danger('Error creating task: ' + error.message));
+      .catch((error) => Alert.danger(error.message));
   }
 }
 
@@ -844,10 +839,8 @@ export class UserLogIn extends Component {
           </Column>
         </Row>
         <Row>
-          <Column width={1}>
+          <Column>
             <Button.Success onClick={() => this.logIn()}>Log in</Button.Success>
-          </Column>
-          <Column width={3}>
             <Button.Light onClick={() => this.clearInput()}>Clear</Button.Light>
           </Column>
         </Row>
@@ -945,10 +938,6 @@ export class RegisterUser extends Component {
         <Row>
           <Column>
             <Button.Success onClick={() => this.createUser()}>Create user</Button.Success>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
             <Button.Light onClick={() => this.clearInput()}>Clear</Button.Light>
           </Column>
         </Row>
@@ -983,19 +972,18 @@ export class RegisterUser extends Component {
   }
 }
 
+//her må det endres litt greier vvvvvvvv
 export class UserDetails extends Component {
   likedRecipes: Recipe[] = [];
   render() {
     return (
       <>
-        <Card title={'User details for ' + currentUser.first_name + ' ' + currentUser.last_name}>
+        <Card title={'User page for ' + currentUser.first_name + ' ' + currentUser.last_name}>
           <Row>
             <Column>Welcome to your unique user page</Column>
           </Row>
           <Row>
-            <Column>
-              Functions on this page: Go to your shopping list and watch your liked recipes
-            </Column>
+            <Column>Tips for this website:</Column>
           </Row>
           <Row>
             <Column>Email: {currentUser.email}</Column>
@@ -1037,105 +1025,207 @@ export class UserDetails extends Component {
   }
 }
 
-/**
- * Renders form to edit a specific task.
- */
 export class RecipeEdit extends Component<{ match: { params: { id: number } } }> {
-  recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
-  recipes: Recipe[] = [];
+  // recipeIngredient: RecipeIngredient = {
+  //   ingredient_id: 0,
+  //   name: '',
+  //   recipe_id: 0,
+  //   amount_per_person: 0,
+  //   measurement_unit: '',
+  // };
 
-  //test om branch funker
+  recipeIngredients: RecipeIngredient[] = [];
+
+  recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
+
+  recipes: Recipe[] = [];
+  steps: Step[] = [];
+  ingredients: Ingredient[] = [];
+  ingredient: Ingredient = { ingredient_id: 0, name: '' };
+
   render() {
     return (
       <>
         <Card title="Edit Recipe">
-          <Row>
-            <Column width={2}>
-              <Form.Label>Name:</Form.Label>
-            </Column>
+          <Card title="Recipe information">
+            <Row>
+              <Column width={2}>
+                <Form.Label>Name:</Form.Label>
+              </Column>
+              <Column>
+                <Form.Input
+                  type="text"
+                  value={this.recipe.name}
+                  onChange={(event) => (this.recipe.name = event.currentTarget.value)}
+                />
+              </Column>
+            </Row>
+
+            <Row>
+              <Column width={2}>Country:</Column>
+              <Column>
+                <Form.Select
+                  value={this.recipe.country}
+                  onChange={(event) => (this.recipe.country = event.currentTarget.value)}
+                >
+                  {this.recipes
+                    .map((recipe) => recipe.country)
+                    .filter((country, index, array) => array.indexOf(country) === index)
+                    .map((country, i) => (
+                      <option key={i} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                </Form.Select>
+              </Column>
+            </Row>
+
+            <Row>
+              <Column width={2}>
+                <Form.Label>Category:</Form.Label>
+              </Column>
+              <Column>
+                <Form.Select
+                  value={this.recipe.category}
+                  onChange={(event) => (this.recipe.category = event.currentTarget.value)}
+                >
+                  {this.recipes
+                    .map((recipe) => recipe.category)
+                    .filter((category, index, array) => array.indexOf(category) === index)
+                    .map((category, i) => (
+                      <option key={i} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                </Form.Select>
+              </Column>
+            </Row>
+          </Card>
+
+          <Card title="Ingredients">
+            <Row>
+              <Column width={2}>
+                Amount per Person
+                {this.recipeIngredients.map((recipeIngredient) => (
+                  <Row key={recipeIngredient.ingredient_id}>
+                    <Form.Input
+                      value={recipeIngredient.amount_per_person}
+                      type="number"
+                      onChange={(event) =>
+                        (recipeIngredient.amount_per_person = Number(event.currentTarget.value))
+                      }
+                    ></Form.Input>
+                  </Row>
+                ))}
+              </Column>
+
+              <Column width={2}>
+                Measurement unit
+                {this.recipeIngredients.map((recipeIngredient) => (
+                  <Row key={recipeIngredient.ingredient_id}>
+                    <Form.Input
+                      value={recipeIngredient.measurement_unit}
+                      type="text"
+                      onChange={(event) =>
+                        (recipeIngredient.measurement_unit = event.currentTarget.value)
+                      }
+                    ></Form.Input>
+                  </Row>
+                ))}
+              </Column>
+
+              <Column>
+                Ingredient
+                {this.recipeIngredients.map((recipeIngredient) => (
+                  <Row key={recipeIngredient.ingredient_id}>
+                    <Form.Input
+                      value={recipeIngredient.name}
+                      type="text"
+                      onChange={(event) => (recipeIngredient.name = event.currentTarget.value)}
+                    ></Form.Input>
+                  </Row>
+                ))}
+              </Column>
+            </Row>
+          </Card>
+          <Card title="Steps">
             <Column>
-              <Form.Input
-                type="text"
-                value={this.recipe.name}
-                onChange={(event) => (this.recipe.name = event.currentTarget.value)}
-              />
+              <ol>
+                {this.steps.map((step) => (
+                  <Row key={step.step_id}>
+                    <li>
+                      {' '}
+                      <Form.Textarea
+                        value={step.description}
+                        type="text"
+                        onChange={(event) => (step.description = event.currentTarget.value)}
+                      ></Form.Textarea>
+                    </li>
+                  </Row>
+                ))}
+              </ol>
             </Column>
-          </Row>
+          </Card>
 
           <Row>
-            <Column width={2}>Country:</Column>
             <Column>
-              <Form.Select
-                value={this.recipe.country}
-                onChange={(event) => (this.recipe.country = event.currentTarget.value)}
-              >
-                {this.recipes
-                  .map((recipe) => recipe.country)
-                  .filter((country, index, array) => array.indexOf(country) === index)
-                  .map((country, i) => (
-                    <option key={i} value={country}>
-                      {country}
-                    </option>
-                  ))}
-              </Form.Select>
+              <Button.Success onClick={() => this.updateRecipe()}>Save</Button.Success>
             </Column>
-          </Row>
-
-          <Row>
-            <Column width={2}>
-              <Form.Label>Category:</Form.Label>
-            </Column>
-            <Column>
-              <Form.Select
-                value={this.recipe.category}
-                onChange={(event) => (this.recipe.category = event.currentTarget.value)}
-              >
-                {this.recipes
-                  .map((recipe) => recipe.category)
-                  .filter((category, index, array) => array.indexOf(category) === index)
-                  .map((category, i) => (
-                    <option key={i} value={category}>
-                      {category}
-                    </option>
-                  ))}
-              </Form.Select>
+            <Column right>
+              <Button.Danger onClick={() => this.deleteRecipe()}>Delete</Button.Danger>
             </Column>
           </Row>
         </Card>
-        <Row>
-          <Column>
-            <Button.Success
-              onClick={() =>
-                recipeService
-                  .update(this.recipe)
-                  .then(() => history.push('/recipes/' + this.recipe.recipe_id))
-                  .catch((error) => Alert.danger('Error in updating recipe: ' + error.message))
-              }
-              //Tror problemet over her er at category og country blir lagt i recipes og ikke i recipe
-            >
-              Save
-            </Button.Success>
-          </Column>
-          <Column right>
-            <Button.Danger
-              onClick={() =>
-                recipeService.delete(this.recipe.recipe_id).then(() => history.push('/recipes/'))
-              }
-            >
-              Delete
-            </Button.Danger>
-          </Column>
-        </Row>
       </>
     );
   }
 
   mounted() {
     recipeService.getAll().then((recipes) => (this.recipes = recipes));
-
     recipeService
       .get(this.props.match.params.id)
       .then((recipe) => (this.recipe = recipe))
-      .catch((error) => Alert.danger('Error getting recipe: ' + error.message));
+      .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
+      .then((recipeIngredients) => (this.recipeIngredients = recipeIngredients))
+      .then(() => recipeService.getSteps(this.recipe.recipe_id))
+      .then((steps) => (this.steps = steps))
+      .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
+  }
+
+  deleteRecipe() {
+    recipeService
+      .delete(this.recipe.recipe_id)
+      .then(() => {
+        Alert.info('Recipe was deleted');
+        history.push('/recipes/');
+      })
+      .catch((error) => Alert.danger('Error deleting recipe: ' + error.message));
+  }
+
+  updateRecipe() {
+    recipeService
+      .update(this.recipe)
+      .then(() => {
+        this.recipeIngredients.map((ing) => {
+          recipeService
+            .updateRecipeIngredient(
+              ing.amount_per_person,
+              ing.measurement_unit,
+              this.recipe.recipe_id,
+              ing.ingredient_id,
+              ing.name
+            )
+            .then((response) => console.log(response))
+            .catch((error) => Alert.danger('Error updating ingredient: ' + error.message));
+        });
+        this.steps.map((step) => {
+          recipeService
+            .updateStep(this.recipe.recipe_id, step.step_id, step.order_number, step.description)
+            .then((response) => console.log(response))
+            .catch((error) => Alert.danger('Error updating step: ' + error.message));
+        });
+      }) // legge til for steps også her
+      .then(() => history.push('/recipes/' + this.recipe.recipe_id))
+      .catch((error) => Alert.danger('Error updating recipe' + error.message));
   }
 }
