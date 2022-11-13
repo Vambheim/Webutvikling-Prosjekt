@@ -41,6 +41,7 @@ router.post('/user/add', (request, response) => {
     response.send('Passwords does not match, please try again');
     return;
   }
+
   //Check if email-adress has @
   if (data.email.includes('@')) {
     recipeService
@@ -116,6 +117,64 @@ router.post('/recipes', (request, response) => {
   else response.status(400).send('Missing recipe details');
 });
 
+router.post('/recipes/ingredients', (request, response) => {
+  const data = request.body;
+  if (
+    // se over denne
+    typeof data.name == 'string' &&
+    data.name.length != 0 &&
+    typeof data.recipe_id == 'number' &&
+    data.recipe_id.length != 0 &&
+    typeof data.amount_per_person == 'number' &&
+    data.amount_per_person.length != 0 &&
+    typeof data.measurement_unit == 'string'
+  ) {
+    //Check if ingredient exists in the database to avoid redundancy
+    recipeService
+      .ingredientExistsCheck(data.name.toLowerCase())
+      .then((existing_ingredient) => {
+        // code that runs if the ingredient does exist in the table: ingredient
+        recipeService
+          //Creates a new row in the table: recipe_ingredient with the ingredient_id from the ingredientExistCheck
+          .createRecipeIngredient(
+            existing_ingredient.ingredient_id,
+            data.recipe_id,
+            data.amount_per_person,
+            data.measurement_unit
+          )
+          .then(() => response.send('Created with existing ingredient'))
+          .catch((error) => response.status(500).send(error));
+      })
+      .catch((error) => {
+        if (error) {
+          response.status(500).send(error);
+        } else {
+          // code that runs if the ingredient does not exist in the table: ingredient
+          recipeService
+            // makes sure the check is done with input in lower case
+            .createIngredient(data.name.toLowerCase())
+            .then((new_ingredient_id) => {
+              response.send('New ingredient made');
+              recipeService
+                //Creates a new row in the table: recipe_ingredient with the newly made ingredient_id
+                .createRecipeIngredient(
+                  new_ingredient_id,
+                  data.recipe_id,
+                  data.amount_per_person,
+                  data.measurement_unit
+                )
+                .then(() => response.send('Created with new ingredient'))
+                .catch((error) => response.status(500).send(error));
+            })
+            .catch((error) => response.status(500).send(error));
+        }
+      });
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+//Her må det legges til "/:recipe_id"
 router.put('/recipes', (request, response) => {
   const data = request.body;
   if (
@@ -135,9 +194,90 @@ router.put('/recipes', (request, response) => {
         category: data.category,
         country: data.country,
       })
-      .then(() => response.send())
+      .then(() => response.send('Recipe was updated'))
       .catch((error) => response.status(500).send(error));
   else response.status(400).send('Propperties are not valid');
+});
+
+//Updates a given step in a given recipe
+router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
+  const data = request.body;
+  const recipe_id = Number(request.params.recipe_id);
+  const step_id = Number(request.params.step_id);
+
+  if (data && recipe_id && step_id) {
+    recipeService
+      .updateSteps(data.order_number, data.description, step_id, recipe_id)
+      .then(() => response.send('Step was updated'))
+      .catch((error) => response.status(500).send(error));
+  }
+});
+
+// Updates a given ingredient in a given recipe
+router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response) => {
+  const data = request.body;
+  const recipe_id = Number(request.params.recipe_id);
+  const ingredient_id = Number(request.params.ingredient_id);
+
+  //må se over denne, fungerer ikke med data.amount_per_person.length != 0
+  if (data) {
+    recipeService
+      // makes sure the check is done with input in lower case
+      .ingredientExistsCheck(data.name.toLowerCase())
+      .then((existing_ingredient) => {
+        // code that runs if the ingredient does exist in the table: ingredient
+        recipeService
+          //deletes the old row in the table: recipe_ingredient
+          .deleteRecipeIngredient(ingredient_id, recipe_id)
+          .then(() => {
+            recipeService
+              //Creates a new row in the table: recipe_ingredient with the ingredient_id from the ingredientExistCheck
+              .createRecipeIngredient(
+                existing_ingredient.ingredient_id,
+                recipe_id,
+                data.amount_per_person,
+                data.measurement_unit
+              )
+              .then(() => response.send('Updated with existing ingredient'))
+              .catch((error) => response.status(500).send(error));
+          })
+          .catch((error) => response.status(500).send(error));
+      })
+      .catch((error) => {
+        //sends error if error from ingredientExistsCheck
+        if (error) {
+          response.status(500).send(error);
+          return;
+        } else {
+          // code that runs if the ingredient does not exist in the table: ingredient
+          recipeService
+            // makes sure the check is done with input in lower case
+            .createIngredient(data.name.toLowerCase())
+            .then((new_ingredient_id) => {
+              response.send('New ingredient made');
+              recipeService
+                //deletes the old row in the tabel: recipe_ingredient
+                .deleteRecipeIngredient(ingredient_id, recipe_id)
+                .then(() => {
+                  recipeService
+                    //Creates a new row in the table: recipe_ingredient with the newly made ingredient_id
+                    .createRecipeIngredient(
+                      new_ingredient_id,
+                      recipe_id,
+                      data.amount_per_person,
+                      data.measurement_unit
+                    )
+                    .then(() => response.send('Updated with new ingredient'))
+                    .catch((error) => response.status(500).send(error));
+                })
+                .catch((error) => response.status(500).send(error));
+            })
+            .catch((error) => response.status(500).send(error));
+        }
+      });
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
 });
 
 router.delete('/recipes/:id', (request, response) => {
@@ -147,6 +287,7 @@ router.delete('/recipes/:id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+// Creates a like in the database
 router.post('/recipes/like', (request, response) => {
   const data = request.body;
   if (data && data.user_id != 0 && data.recipe_id != 0) {
@@ -181,31 +322,6 @@ router.post('/ingredients', (request, response) => {
     recipeService
       .createIngredient(data.name)
       .then((ingredient_id) => response.send({ ingredient_id: ingredient_id }))
-      .catch((error) => response.status(500).send(error));
-  } else {
-    response.status(400).send('Propperties are not valid');
-  }
-});
-
-router.post('/recipe/ingredients', (request, response) => {
-  const data = request.body;
-  if (
-    typeof data.ingredient_id == 'number' &&
-    data.ingredient_id.length != 0 &&
-    typeof data.recipe_id == 'number' &&
-    data.recipe_id.length != 0 &&
-    typeof data.amount_per_person == 'number' &&
-    data.amount_per_person.length != 0 &&
-    typeof data.measurement_unit == 'string'
-  ) {
-    recipeService
-      .createRecipeIngredient(
-        data.ingredient_id,
-        data.recipe_id,
-        data.amount_per_person,
-        data.measurement_unit
-      )
-      .then(() => response.send('Added successfully'))
       .catch((error) => response.status(500).send(error));
   } else {
     response.status(400).send('Propperties are not valid');
@@ -351,6 +467,65 @@ router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
     .deleteItemShoppingList(shopping_list_id)
     .then((_results) => response.send('Item in shopping list deleted'))
     .catch((error) => response.status(500).send(error));
+});
+
+// Poster spørring til tabell Recipe
+router.post('/spoonacular/recipes', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(11, -1);
+  var recipes = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularRecipes(recipes)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+// Poster spørring til tabell Ingridient
+router.post('/spoonacular/ingridients', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(15, -1);
+  var ingridients = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularIngridients(ingridients)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+//Poster spørring til tabell recipe_ingrident
+router.post('/spoonacular/ingridients-recipes', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(15, -1);
+  var ingridients = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularRecipesIngridients(ingridients)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+//Poster spørring til tabell Step
+router.post('/spoonacular/steps', (request, response) => {
+  var data = request.body;
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(9, -1);
+  var steps = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularSteps(steps)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
 });
 
 // Example request body: { title: "Ny oppgave" }

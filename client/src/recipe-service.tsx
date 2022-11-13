@@ -9,6 +9,14 @@ export type Recipe = {
   country: string;
 };
 
+export type RecipeDetailed = {
+  recipe_id: number;
+  name: string;
+  category: string;
+  country: string;
+  ingriedients: Array<Ingredient>;
+}
+
 export type Step = {
   step_id: number;
   order_number: number;
@@ -148,10 +156,35 @@ class RecipeService {
     return axios.put('/recipes', recipe).then((response) => response.data);
   }
 
+  updateRecipeIngredient(
+    amount_per_person: number,
+    measurement_unit: string,
+    recipe_id: number,
+    ingredient_id: number,
+    name: string
+  ) {
+    return axios
+      .put('/recipes/' + recipe_id + '/ingredients/' + ingredient_id, {
+        amount_per_person: amount_per_person,
+        measurement_unit: measurement_unit,
+        name: name,
+      })
+      .then((response) => response.data);
+  }
+
+  updateStep(recipe_id: number, step_id: number, order_number: number, description: string) {
+    return axios
+      .put('recipes/' + recipe_id + '/steps/' + step_id, {
+        order_number: order_number,
+        description: description,
+      })
+      .then((response) => response.data);
+  }
+
   /**
    * Create new recipe.
    *
-   * Resolves the newly created task id.
+   * Resolves the newly created task id. LA STÅ THOMAS
    */
   createRecipe(name: string, category: string, country: string) {
     return axios
@@ -163,23 +196,16 @@ class RecipeService {
       .then((response) => response.data.recipe_id);
   }
 
-  createIngredient(name: string) {
-    return axios
-      .post<{ ingredient_id: number }>('/ingredients', {
-        name: name,
-      })
-      .then((response) => response.data.ingredient_id);
-  }
-
+  // tror denne er good nå
   createRecipeIngredients(
-    ingredient_id: number,
+    name: string,
     recipe_id: number,
     amount_per_person: number,
     measurement_unit: string
   ) {
     return axios
-      .post('/recipe/ingredients', {
-        ingredient_id: ingredient_id,
+      .post('/recipes/ingredients', {
+        name: name,
         recipe_id: recipe_id,
         amount_per_person: amount_per_person,
         measurement_unit: measurement_unit,
@@ -276,6 +302,42 @@ class RecipeService {
   likeRecipe(user_id: number, recipe_id: number) {
     return axios
       .post('/recipes/like', { user_id: user_id, recipe_id: recipe_id })
+      .then((response) => response.data);
+  }
+
+  //Poster Recipes
+  PostSpoonacularRecipes(recipes: Array<RecipeDetailed>) {
+    return axios
+      .post<Array<RecipeDetailed>>('/spoonacular/recipes/', { recipes })
+      .then((response) => response.data);
+  }
+
+  //Poster ingridienser
+  PostSpoonacularIngriedents(ingridients: Array<RecipeIngredient>) {
+    return axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients/', { ingridients })
+      .then((response) => response.data);
+  }
+
+  //Poster data for mange til mange tabellen mellom ingridienser og oppskrifter 
+  PostSpoonacularRecipeIngriedents(data: Array<RecipeDetailed>) {
+    var ingridients = []
+
+    for (let i = 0; i < data.length;) {
+      ingridients.push(data[i].ingriedients)
+      i++
+    }
+    ingridients = ingridients.flat()
+
+    return axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients-recipes/', { ingridients })
+      .then((response) => response.data);
+  }
+
+  //Poster data for steps
+  PostSpoonacularSteps(steps: Array<Step>) {
+    return axios
+      .post<Array<Step>>('/spoonacular/steps/', { steps })
       .then((response) => response.data);
   }
 }
