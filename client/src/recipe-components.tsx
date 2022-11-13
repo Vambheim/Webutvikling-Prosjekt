@@ -92,7 +92,7 @@ export class RecipeList extends Component {
               </Form.Select>
             </Column>
           </Row>
-          <Button.Success onClick={() => this.addCountryAndOrCategoryFilter()}>
+          <Button.Success onClick={() => this.addCountryAndCategoryFilter()}>
             Add filters
           </Button.Success>
         </Card>
@@ -227,28 +227,15 @@ export class RecipeList extends Component {
     this.filtered_recipes = searchRecipe;
   }
 
-  addCountryAndOrCategoryFilter() {
+  addCountryAndCategoryFilter() {
     if (this.country.length != 0 && this.category.length != 0) {
       recipeService
         .getFilterByCountryAndCategory(this.country, this.category)
-        .then((filteredRecipes) => {
-          this.filtered_recipes = filteredRecipes;
-          this.filtered_recipes = filteredRecipes;
-          if (filteredRecipes.length == 0) Alert.info('No recipes matches your selected filters');
-        })
-        .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
-    } else if (this.category.length != 0 && this.country.length == 0) {
-      recipeService
-        .getFilterByCategory(this.category)
-        .then((filteredRecipes) => (this.filtered_recipes = filteredRecipes))
-        .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
-    } else if (this.country.length != 0 && this.category.length == 0) {
-      recipeService
-        .getFilterByCountry(this.country)
-        .then((filteredRecipes) => (this.filtered_recipes = filteredRecipes))
+        .then((recipe) => (this.filtered_recipes = recipe))
+        .then(() => console.log(this.country))
         .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
     } else {
-      Alert.danger('No selected filters');
+      Alert.danger('Please choose both filters before applying changes');
     }
   }
 
