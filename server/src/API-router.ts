@@ -11,27 +11,28 @@ const router = express.Router();
 var salt = bcrypt.genSaltSync(10);
 
 ///////////////////USER
-router.get('/login/:email/:password', (request, response) => {
+router.get('/users/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
   const password = String(request.params.password);
-  userService
-    .getUser(email)
-    .then((user) => {
-      if (bcrypt.compareSync(password, String(user.password))) {
-        response.send(user);
-        return;
-      } else {
-        response.status(400).send('Incorrect Email and/or Password! ');
-        return;
-      }
-    })
-    .catch((error) => {
-      response.status(500).send(error);
-      return;
-    });
+  if (email.length != 0 && password.length != 0) {
+    userService
+      .getUser(email)
+      .then((user) => {
+        if (bcrypt.compareSync(password, String(user.password))) {
+          response.send(user);
+        } else {
+          response.status(400).send('Incorrect Email and/or Password! ');
+        }
+      })
+      .catch((error) => {
+        response.status(500).send(error);
+      });
+  } else {
+    response.status(400).send('Please fill all the fields');
+  }
 });
 
-router.post('/user/add', (request, response) => {
+router.post('/users/register', (request, response) => {
   const data = request.body;
   //Check required fields
   if (!data.first_name || !data.last_name || !data.email || !data.password || !data.password2) {
@@ -156,7 +157,6 @@ router.post('/recipes/ingredients', (request, response) => {
             // makes sure the check is done with input in lower case
             .createIngredient(data.name.toLowerCase())
             .then((new_ingredient_id) => {
-              response.send('New ingredient made');
               recipeService
                 //Creates a new row in the table: recipe_ingredient with the newly made ingredient_id
                 .createRecipeIngredient(
@@ -256,7 +256,6 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
             // makes sure the check is done with input in lower case
             .createIngredient(data.name.toLowerCase())
             .then((new_ingredient_id) => {
-              response.send('New ingredient made');
               recipeService
                 //deletes the old row in the tabel: recipe_ingredient
                 .deleteRecipeIngredient(ingredient_id, recipe_id)
@@ -343,7 +342,7 @@ router.post('/steps', (request, response) => {
   ) {
     recipeService
       .createStep(data.order_number, data.description, data.recipe_id)
-      .then(() => response.send('Added successfully'))
+      .then(() => response.send('Step added successfully'))
       .catch((error) => response.status(500).send(error));
   } else {
     response.status(400).send('Propperties are not valid');

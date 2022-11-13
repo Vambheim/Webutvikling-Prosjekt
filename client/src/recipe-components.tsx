@@ -727,13 +727,13 @@ export class RecipeAdd extends Component {
               ing.amount / this.portions,
               ing.measurement_unit
             )
-            .then((response) => console.log(response.message))
+            .then((response) => console.log(response))
             .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
         );
         this.steps.map((step) => {
           recipeService
             .createStep(step.order_number, step.description, recipe_id)
-            .then((response) => console.log(response.message))
+            .then((response) => console.log(response))
             .catch((error) => Alert.danger(error.message));
         });
         Alert.success('Recipe for ' + this.recipe.name + ' was created');

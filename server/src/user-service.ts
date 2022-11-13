@@ -28,12 +28,12 @@ class UserService {
   getUser(email: string) {
     return new Promise<User>((resolve, reject) => {
       pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
-        if (error) return reject(error);
+        if (error) return reject(error.message);
 
-        if (results.length > 0) {
+        if (results.length != 0) {
           resolve(results[0] as User);
         } else {
-          reject('No user found');
+          reject('No user with this email');
         }
       });
     });

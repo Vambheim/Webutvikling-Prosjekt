@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:3000/api/v2';
 
@@ -19,7 +19,7 @@ class UserService {
     password2: string
   ) {
     return axios
-      .post('/user/add', {
+      .post('/users/register', {
         email: email,
         first_name: first_name,
         last_name: last_name,
@@ -33,7 +33,9 @@ class UserService {
    * Log in with email and password
    */
   logIn(email: string, password: string) {
-    return axios.get<User>('/login/' + email + '/' + password).then((response) => response.data);
+    return axios
+      .get<User>('/users/login/' + email + '/' + password)
+      .then((response) => response.data);
   }
 }
 

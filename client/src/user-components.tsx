@@ -67,16 +67,17 @@ export class UserLogIn extends Component {
       </Card>
     );
   }
-  //mounted() {}
 
   logIn() {
-    if (this.email.length > 0 && this.password.length > 0) {
+    if (this.email.length != 0 && this.password.length != 0) {
       userService
         .logIn(this.email, this.password)
-        .then((user) => (currentUser = user))
-        .then(() => (loggedIn = true))
-        .then(() => Alert.success('Logged in as ' + currentUser.email))
-        .then(() => history.push('/recipes/user'))
+        .then((user) => {
+          currentUser = user;
+          loggedIn = true;
+          Alert.success('Logged in as ' + currentUser.email);
+          history.push('/recipes/user');
+        })
         .catch((error) => Alert.danger(error.response.data));
     } else {
       Alert.danger('Please fill in all the fields');
