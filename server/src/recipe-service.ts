@@ -272,7 +272,6 @@ class RecipeService {
       );
     });
   }
-  
 
   // denne er ikke nødvendig lenger, kan like greit slette og legge til ny rad ved endringer
   // dette er fordi man ikke kan endre navnet på ingrediens her uten å slette rad først
@@ -329,6 +328,7 @@ class RecipeService {
     });
   }
 
+  // se over denne og getUser: er jo egt samme greia
   userExistsCheck(email: string) {
     return new Promise<User | undefined>((resolve, reject) => {
       pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
@@ -375,6 +375,7 @@ class RecipeService {
   /**
    * Delete recipe with given id.
    */
+  // endre navn til deleteRecipe?
   delete(recipe_id: number) {
     return new Promise<void>((resolve, reject) => {
       pool.query(
@@ -532,14 +533,3 @@ class RecipeService {
 
 const recipeService = new RecipeService();
 export default recipeService;
-
-//Mock-up av hvordan vi skal laste inn Spoontacular-informasjonen i databaasen:
-// let Oppskrifter = []
-
-// getAll() {
-//   return axios.get<Oppskrifter[]>('/spoontacularAPI').then((response) => response.data);
-// }
-
-// Oppskrifter.map((oppskrift) => {
-//   database('INSERT INTO recipe (recipe_id, name, category, country) VALUES = ?', [oppskrift["id"], oppskrift["recipeName"], oppskrift["category"] ]) //Pusher altså
-// })

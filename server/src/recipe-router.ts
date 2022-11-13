@@ -119,7 +119,58 @@ router.post('/recipes', (request, response) => {
   else response.status(400).send('Missing recipe details');
 });
 
-router.post("/")
+router.post('/recipes/ingredients', (request, response) => {
+  const data = request.body;
+  if (
+    // se over denne
+    typeof data.name == 'string' &&
+    data.name.length != 0 &&
+    typeof data.recipe_id == 'number' &&
+    data.recipe_id.length != 0 &&
+    typeof data.amount_per_person == 'number' &&
+    data.amount_per_person.length != 0 &&
+    typeof data.measurement_unit == 'string'
+  ) {
+    //Check if ingredient exists in the database to avoid redundancy
+    recipeService
+      .ingredientExistsCheck(data.name.toLowerCase())
+      .then((existing_ingredient) => {
+        // code that runs if the ingredient does exist in the table: ingredient
+        recipeService
+          //Creates a new row in the table: recipe_ingredient with the ingredient_id from the ingredientExistCheck
+          .createRecipeIngredient(
+            existing_ingredient.ingredient_id,
+            data.recipe_id,
+            data.amount_per_person,
+            data.measurement_unit
+          )
+          .then(() => response.send('Created with existing ingredient'))
+          .catch((error) => response.status(500).send(error));
+      })
+      .catch(() => {
+        // code that runs if the ingredient does not exist in the table: ingredient
+        recipeService
+          // makes sure the check is done with input in lower case
+          .createIngredient(data.name.toLowerCase())
+          .then((new_ingredient_id) => {
+            response.send('New ingredient made');
+            recipeService
+              //Creates a new row in the table: recipe_ingredient with the newly made ingredient_id
+              .createRecipeIngredient(
+                new_ingredient_id,
+                data.recipe_id,
+                data.amount_per_person,
+                data.measurement_unit
+              )
+              .then(() => response.send('Created with new ingredient'))
+              .catch((error) => response.status(500).send(error));
+          })
+          .catch((error) => response.status(500).send(error));
+      });
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
 
 //Her må det legges til "/:recipe_id"
 router.put('/recipes', (request, response) => {
@@ -152,14 +203,7 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
   const recipe_id = Number(request.params.recipe_id);
   const ingredient_id = Number(request.params.ingredient_id);
 
-  if (
-    typeof data.amount_per_person == 'number' &&
-    data.amount_per_person.length != 0 &&
-    typeof data.measurement_unit == 'string' &&
-    typeof data.name == 'string' &&
-    typeof recipe_id == 'number' &&
-    typeof ingredient_id == 'number'
-  ) {
+  if (data) {
     recipeService
       // makes sure the check is done with input in lower case
       .ingredientExistsCheck(data.name.toLowerCase())
@@ -220,6 +264,7 @@ router.delete('/recipes/:id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+// Creates a like in the database
 router.post('/recipes/like', (request, response) => {
   const data = request.body;
   if (data && data.user_id != 0 && data.recipe_id != 0) {
@@ -254,31 +299,6 @@ router.post('/ingredients', (request, response) => {
     recipeService
       .createIngredient(data.name)
       .then((ingredient_id) => response.send({ ingredient_id: ingredient_id }))
-      .catch((error) => response.status(500).send(error));
-  } else {
-    response.status(400).send('Propperties are not valid');
-  }
-});
-
-router.post('/recipe/ingredients', (request, response) => {
-  const data = request.body;
-  if (
-    typeof data.ingredient_id == 'number' &&
-    data.ingredient_id.length != 0 &&
-    typeof data.recipe_id == 'number' &&
-    data.recipe_id.length != 0 &&
-    typeof data.amount_per_person == 'number' &&
-    data.amount_per_person.length != 0 &&
-    typeof data.measurement_unit == 'string'
-  ) {
-    recipeService
-      .createRecipeIngredient(
-        data.ingredient_id,
-        data.recipe_id,
-        data.amount_per_person,
-        data.measurement_unit
-      )
-      .then(() => response.send('Added successfully'))
       .catch((error) => response.status(500).send(error));
   } else {
     response.status(400).send('Propperties are not valid');

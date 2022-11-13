@@ -705,29 +705,19 @@ export class RecipeAdd extends Component {
 
   saveRecipe() {
     recipeService
-    // denne må være alene
       .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
       .then((recipe_id) => {
         this.ingredients.map((ing) =>
           recipeService
-          // kjøre en egen her for createRecipeIngredient som først sjekker om ingrediens eksisterer
-          // med toLowerCase(): hvis ja -> bruk ing_id for å lagre resten
-          // hvis nei: lag ny ingrediens som returnerer en ny id; bruk denne til å lagre resten.
-            .createIngredient(ing.name)
-            .then((ingredient_id) => {
-              recipeService
-                .createRecipeIngredients(
-                  ingredient_id,
-                  recipe_id,
-                  ing.amount / this.portions,
-                  ing.measurement_unit
-                )
-                .then((response) => console.log(response.message))
-                .catch((error) => Alert.danger(error.message));
-            })
-            .catch((error) => console.log(error.message))
+            .createRecipeIngredients(
+              ing.name,
+              recipe_id,
+              ing.amount / this.portions,
+              ing.measurement_unit
+            )
+            .then((response) => console.log(response.message))
+            .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
         );
-        // denne er grei
         this.steps.map((step) => {
           recipeService
             .createStep(step.order_number, step.description, recipe_id)
@@ -737,7 +727,7 @@ export class RecipeAdd extends Component {
         Alert.success('Recipe for ' + this.recipe.name + ' was created');
         history.push('/recipes/' + recipe_id);
       })
-      .catch((error) => Alert.danger('Error creating task: ' + error.message));
+      .catch((error) => Alert.danger(error.message));
   }
 }
 
@@ -1188,7 +1178,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
   }
 
   deleteRecipe() {
-    recipeService.delete(this.recipe.recipe_id).then(() => history.push('/recipes/'));
+    recipeService
+      .delete(this.recipe.recipe_id)
+      .then(() => {
+        Alert.info('Recipe was deleted');
+        history.push('/recipes/');
+      })
+      .catch((error) => Alert.danger('Error deleting recipe: ' + error.message));
   }
 
   updateRecipe() {
@@ -1204,11 +1200,11 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               ing.ingredient_id,
               ing.name
             )
-            .then(() => console.log('Gikk gjennom'))
-            .catch((error) => console.log(error.message));
+            .then((response) => console.log(response))
+            .catch((error) => Alert.danger(error.message));
         });
       }) // legge til for steps også her
       .then(() => history.push('/recipes/' + this.recipe.recipe_id))
-      .catch((error) => Alert.danger(error.message + 'Could not update'));
+      .catch((error) => Alert.danger('Error updating recipe' + error.message));
   }
 }
