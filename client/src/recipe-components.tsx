@@ -478,7 +478,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             ingredient.amount_per_person * this.portions,
             ingredient.measurement_unit
           )
-          .then((response) => Alert.success(response))
+          .then()
           .catch((error) => Alert.danger(error.message));
       });
     }
