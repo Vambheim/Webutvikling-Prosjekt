@@ -623,12 +623,12 @@ export class RecipeAdd extends Component {
           <Card title="Add steps">
             <Row>
               <Column width={3}>
-                <Form.Input
+                <Form.Textarea
                   value={this.step.description}
                   type="text"
                   placeholder="Step"
                   onChange={(event) => (this.step.description = event.currentTarget.value)}
-                ></Form.Input>
+                ></Form.Textarea>
               </Column>
               <Column>
                 <Button.Light onClick={() => this.addStep()}>+</Button.Light>

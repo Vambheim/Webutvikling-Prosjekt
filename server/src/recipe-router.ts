@@ -147,25 +147,29 @@ router.post('/recipes/ingredients', (request, response) => {
           .then(() => response.send('Created with existing ingredient'))
           .catch((error) => response.status(500).send(error));
       })
-      .catch(() => {
-        // code that runs if the ingredient does not exist in the table: ingredient
-        recipeService
-          // makes sure the check is done with input in lower case
-          .createIngredient(data.name.toLowerCase())
-          .then((new_ingredient_id) => {
-            response.send('New ingredient made');
-            recipeService
-              //Creates a new row in the table: recipe_ingredient with the newly made ingredient_id
-              .createRecipeIngredient(
-                new_ingredient_id,
-                data.recipe_id,
-                data.amount_per_person,
-                data.measurement_unit
-              )
-              .then(() => response.send('Created with new ingredient'))
-              .catch((error) => response.status(500).send(error));
-          })
-          .catch((error) => response.status(500).send(error));
+      .catch((error) => {
+        if (error) {
+          response.status(500).send(error);
+        } else {
+          // code that runs if the ingredient does not exist in the table: ingredient
+          recipeService
+            // makes sure the check is done with input in lower case
+            .createIngredient(data.name.toLowerCase())
+            .then((new_ingredient_id) => {
+              response.send('New ingredient made');
+              recipeService
+                //Creates a new row in the table: recipe_ingredient with the newly made ingredient_id
+                .createRecipeIngredient(
+                  new_ingredient_id,
+                  data.recipe_id,
+                  data.amount_per_person,
+                  data.measurement_unit
+                )
+                .then(() => response.send('Created with new ingredient'))
+                .catch((error) => response.status(500).send(error));
+            })
+            .catch((error) => response.status(500).send(error));
+        }
       });
   } else {
     response.status(400).send('Propperties are not valid');
@@ -197,12 +201,23 @@ router.put('/recipes', (request, response) => {
   else response.status(400).send('Propperties are not valid');
 });
 
-// Updates the the recipes ingredients with given recipe_id and ingredient_id
+//Updates a given step in a given recipe
+router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
+  const data = request.body;
+  const recipe_id = Number(request.params.recipe_id);
+  const step_id = Number(request.params.step_id);
+
+  if (data && recipe_id && step_id) {
+  }
+});
+
+// Updates a given ingredient in a given recipe
 router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response) => {
   const data = request.body;
   const recipe_id = Number(request.params.recipe_id);
   const ingredient_id = Number(request.params.ingredient_id);
 
+  //må se over denne, fungerer ikke med data.amount_per_person.length != 0
   if (data) {
     recipeService
       // makes sure the check is done with input in lower case
@@ -210,7 +225,7 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
       .then((existing_ingredient) => {
         // code that runs if the ingredient does exist in the table: ingredient
         recipeService
-          //deletes the old row in the tabel: recipe_ingredient
+          //deletes the old row in the table: recipe_ingredient
           .deleteRecipeIngredient(ingredient_id, recipe_id)
           .then(() => {
             recipeService
@@ -226,31 +241,37 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
           })
           .catch((error) => response.status(500).send(error));
       })
-      .catch(() => {
-        // code that runs if the ingredient does not exist in the table: ingredient
-        recipeService
-          // makes sure the check is done with input in lower case
-          .createIngredient(data.name.toLowerCase())
-          .then((new_ingredient_id) => {
-            response.send('New ingredient made');
-            recipeService
-              //deletes the old row in the tabel: recipe_ingredient
-              .deleteRecipeIngredient(ingredient_id, recipe_id)
-              .then(() => {
-                recipeService
-                  //Creates a new row in the table: recipe_ingredient with the newly made ingredient_id
-                  .createRecipeIngredient(
-                    new_ingredient_id,
-                    recipe_id,
-                    data.amount_per_person,
-                    data.measurement_unit
-                  )
-                  .then(() => response.send('Updated with new ingredient'))
-                  .catch((error) => response.status(500).send(error));
-              })
-              .catch((error) => response.status(500).send(error));
-          })
-          .catch((error) => response.status(500).send(error));
+      .catch((error) => {
+        //sends error if error from ingredientExistsCheck
+        if (error) {
+          response.status(500).send(error);
+          return;
+        } else {
+          // code that runs if the ingredient does not exist in the table: ingredient
+          recipeService
+            // makes sure the check is done with input in lower case
+            .createIngredient(data.name.toLowerCase())
+            .then((new_ingredient_id) => {
+              response.send('New ingredient made');
+              recipeService
+                //deletes the old row in the tabel: recipe_ingredient
+                .deleteRecipeIngredient(ingredient_id, recipe_id)
+                .then(() => {
+                  recipeService
+                    //Creates a new row in the table: recipe_ingredient with the newly made ingredient_id
+                    .createRecipeIngredient(
+                      new_ingredient_id,
+                      recipe_id,
+                      data.amount_per_person,
+                      data.measurement_unit
+                    )
+                    .then(() => response.send('Updated with new ingredient'))
+                    .catch((error) => response.status(500).send(error));
+                })
+                .catch((error) => response.status(500).send(error));
+            })
+            .catch((error) => response.status(500).send(error));
+        }
       });
   } else {
     response.status(400).send('Propperties are not valid');
