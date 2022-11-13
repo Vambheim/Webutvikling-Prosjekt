@@ -115,6 +115,14 @@ class RecipeService {
   }
   */
 
+  getFilterByCategory(category: string) {
+    return axios.get<Recipe[]>('/categoryfilter/' + category).then((response) => response.data);
+  }
+
+  getFilterByCountry(country: string) {
+    return axios.get<Recipe[]>('/countryfilter/' + country).then((response) => response.data);
+  }
+
   getFilterByCountryAndCategory(country: string, category: string) {
     return axios
       .get<Recipe[]>('/countryandcategoryfilter/' + country + '/' + category)
@@ -160,14 +168,12 @@ class RecipeService {
     amount_per_person: number,
     measurement_unit: string,
     recipe_id: number,
-    ingredient_id: number,
-    name: string
+    ingredient_id: number
   ) {
     return axios
       .put('/recipes/' + recipe_id + '/ingredients/' + ingredient_id, {
         amount_per_person: amount_per_person,
         measurement_unit: measurement_unit,
-        name: name,
       })
       .then((response) => response.data);
   }
@@ -184,7 +190,7 @@ class RecipeService {
   /**
    * Create new recipe.
    *
-   * Resolves the newly created task id. LA STÅ THOMAS
+   * Resolves the newly created task id.
    */
   createRecipe(name: string, category: string, country: string) {
     return axios
@@ -196,16 +202,23 @@ class RecipeService {
       .then((response) => response.data.recipe_id);
   }
 
-  // tror denne er good nå
+  createIngredient(name: string) {
+    return axios
+      .post<{ ingredient_id: number }>('/ingredients', {
+        name: name,
+      })
+      .then((response) => response.data.ingredient_id);
+  }
+
   createRecipeIngredients(
-    name: string,
+    ingredient_id: number,
     recipe_id: number,
     amount_per_person: number,
     measurement_unit: string
   ) {
     return axios
-      .post('/recipes/ingredients', {
-        name: name,
+      .post('/recipe/ingredients', {
+        ingredient_id: ingredient_id,
         recipe_id: recipe_id,
         amount_per_person: amount_per_person,
         measurement_unit: measurement_unit,
