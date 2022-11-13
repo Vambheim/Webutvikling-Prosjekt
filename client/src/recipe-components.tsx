@@ -161,7 +161,7 @@ export class RecipeList extends Component {
           <Row>
             <Column>
               <Button.Success onClick={() => this.addIngredientFilter()}>
-                Add ing filters
+                Add ingredient filters
               </Button.Success>
               <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
             </Column>
@@ -266,7 +266,10 @@ export class RecipeList extends Component {
           this.ingredient2.name,
           this.ingredient3.name
         )
-        .then((recipe) => (this.filtered_recipes = recipe))
+        .then((recipe) => {
+          this.filtered_recipes = recipe;
+          if (recipe.length == 0) Alert.info('No recipes matches your selected filters');
+        })
         .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
     } else if (this.activeIngredientFilters == 2) {
       recipeService
@@ -274,14 +277,20 @@ export class RecipeList extends Component {
           this.ingredient1.name ? this.ingredient1.name : this.ingredient2.name,
           this.ingredient3.name ? this.ingredient3.name : this.ingredient2.name
         )
-        .then((recipe) => (this.filtered_recipes = recipe))
+        .then((recipe) => {
+          this.filtered_recipes = recipe;
+          if (recipe.length == 0) Alert.info('No recipes matches your selected filters');
+        })
         .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
     } else if (this.activeIngredientFilters == 1) {
       recipeService
         .getFilterByOneIngredient(
           this.ingredient1.name + this.ingredient2.name + this.ingredient3.name
         )
-        .then((recipe) => (this.filtered_recipes = recipe))
+        .then((recipe) => {
+          this.filtered_recipes = recipe;
+          if (recipe.length == 0) Alert.info('No recipes matches your selected filters');
+        })
         .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
     } else {
       Alert.info('No selected filters');
