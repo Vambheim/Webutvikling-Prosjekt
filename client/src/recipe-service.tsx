@@ -57,13 +57,13 @@ export type ShoppingListInfo = {
   measurement_unit: string;
 };
 
-export type User = {
-  user_id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  password: string;
-};
+// export type User = {
+//   user_id: number;
+//   email: string;
+//   first_name: string;
+//   last_name: string;
+//   password: string;
+// };
 
 class RecipeService {
   /**
@@ -106,7 +106,6 @@ class RecipeService {
   /**
    * Get filtered recipes
    */
-
 
   getFilterByCountryAndCategory(country: string, category: string) {
     return axios
@@ -251,30 +250,30 @@ class RecipeService {
   /**
    *
    */
-  createUser(
-    email: string,
-    first_name: string,
-    last_name: string,
-    password: string,
-    password2: string
-  ) {
-    return axios
-      .post('/user/add', {
-        email: email,
-        first_name: first_name,
-        last_name: last_name,
-        password: password,
-        password2: password2,
-      })
-      .then((response) => response.data);
-  }
+  // createUser(
+  //   email: string,
+  //   first_name: string,
+  //   last_name: string,
+  //   password: string,
+  //   password2: string
+  // ) {
+  //   return axios
+  //     .post('/user/add', {
+  //       email: email,
+  //       first_name: first_name,
+  //       last_name: last_name,
+  //       password: password,
+  //       password2: password2,
+  //     })
+  //     .then((response) => response.data);
+  // }
 
   /**
    * Log in with email and password
    */
-  logIn(email: string, password: string) {
-    return axios.get<User>('/login/' + email + '/' + password).then((response) => response.data);
-  }
+  // logIn(email: string, password: string) {
+  //   return axios.get<User>('/login/' + email + '/' + password).then((response) => response.data);
+  // }
 
   /**
    * Delete recipe with given id

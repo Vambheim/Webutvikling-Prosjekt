@@ -7,11 +7,11 @@ import recipeService, {
   Step,
   RecipeIngredient,
   Ingredient,
-  User,
   ShoppingListInfo,
   addIngredient,
   addStep,
 } from './recipe-service';
+import userService, { User } from './user-service';
 import { createHashHistory } from 'history';
 
 //false as default
@@ -878,7 +878,7 @@ export class UserLogIn extends Component {
 
   logIn() {
     if (this.email.length > 0 && this.password.length > 0) {
-      recipeService
+      userService
         .logIn(this.email, this.password)
         .then((user) => (currentUser = user))
         .then(() => (loggedIn = true))
@@ -968,7 +968,7 @@ export class RegisterUser extends Component {
   }
 
   createUser() {
-    recipeService
+    userService
       .createUser(
         this.user.email,
         this.user.first_name,

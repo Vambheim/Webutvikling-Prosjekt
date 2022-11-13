@@ -1,6 +1,7 @@
 import express, { request, response } from 'express';
 import recipeService from './recipe-service';
 import bcrypt from 'bcryptjs';
+import userService from './user-service';
 
 /**
  * Express router containing task methods.
@@ -12,7 +13,7 @@ var salt = bcrypt.genSaltSync(10);
 router.get('/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
   const password = String(request.params.password);
-  recipeService
+  userService
     .getUser(email)
     .then((user) => {
       if (bcrypt.compareSync(password, String(user.password))) {
@@ -44,13 +45,13 @@ router.post('/user/add', (request, response) => {
 
   //Check if email-adress has @
   if (data.email.includes('@')) {
-    recipeService
+    userService
       .userExistsCheck(data.email)
       .then(() => {
         bcrypt.hash(data.password, salt, (error, hash) => {
           if (error) throw error;
           data.password = hash;
-          recipeService
+          userService
             .createUser(data.email, data.first_name, data.last_name, data.password)
             .then((rows) => response.send(rows))
             .catch((error) => response.status(500).send(error));
