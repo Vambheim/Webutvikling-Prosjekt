@@ -9,6 +9,14 @@ export type Recipe = {
   country: string;
 };
 
+export type RecipeDetailed = {
+  recipe_id: number;
+  name: string;
+  category: string;
+  country: string;
+  ingriedients: Array<Ingredient>;
+}
+
 export type Step = {
   step_id: number;
   order_number: number;
@@ -147,6 +155,10 @@ class RecipeService {
       .then((response) => response.data);
   }
 
+  getLikedRecipes(user_id: number) {
+    return axios.get<Recipe[]>('/likedRecipes/' + user_id).then((response) => response.data);
+  }
+
   //Rename to updateRecipe
   update(recipe: Recipe) {
     return axios.put('/recipes', recipe).then((response) => response.data);
@@ -162,6 +174,15 @@ class RecipeService {
       .put('/recipes/' + recipe_id + '/ingredients/' + ingredient_id, {
         amount_per_person: amount_per_person,
         measurement_unit: measurement_unit,
+      })
+      .then((response) => response.data);
+  }
+
+  updateStep(recipe_id: number, step_id: number, order_number: number, description: string) {
+    return axios
+      .put('recipes/' + recipe_id + '/steps/' + step_id, {
+        order_number: order_number,
+        description: description,
       })
       .then((response) => response.data);
   }
@@ -294,6 +315,42 @@ class RecipeService {
   likeRecipe(user_id: number, recipe_id: number) {
     return axios
       .post('/recipes/like', { user_id: user_id, recipe_id: recipe_id })
+      .then((response) => response.data);
+  }
+
+  //Poster Recipes
+  PostSpoonacularRecipes(recipes: Array<RecipeDetailed>) {
+    return axios
+      .post<Array<RecipeDetailed>>('/spoonacular/recipes/', { recipes })
+      .then((response) => response.data);
+  }
+
+  //Poster ingridienser
+  PostSpoonacularIngriedents(ingridients: Array<RecipeIngredient>) {
+    return axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients/', { ingridients })
+      .then((response) => response.data);
+  }
+
+  //Poster data for mange til mange tabellen mellom ingridienser og oppskrifter 
+  PostSpoonacularRecipeIngriedents(data: Array<RecipeDetailed>) {
+    var ingridients = []
+
+    for (let i = 0; i < data.length;) {
+      ingridients.push(data[i].ingriedients)
+      i++
+    }
+    ingridients = ingridients.flat()
+
+    return axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients-recipes/', { ingridients })
+      .then((response) => response.data);
+  }
+
+  //Poster data for steps
+  PostSpoonacularSteps(steps: Array<Step>) {
+    return axios
+      .post<Array<Step>>('/spoonacular/steps/', { steps })
       .then((response) => response.data);
   }
 }

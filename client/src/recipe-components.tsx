@@ -158,15 +158,16 @@ export class RecipeList extends Component {
               </Form.Select>
             </Column>
           </Row>
+          <Row>
+            <Column>
+              <Button.Success onClick={() => this.addIngredientFilter()}>
+                Add ing filters
+              </Button.Success>
+              <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
+            </Column>
+          </Row>
         </Card>
-        <Row>
-          <Column>
-            <Button.Success onClick={() => this.addIngredientFilter()}>
-              Add ing filters
-            </Button.Success>
-            <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
-          </Column>
-        </Row>
+
         <Card title="Search">
           <Column>
             <Form.Input
@@ -284,7 +285,7 @@ export class RecipeList extends Component {
       recipeService
         .getFilterBy2Ingredients(
           this.ingredient1.name ? this.ingredient1.name : this.ingredient2.name,
-          this.ingredient2.name ? this.ingredient2.name : this.ingredient3.name
+          this.ingredient3.name ? this.ingredient3.name : this.ingredient2.name
         )
         .then((recipe) => (this.filtered_recipes = recipe))
         .catch((error) => Alert.danger('Error filtering recipes. ' + error.message));
@@ -986,6 +987,7 @@ export class RegisterUser extends Component {
 
 //her må det endres litt greier vvvvvvvv
 export class UserDetails extends Component {
+  likedRecipes: Recipe[] = [];
   render() {
     return (
       <>
@@ -1005,7 +1007,15 @@ export class UserDetails extends Component {
             </Column>
           </Row>
         </Card>
-        <Card title="Liked recipes"></Card>
+        <Card title="Liked recipes">
+          {this.likedRecipes.map((recipe) => (
+            <Row key={recipe.recipe_id}>
+              <Column>
+                <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
+              </Column>
+            </Row>
+          ))}
+        </Card>
       </>
     );
   }
@@ -1013,6 +1023,11 @@ export class UserDetails extends Component {
   mounted() {
     if (!loggedIn) {
       history.push('/recipes/login');
+    } else {
+      recipeService
+        .getLikedRecipes(currentUser.user_id)
+        .then((recipes) => (this.likedRecipes = recipes))
+        .catch((error) => Alert.danger(error.message));
     }
   }
 
@@ -1214,7 +1229,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               ing.name
             )
             .then((response) => console.log(response))
-            .catch((error) => Alert.danger(error.message));
+            .catch((error) => Alert.danger('Error updating ingredient: ' + error.message));
+        });
+        this.steps.map((step) => {
+          recipeService
+            .updateStep(this.recipe.recipe_id, step.step_id, step.order_number, step.description)
+            .then((response) => console.log(response))
+            .catch((error) => Alert.danger('Error updating step: ' + error.message));
         });
       }) // legge til for steps også her
       .then(() => history.push('/recipes/' + this.recipe.recipe_id))

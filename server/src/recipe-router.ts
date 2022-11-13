@@ -29,50 +29,48 @@ router.get('/login/:email/:password', (request, response) => {
     });
 });
 
-// sjekke over denne når du får tid Thomas, kan ryddes mye tror jeg
 router.post('/user/add', (request, response) => {
   const data = request.body;
-  let errors = [];
-
   //Check required fields
   if (!data.first_name || !data.last_name || !data.email || !data.password || !data.password2) {
-    errors.push({ msg: 'Please fill in all the fields' });
     response.send('Please fill in all the fields');
+    return;
   }
-
   //Check passwords match
   if (data.password != data.password2) {
-    errors.push({ msg: 'Passwords dont match' });
     response.send('Passwords does not match, please try again');
+    return;
   }
 
-  function register() {
-    bcrypt.hash(data.password, salt, (error, hash) => {
-      if (error) throw error;
-      data.password = hash;
-      recipeService
-        .createUser(data.email, data.first_name, data.last_name, data.password)
-        .then((rows) => response.send(rows))
-        .catch((error) => response.status(500).send(error));
-      return;
-    });
-  }
-
-  if (errors.length > 0) {
-    response.send('Error found, please try again');
+  //Check if email-adress has @
+  if (data.email.includes('@')) {
+    recipeService
+      .userExistsCheck(data.email)
+      .then(() => {
+        bcrypt.hash(data.password, salt, (error, hash) => {
+          if (error) throw error;
+          data.password = hash;
+          recipeService
+            .createUser(data.email, data.first_name, data.last_name, data.password)
+            .then((rows) => response.send(rows))
+            .catch((error) => response.status(500).send(error));
+          return;
+        });
+      })
+      .catch(() => response.send('Email: ' + data.email + ' is already in use'));
     return;
   } else {
-    if (data.email.includes('@')) {
-      recipeService
-        .userExistsCheck(data.email)
-        .then(() => register())
-        .catch(() => response.send('Email: ' + data.email + ' is already in use'));
-      return;
-    } else {
-      response.send('Not a valid email address');
-      return;
-    }
+    response.send('Not a valid email address');
+    return;
   }
+});
+
+router.get('/likedRecipes/:user_id', (request, response) => {
+  const user_id = Number(request.params.user_id);
+  recipeService
+    .getLikedRecipes(user_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
 });
 
 ///////////////////RECIPES
@@ -196,7 +194,7 @@ router.put('/recipes', (request, response) => {
         category: data.category,
         country: data.country,
       })
-      .then(() => response.send())
+      .then(() => response.send('Recipe was updated'))
       .catch((error) => response.status(500).send(error));
   else response.status(400).send('Propperties are not valid');
 });
@@ -208,6 +206,10 @@ router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
   const step_id = Number(request.params.step_id);
 
   if (data && recipe_id && step_id) {
+    recipeService
+      .updateSteps(data.order_number, data.description, step_id, recipe_id)
+      .then(() => response.send('Step was updated'))
+      .catch((error) => response.status(500).send(error));
   }
 });
 
@@ -485,6 +487,65 @@ router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
     .deleteItemShoppingList(shopping_list_id)
     .then((_results) => response.send('Item in shopping list deleted'))
     .catch((error) => response.status(500).send(error));
+});
+
+// Poster spørring til tabell Recipe
+router.post('/spoonacular/recipes', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(11, -1);
+  var recipes = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularRecipes(recipes)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+// Poster spørring til tabell Ingridient
+router.post('/spoonacular/ingridients', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(15, -1);
+  var ingridients = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularIngridients(ingridients)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+//Poster spørring til tabell recipe_ingrident
+router.post('/spoonacular/ingridients-recipes', (request, response) => {
+  var data = request.body;
+
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(15, -1);
+  var ingridients = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularRecipesIngridients(ingridients)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
+});
+
+//Poster spørring til tabell Step
+router.post('/spoonacular/steps', (request, response) => {
+  var data = request.body;
+  //Slicer request packingen og parser til JSON
+  var json = JSON.stringify(data).slice(9, -1);
+  var steps = JSON.parse(json);
+
+  if (data != null)
+    recipeService
+      .PostSpoonacularSteps(steps)
+      .then(() => response.send())
+      .catch((error) => response.status(500).send(error));
 });
 
 // Example request body: { title: "Ny oppgave" }
