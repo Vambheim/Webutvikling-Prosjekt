@@ -415,10 +415,30 @@ router.get(
   }
 );
 
+router.get('/countryfilter/:country', (request, response) => {
+  const country = String(request.params.country);
+  if (country) {
+    recipeService
+      .getFilterByCountry(country)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  }
+});
+
+router.get('/categoryfilter/:category', (request, response) => {
+  const category = String(request.params.category);
+  if (category) {
+    recipeService
+      .getFilterByCategory(category)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  }
+});
+
 router.get('/countryandcategoryfilter/:country/:category', (request, response) => {
   const country = String(request.params.country);
   const category = String(request.params.category);
-  if (country && category) {
+  if (country && country) {
     recipeService
       .getFilterByCountryAndCategory(country, category)
       .then((rows) => response.send(rows))
