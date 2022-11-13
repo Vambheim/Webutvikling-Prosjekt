@@ -3,17 +3,15 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { HashRouter, Route } from 'react-router-dom';
 import { NavBar, Card, Alert } from './widgets';
-import {
-  RecipeAdd,
-  RecipeList,
-  ShoppingList,
-  RecipeDetails,
-  RecipeEdit,
-  UserLogIn,
-  RegisterUser,
-  UserDetails,
-} from './recipe-components';
-import RecipeService, { Ingredient, RecipeDetailed, Step, RecipeIngredient } from './recipe-service';
+import { RecipeAdd, RecipeList, RecipeDetails, RecipeEdit } from './recipe-components';
+import { ShoppingList } from './shoppingList-components';
+import RecipeService, {
+  Ingredient,
+  RecipeDetailed,
+  Step,
+  RecipeIngredient,
+} from './recipe-service';
+import { UserDetails, UserLogIn, RegisterUser } from './user-components';
 
 class Menu extends Component {
   //henter data fra spoonacular når komponentet lastes
@@ -21,9 +19,12 @@ class Menu extends Component {
   //
   //Kan vi legge denne i home klassen?
   mounted() {
-    //funksjonen kan vel defineres en annen plass som er mer hensiktsmessig og ryddig 
+    //funksjonen kan vel defineres en annen plass som er mer hensiktsmessig og ryddig
     async function getRecipesBulk() {
-      const getApi = async (): Promise<[Array<RecipeDetailed>, Array<RecipeIngredient>, Array<Step>]> => { //Typescript krever et promise som returner en tuppel med to Arrays
+      const getApi = async (): Promise<
+        [Array<RecipeDetailed>, Array<RecipeIngredient>, Array<Step>]
+      > => {
+        //Typescript krever et promise som returner en tuppel med to Arrays
         const api = await fetch(
           //'https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772'
 
@@ -33,28 +34,31 @@ class Menu extends Component {
         );
         //${process.env.REACT_APP_API_KEY}
         const data = await api.json();
-        const recipeJSON = data["recipes"]
-
+        const recipeJSON = data['recipes'];
 
         //lagerer objekter i array for å sende videre i API-et
         var recipes: Array<RecipeDetailed> = [];
         var ingriedientsUnique: Array<RecipeIngredient> = [];
-        var steps: Array<Step> = []
+        var steps: Array<Step> = [];
 
-        for (let i = 0; i < recipeJSON.length;) {
+        for (let i = 0; i < recipeJSON.length; ) {
           //variabler for å lagre ingridienser knyttt en oppskrift
           const recipeIngriedents = recipeJSON[i]['extendedIngredients'];
-          var recipeSteps = []
+          var recipeSteps = [];
           var ingriedients: Array<RecipeIngredient> = [];
 
-          //recipesteps er ikke alltid inkludert så må håndtere tilfellet det ikke er 
-          if (recipeJSON[i]["analyzedInstructions"].length != 0 && recipeJSON[i]["analyzedInstructions"] != undefined && recipeJSON[i]["analyzedInstructions"] && recipeJSON[i]["analyzedInstructions"] != null) {
-            recipeSteps = recipeJSON[i]["analyzedInstructions"][0]["steps"]
+          //recipesteps er ikke alltid inkludert så må håndtere tilfellet det ikke er
+          if (
+            recipeJSON[i]['analyzedInstructions'].length != 0 &&
+            recipeJSON[i]['analyzedInstructions'] != undefined &&
+            recipeJSON[i]['analyzedInstructions'] &&
+            recipeJSON[i]['analyzedInstructions'] != null
+          ) {
+            recipeSteps = recipeJSON[i]['analyzedInstructions'][0]['steps'];
           }
 
           //traverserer ingredienser i oppskriften
-          for (let y = 0; y < recipeIngriedents.length;) {
-
+          for (let y = 0; y < recipeIngriedents.length; ) {
             //Lager et objekt med utvalgt data for Ingriedent fra JSON
             const ingriedent: RecipeIngredient = {
               ingredient_id: recipeIngriedents[y]['id'],
@@ -65,14 +69,21 @@ class Menu extends Component {
             };
 
             //setter inn ingridients
-            if (recipeJSON[i]['cuisines'] && recipeJSON[i]['cuisines'][0] != undefined && recipeJSON[i]['dishTypes'] && recipeJSON[i]['dishTypes'][0] != undefined && recipeSteps != null) {
+            if (
+              recipeJSON[i]['cuisines'] &&
+              recipeJSON[i]['cuisines'][0] != undefined &&
+              recipeJSON[i]['dishTypes'] &&
+              recipeJSON[i]['dishTypes'][0] != undefined &&
+              recipeSteps != null
+            ) {
               ingriedients.push(ingriedent);
 
-              //lager en liste over unike id-er for å unngå dobbeltlagring av ingridienser 
-              if (!ingriedientsUnique.some(e => e.ingredient_id == ingriedent.ingredient_id)) ingriedientsUnique.push(ingriedent)
+              //lager en liste over unike id-er for å unngå dobbeltlagring av ingridienser
+              if (!ingriedientsUnique.some((e) => e.ingredient_id == ingriedent.ingredient_id))
+                ingriedientsUnique.push(ingriedent);
             }
 
-            y++
+            y++;
           }
 
           //Lager et objekt med utvalgt data for Recipe fra JSON
@@ -81,50 +92,54 @@ class Menu extends Component {
             name: recipeJSON[i]['title'],
             category: recipeJSON[i]['dishTypes'] ? recipeJSON[i]['dishTypes'][0] : null, // Henter den første dishtype hvis det eksisterer
             country: recipeJSON[i]['cuisines'] ? recipeJSON[i]['cuisines'][0] : null, // Henter den første cuisine hvis det eksisterer
-            ingriedients: ingriedients // Legger til listen over ingridiens objekter
+            ingriedients: ingriedients, // Legger til listen over ingridiens objekter
           };
 
-          if (recipe.country != null && recipe.country != undefined && recipe.category != null && recipe.category != undefined && recipeSteps != null) {
+          if (
+            recipe.country != null &&
+            recipe.country != undefined &&
+            recipe.category != null &&
+            recipe.category != undefined &&
+            recipeSteps != null
+          ) {
             //Pusher recipe i array
             recipes.push(recipe);
 
             //Traverserer steps for hver oppskrift og putter det i array
-            for (let z = 0; z < recipeSteps.length;) {
+            for (let z = 0; z < recipeSteps.length; ) {
               const step: Step = {
                 step_id: 1,
-                description: recipeSteps[z]["step"],
-                order_number: recipeSteps[z]["number"],
-                recipe_id: recipe.recipe_id
-              }
+                description: recipeSteps[z]['step'],
+                order_number: recipeSteps[z]['number'],
+                recipe_id: recipe.recipe_id,
+              };
 
-              steps.push(step)
-              z++
+              steps.push(step);
+              z++;
             }
           }
           i++;
         }
 
-        //returnerer tre ulike array som kan refereres til avhengig av hvilke som trengs 
+        //returnerer tre ulike array som kan refereres til avhengig av hvilke som trengs
         return [recipes, ingriedientsUnique, steps];
       };
 
-      const result = await getApi()
-      //Kaller REST API for hver enkelt tabell i databasen  
+      const result = await getApi();
+      //Kaller REST API for hver enkelt tabell i databasen
       RecipeService.PostSpoonacularRecipes(result[0]);
       RecipeService.PostSpoonacularIngriedents(result[1]);
       RecipeService.PostSpoonacularRecipeIngriedents(result[0]);
       RecipeService.PostSpoonacularSteps(result[2]);
-
     }
 
-
-    //Endre denne for å skru av og på kall til API-et 
-    const retrieveFromApi = false
+    //Endre denne for å skru av og på kall til API-et
+    const retrieveFromApi = false;
 
     if (retrieveFromApi) {
-      const intervalAPI = setInterval(() => getRecipesBulk(), 1500)
+      const intervalAPI = setInterval(() => getRecipesBulk(), 1500);
       setTimeout(() => {
-        clearInterval(intervalAPI)
+        clearInterval(intervalAPI);
       }, 7500);
     }
   }

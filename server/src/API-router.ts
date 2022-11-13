@@ -2,6 +2,7 @@ import express, { request, response } from 'express';
 import recipeService from './recipe-service';
 import bcrypt from 'bcryptjs';
 import userService from './user-service';
+import shoppingListService from './shoppingList-service';
 
 /**
  * Express router containing task methods.
@@ -439,7 +440,7 @@ router.get('/categoryfilter/:category', (request, response) => {
 /////////////////////SHOPPING LIST
 router.get('/shoppinglist/:user_id', (request, response) => {
   const user_id = Number(request.params.user_id);
-  recipeService
+  shoppingListService
     .getShoppingList(user_id)
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
@@ -454,7 +455,7 @@ router.post('/shoppinglist', (request, response) => {
     data.user_id != 0 &&
     data.amount != 0
   )
-    recipeService
+    shoppingListService
       .addToShoppingList(data)
       .then(() => response.send('Added to shopping list'))
       .catch((error) => response.status(500).send(error));
@@ -463,7 +464,7 @@ router.post('/shoppinglist', (request, response) => {
 
 router.delete('/shoppinglist/:user_id', (request, response) => {
   const user_id = Number(request.params.user_id);
-  recipeService
+  shoppingListService
     .deleteShoppingList(user_id)
     .then((_results) => response.send('Shopping list deleted'))
     .catch((error) => response.status(500).send(error));
@@ -471,7 +472,7 @@ router.delete('/shoppinglist/:user_id', (request, response) => {
 
 router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
   const shopping_list_id = Number(request.params.shopping_list_id);
-  recipeService
+  shoppingListService
     .deleteItemShoppingList(shopping_list_id)
     .then((_results) => response.send('Item in shopping list deleted'))
     .catch((error) => response.status(500).send(error));

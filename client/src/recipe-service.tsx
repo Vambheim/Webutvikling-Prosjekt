@@ -223,30 +223,6 @@ class RecipeService {
       .then((response) => response.data);
   }
 
-  getShoppingList(user_id: number) {
-    return axios
-      .get<ShoppingListInfo[]>('/shoppinglist/' + user_id)
-      .then((response) => response.data);
-  }
-
-  addToShoppingList(
-    recipe_id: number,
-    ingredient_id: number,
-    user_id: number,
-    amount: number,
-    measurement_unit: string
-  ) {
-    return axios
-      .post('/shoppinglist', {
-        recipe_id: recipe_id,
-        ingredient_id: ingredient_id,
-        user_id: user_id,
-        amount: amount,
-        measurement_unit: measurement_unit,
-      })
-      .then((response) => response.data);
-  }
-
   /**
    *
    */
@@ -282,23 +258,6 @@ class RecipeService {
     return axios.delete('/recipes/' + recipe_id).then((response) => response.data);
   }
 
-  /**
-   * Delete shoppingList with given user_id
-   */
-  deleteShoppingList(user_id: number) {
-    return axios.delete('/shoppinglist/' + user_id).then((response) => response.data);
-  }
-
-  /**
-   * Delete item in shopping list with given shopping_list_id
-   */
-
-  deleteItemShoppingList(shopping_list_id: number) {
-    return axios.delete('/shoppinglistitem/' + shopping_list_id).then((response) => response.data);
-  }
-  /**
-   * Like a recipe with given recipe_id when logged in with user_id
-   */
   likeRecipe(user_id: number, recipe_id: number) {
     return axios
       .post('/recipes/like', { user_id: user_id, recipe_id: recipe_id })

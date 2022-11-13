@@ -7,23 +7,12 @@ import recipeService, {
   Step,
   RecipeIngredient,
   Ingredient,
-  ShoppingListInfo,
   addIngredient,
   addStep,
 } from './recipe-service';
-import userService, { User } from './user-service';
 import { createHashHistory } from 'history';
-
-//false as default
-let loggedIn: boolean = false;
-let currentUser: User = {
-  user_id: 0,
-  email: '',
-  first_name: '',
-  last_name: '',
-  password: '',
-};
-// Sjekke om man kan lagre dette i local storage, er teit hvis man blir "logga ut" hvis man refresher siden
+import shoppingListService from './shoppingList-service';
+import { loggedIn, currentUser } from './user-components';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a recipe
 
@@ -465,7 +454,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
     if (!loggedIn) {
       Alert.info('Log in to add ingredients to shopping list');
     } else {
-      recipeService
+      shoppingListService
         .addToShoppingList(
           this.recipe.recipe_id,
           ingredient_id,
@@ -483,7 +472,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
       Alert.info('Log in to add ingredients to shopping list');
     } else {
       this.ingredients.map((ingredient) => {
-        recipeService
+        shoppingListService
           .addToShoppingList(
             this.recipe.recipe_id,
             ingredient.ingredient_id,
@@ -751,299 +740,6 @@ export class RecipeAdd extends Component {
         history.push('/recipes/' + recipe_id);
       })
       .catch((error) => Alert.danger(error.message));
-  }
-}
-
-export class ShoppingList extends Component {
-  shopping_list: ShoppingListInfo[] = [];
-
-  render() {
-    return (
-      <Card title="Shopping List">
-        {this.shopping_list.map((list) => (
-          <Row key={list.shopping_list_id}>
-            <Column width={3}>{list.amount + ' ' + list.measurement_unit + ' ' + list.name}</Column>
-            <Column width={1}>
-              <Button.Light onClick={() => this.deleteOne(list.shopping_list_id, list.name)}>
-                &#128465;
-              </Button.Light>
-            </Column>
-          </Row>
-        ))}
-        <Button.Danger
-          onClick={() => {
-            this.deleteAll();
-          }}
-        >
-          Remove items
-        </Button.Danger>
-      </Card>
-    );
-  }
-
-  mounted() {
-    if (!loggedIn) {
-      Alert.info('Log in to use this feature');
-    } else {
-      recipeService
-        .getShoppingList(currentUser.user_id)
-        .then((list) => (this.shopping_list = list))
-        .catch((error) => Alert.danger('Error getting shopping list ' + error.message));
-    }
-  }
-
-  deleteOne(list_id: number, name: string) {
-    if (confirm('Do you want to remove ' + name + ' from the shopping list?')) {
-      console.log(list_id);
-      recipeService
-        .deleteItemShoppingList(list_id)
-        .then(() => Alert.success('Item deleted'))
-        .then(() => this.mounted()) // refreshes til items in shopping list
-        .catch((error) => Alert.danger('Error deleting item in shopping list: ' + error.message));
-    } else {
-      console.log('Canceled');
-    }
-  }
-
-  deleteAll() {
-    if (!loggedIn) {
-      Alert.info('Please log in');
-    } else {
-      if (this.shopping_list.length > 0) {
-        if (confirm('Do you want to remove all items from shopping list?')) {
-          recipeService
-            .deleteShoppingList(currentUser.user_id)
-            .then(() => Alert.info('Shopping list was successfully deleted'))
-            .then(() => this.mounted())
-            .catch((error) => Alert.danger('Error deleting shopping list ' + error.message));
-        } else {
-          console.log('Canceled');
-        }
-      } else {
-        Alert.info('No items to delete');
-      }
-    }
-  }
-}
-
-export class UserLogIn extends Component {
-  email: string = '';
-  password: string = '';
-
-  render() {
-    return (
-      <Card title="Log In">
-        <Row>
-          <Column width={6}>
-            <Form.Input
-              value={this.email}
-              type="text"
-              placeholder="Email"
-              onChange={(event) => (this.email = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column width={6}>
-            <Form.Input
-              value={this.password}
-              type="password"
-              placeholder="Password"
-              onChange={(event) => (this.password = event.currentTarget.value)}
-              // @ts-ignore
-              // Makes it possible to log in with enter as well as with button
-              onKeyUp={(event) => {
-                if (event.key == 'Enter') {
-                  this.logIn();
-                }
-              }}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Button.Success onClick={() => this.logIn()}>Log in</Button.Success>
-            <Button.Light onClick={() => this.clearInput()}>Clear</Button.Light>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Button.Light onClick={() => this.createUser()}>No user? Create one here</Button.Light>
-          </Column>
-        </Row>
-      </Card>
-    );
-  }
-  //mounted() {}
-
-  logIn() {
-    if (this.email.length > 0 && this.password.length > 0) {
-      userService
-        .logIn(this.email, this.password)
-        .then((user) => (currentUser = user))
-        .then(() => (loggedIn = true))
-        .then(() => Alert.success('Logged in as ' + currentUser.email))
-        .then(() => history.push('/recipes/user'))
-        .catch((error) => Alert.danger(error.response.data));
-    } else {
-      Alert.danger('Please fill in all the fields');
-    }
-  }
-
-  clearInput() {
-    this.email = '';
-    this.password = '';
-  }
-
-  createUser() {
-    history.push('/recipes/register');
-  }
-}
-
-export class RegisterUser extends Component {
-  user: User = { user_id: 0, email: '', first_name: '', last_name: '', password: '' };
-  confirm_password: string = '';
-
-  render() {
-    return (
-      <Card title="Create your user here">
-        <Row>
-          <Column>
-            <Form.Input
-              type="text"
-              value={this.user.email}
-              placeholder="Email"
-              onChange={(event) => (this.user.email = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Form.Input
-              type="text"
-              value={this.user.first_name}
-              placeholder="First name"
-              onChange={(event) => (this.user.first_name = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Form.Input
-              type="text"
-              value={this.user.last_name}
-              placeholder="Last name"
-              onChange={(event) => (this.user.last_name = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Form.Input
-              type="password"
-              value={this.user.password}
-              placeholder="Password"
-              onChange={(event) => (this.user.password = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Form.Input
-              type="password"
-              value={this.confirm_password}
-              placeholder="Confirm password"
-              onChange={(event) => (this.confirm_password = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Button.Success onClick={() => this.createUser()}>Create user</Button.Success>
-            <Button.Light onClick={() => this.clearInput()}>Clear</Button.Light>
-          </Column>
-        </Row>
-      </Card>
-    );
-  }
-
-  createUser() {
-    userService
-      .createUser(
-        this.user.email,
-        this.user.first_name,
-        this.user.last_name,
-        this.user.password,
-        this.confirm_password
-      )
-      .then((response) => {
-        if (response.length > 0) {
-          Alert.danger(response);
-        } else {
-          Alert.success('User created, please log in');
-          loggedIn = true;
-          history.push('/recipes/login');
-        }
-      })
-      .catch((error) => console.log('Error creating user: ' + error.message));
-  }
-
-  clearInput() {
-    this.user = { user_id: 0, email: '', first_name: '', last_name: '', password: '' };
-    this.confirm_password = '';
-  }
-}
-
-//her må det endres litt greier vvvvvvvv
-export class UserDetails extends Component {
-  likedRecipes: Recipe[] = [];
-  render() {
-    return (
-      <>
-        <Card title={'User page for ' + currentUser.first_name + ' ' + currentUser.last_name}>
-          <Row>
-            <Column>Welcome to your unique user page</Column>
-          </Row>
-          <Row>
-            <Column>Tips for this website:</Column>
-          </Row>
-          <Row>
-            <Column>Email: {currentUser.email}</Column>
-          </Row>
-          <Row>
-            <Column>
-              <Button.Danger onClick={() => this.logOut()}>Log out</Button.Danger>
-            </Column>
-          </Row>
-        </Card>
-        <Card title="Liked recipes">
-          {this.likedRecipes.map((recipe) => (
-            <Row key={recipe.recipe_id}>
-              <Column>
-                <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
-              </Column>
-            </Row>
-          ))}
-        </Card>
-      </>
-    );
-  }
-
-  mounted() {
-    if (!loggedIn) {
-      history.push('/recipes/login');
-    } else {
-      recipeService
-        .getLikedRecipes(currentUser.user_id)
-        .then((recipes) => (this.likedRecipes = recipes))
-        .catch((error) => Alert.danger(error.message));
-    }
-  }
-
-  logOut() {
-    loggedIn = false;
-    history.push('/recipes');
-    currentUser = { user_id: 0, email: '', first_name: '', last_name: '', password: '' };
   }
 }
 
