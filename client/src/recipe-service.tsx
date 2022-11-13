@@ -15,7 +15,7 @@ export type RecipeDetailed = {
   category: string;
   country: string;
   ingriedients: Array<Ingredient>;
-}
+};
 
 export type Step = {
   step_id: number;
@@ -107,18 +107,19 @@ class RecipeService {
    * Get filtered recipes
    */
 
-  /*
-  getFilteredRecipes(country: string, category: string, ingredient: string) {
-    return axios
-      .get<Recipe[]>('/recipes/' + country + '/' + category + '/' + ingredient)
-      .then((response) => response.data);
-  }
-  */
 
   getFilterByCountryAndCategory(country: string, category: string) {
     return axios
       .get<Recipe[]>('/countryandcategoryfilter/' + country + '/' + category)
       .then((response) => response.data);
+  }
+
+  getFilterByCategory(category: string) {
+    return axios.get<Recipe[]>('/categoryfilter/' + category).then((response) => response.data);
+  }
+
+  getFilterByCountry(country: string) {
+    return axios.get<Recipe[]>('/countryfilter/' + country).then((response) => response.data);
   }
 
   getFilterByOneIngredient(ingredient1: string) {
@@ -319,15 +320,15 @@ class RecipeService {
       .then((response) => response.data);
   }
 
-  //Poster data for mange til mange tabellen mellom ingridienser og oppskrifter 
+  //Poster data for mange til mange tabellen mellom ingridienser og oppskrifter
   PostSpoonacularRecipeIngriedents(data: Array<RecipeDetailed>) {
-    var ingridients = []
+    var ingridients = [];
 
-    for (let i = 0; i < data.length;) {
-      ingridients.push(data[i].ingriedients)
-      i++
+    for (let i = 0; i < data.length; ) {
+      ingridients.push(data[i].ingriedients);
+      i++;
     }
-    ingridients = ingridients.flat()
+    ingridients = ingridients.flat();
 
     return axios
       .post<Array<RecipeIngredient>>('/spoonacular/ingridients-recipes/', { ingridients })

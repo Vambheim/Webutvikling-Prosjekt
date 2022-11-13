@@ -350,19 +350,6 @@ router.post('/steps', (request, response) => {
 
 ///////////////////FILTER
 
-// router.get('/recipes/:country/:category/:ingredient', (request, response) => {
-//   // vurdere å endre sti til "recipes/filter" ? og data = request.body
-//   const country = String(request.params.country);
-//   const category = String(request.params.category);
-//   const ingredient = String(request.params.ingredient);
-//   if (country && category && ingredient) {
-//     recipeService
-//       .getFilteredRecipe(country, category, ingredient)
-//       .then((rows) => response.send(rows))
-//       .catch((error) => response.status(500).send(error));
-//   }
-// });
-
 router.get('/oneingredientfilter/:ingredient1', (request, response) => {
   const ingredient1 = String(request.params.ingredient1);
   if (typeof ingredient1 == 'string' && ingredient1.length != 0) {
@@ -423,6 +410,26 @@ router.get('/countryandcategoryfilter/:country/:category', (request, response) =
   if (country && category) {
     recipeService
       .getFilterByCountryAndCategory(country, category)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  }
+});
+
+router.get('/countryfilter/:country', (request, response) => {
+  const country = String(request.params.country);
+  if (country) {
+    recipeService
+      .getFilterByCountry(country)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  }
+});
+
+router.get('/categoryfilter/:category', (request, response) => {
+  const category = String(request.params.category);
+  if (category) {
+    recipeService
+      .getFilterByCategory(category)
       .then((rows) => response.send(rows))
       .catch((error) => response.status(500).send(error));
   }
