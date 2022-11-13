@@ -28,33 +28,6 @@ export type Step = {
   recipe_id: number;
 };
 
-export type User = {
-  user_id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  password: string;
-};
-
-//endre fra info til details
-export type ShoppingListUserInfo = {
-  recipe_id: number;
-  ingredient_id: number;
-  user_id: number;
-  amount: number;
-  measurement_unit: string;
-};
-
-// endre fra info til details
-export type ShoppingListInfo = {
-  shopping_list_id: number;
-  recipe_id: number;
-  ingredient_id: number;
-  name: string;
-  amount: number;
-  measurement_unit: string;
-};
-
 class RecipeService {
   /**
    * Get all recipes.
@@ -355,51 +328,6 @@ class RecipeService {
       );
     });
   }
-
-  // // se over denne og getUser: er jo egt samme greia
-  // userExistsCheck(email: string) {
-  //   return new Promise<User | undefined>((resolve, reject) => {
-  //     pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
-  //       if (error) return reject(error);
-
-  //       //rejects if user exists and resolves if it does not
-  //       if (results.length > 0) {
-  //         return reject();
-  //       } else {
-  //         return resolve(results[0] as User);
-  //       }
-  //     });
-  //   });
-  // }
-
-  // createUser(email: string, first_name: string, last_name: string, password: string) {
-  //   // endre parametere til bare user? ^
-  //   return new Promise((resolve, reject) => {
-  //     pool.query(
-  //       'INSERT INTO user SET email=?, first_name=?, last_name=?, password=?',
-  //       [email, first_name, last_name, password],
-  //       (error, results) => {
-  //         if (error) return reject(error);
-
-  //         resolve(results);
-  //       }
-  //     );
-  //   });
-  // }
-
-  // getUser(email: string) {
-  //   return new Promise<User>((resolve, reject) => {
-  //     pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
-  //       if (error) return reject(error);
-
-  //       if (results.length > 0) {
-  //         resolve(results[0] as User);
-  //       } else {
-  //         reject('No user found');
-  //       }
-  //     });
-  //   });
-  // }
 
   /**
    * Delete recipe with given id.
