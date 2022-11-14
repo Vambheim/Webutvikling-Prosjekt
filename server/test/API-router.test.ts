@@ -1,13 +1,16 @@
 import axios from 'axios';
 import pool from '../src/mysql-pool';
 import app from '../src/app';
-import taskService, { Task } from '../src/recipe-service';
+import { Recipe } from '../src/recipe-service';
+import { ShoppingListInfo } from '../src/shoppingList-service';
 
-const testTasks: Task[] = [
-  { id: 1, title: 'Les leksjon', done: false },
-  { id: 2, title: 'Møt opp på forelesning', done: false },
-  { id: 3, title: 'Gjør øving', done: false },
+const testRecipes: Recipe[] = [
+  { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
+  { recipe_id: 2, name: 'Pizza', category: 'dinner', country: 'Italy' },
+  { recipe_id: 3, name: 'Onion soup', category: 'soup', country: 'France' },
 ];
+
+const testShoppingLists: ShoppingListInfo[] = [];
 
 // Since API is not compatible with v1, API version is increased to v2
 axios.defaults.baseURL = 'http://localhost:3001/api/v2';
