@@ -471,18 +471,22 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
     if (!loggedIn) {
       Alert.info('Log in to add ingredients to shopping list');
     } else {
-      this.ingredients.map((ingredient) => {
-        shoppingListService
-          .addToShoppingList(
-            this.recipe.recipe_id,
-            ingredient.ingredient_id,
-            currentUser.user_id,
-            ingredient.amount_per_person * this.portions,
-            ingredient.measurement_unit
-          )
-          .then()
-          .catch((error) => Alert.danger(error.message));
-      });
+      if (confirm('Do you want to add all ingredients to your shopping list')) {
+        this.ingredients.map((ingredient) => {
+          shoppingListService
+            .addToShoppingList(
+              this.recipe.recipe_id,
+              ingredient.ingredient_id,
+              currentUser.user_id,
+              ingredient.amount_per_person * this.portions,
+              ingredient.measurement_unit
+            )
+            .then()
+            .catch((error) => Alert.danger(error.message));
+        });
+      } else {
+        console.log('Canceled');
+      }
     }
   }
 
