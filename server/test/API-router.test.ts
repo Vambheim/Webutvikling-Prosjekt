@@ -1,8 +1,11 @@
 import axios from 'axios';
 import pool from '../src/mysql-pool';
 import app from '../src/app';
-import recipeService, { Recipe } from '../src/recipe-service';
-import { ShoppingListInfo } from '../src/shoppingList-service';
+import recipeService, { Ingredient, Recipe } from '../src/recipe-service';
+import shoppingListService, {
+  ShoppingListInfo,
+  ShoppingListUserInfo,
+} from '../src/shoppingList-service';
 
 const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
@@ -10,8 +13,29 @@ const testRecipes: Recipe[] = [
   { recipe_id: 3, name: 'Onion soup', category: 'soup', country: 'France' },
 ];
 
-const testShoppingLists: ShoppingListInfo = {shopping_list_id: 1, recipe_id:1, ingredient_id:1, name:"beans", amount:2, measurement_unit:"cans"};
-const testShoppingListUser: ShoppingListUserInfo = {}
+const testIngredients: Ingredient[] = [
+  { ingredient_id: 1, name: 'beans' }, //til recipe 1
+  { ingredient_id: 2, name: 'tomato' }, // til recipe 1 og 2
+  { ingredient_id: 3, name: 'flour' }, // til recipe 2
+  { ingredient_id: 4, name: 'onion' }, // til recipe 3
+];
+
+const testShoppingListInfo: ShoppingListInfo = {
+  shopping_list_id: 1,
+  recipe_id: 1,
+  ingredient_id: 1,
+  name: 'beans',
+  amount: 2,
+  measurement_unit: 'cans',
+};
+const testShoppingListUser: ShoppingListUserInfo = {
+  recipe_id: 1,
+  ingredient_id: 1,
+  user_id: 1,
+  amount: 2,
+  measurement_unit: 'cans',
+};
+
 // Since API is not compatible with v1, API version is increased to v2
 axios.defaults.baseURL = 'http://localhost:3001/api/v2';
 
@@ -31,7 +55,7 @@ beforeEach((done) => {
 
       // Create testRecipes sequentially in order to set correct recipe_id, and call done() when finished
       recipeService
-      //kanskje mappe denne?
+        //kanskje mappe denne?
         .createRecipe(testRecipes[0].name, testRecipes[0].country, testRecipes[0].category)
         .then(() =>
           recipeService.createRecipe(
@@ -46,10 +70,33 @@ beforeEach((done) => {
             testRecipes[2].country,
             testRecipes[2].category
           )
-        ) // Create testRecipes[2] after testRecipes[1] has been created
+        ); // Create testRecipes[2] after testRecipes[1] has been created
+      // .then(() => done()); // Call done() after testRecipes[2] has been created
+    });
+  });
+
+  pool.query('DELETE FROM ingredient', (error) => {
+    if (error) return done(error);
+    //resets the auto_increment
+    pool.query('ALTER TABLE ingredient AUTO_INCREMENT = 1', (error) => {
+      if (error) return done(error);
+      recipeService
+        .createIngredient(testIngredients[0].name)
+        .then(() => recipeService.createIngredient(testIngredients[1].name))
+        .then(() => recipeService.createIngredient(testIngredients[2].name))
+        .then(() => recipeService.createIngredient(testIngredients[3].name))
         .then(() => done()); // Call done() after testRecipes[2] has been created
     });
   });
+
+  // pool.query('DELETE FROM shopping_list', (error) => {
+  //   if (error) return done(error);
+  //   //resets the auto_increment
+  //   pool.query('ALTER TABLE shopping_list AUTO_INCREMENT = 1', (error) => {
+  //     if (error) return done(error);
+  //     shoppingListService.addToShoppingList(testShoppingListUser).then(() => done()); // Call done() after testRecipes[2] has been created
+  //   });
+  // });
 });
 
 // Stop web server and close connection to MySQL server
@@ -123,17 +170,47 @@ describe('Edit recipe (PUT)', () => {
   });
 });
 
-////////////USER
-
-////////////SHOPPING LIST
-describe('Fetch shopping list (GET)', () => {
-  test('Fetch shopping list (200 OK)', (done) => {
-    axios.get('/shoppinglist/:user_id').then((response) => {
+////////////INGREDIENTS
+describe('Fetch ingredients (GET)', () => {
+  test('Fetch all ingredients (200 OK)', (done) => {
+    axios.get('/ingredients').then((response) => {
       expect(response.status).toEqual(200);
-      expect(response.data).toEqual(ShoppingListInfo[]);
+      expect(response.data).toEqual(testIngredients);
       done();
     });
   });
 });
 
+describe('Create new ingredient (POST)', () => {
+  test('Create new ingredient (200 OK)', (done) => {
+    axios.post('/ingredients', { name: 'new ingredient' }).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual({ ingredient_id: 5 });
+      done();
+    });
+  });
 
+  test('Create new ingredient (400 bad request)', (done) => {
+    axios.post('/ingredients', { name: '' }).catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 400');
+      done();
+    });
+  });
+});
+
+////////////RECIPE INGREDIENT
+
+
+////////////USER
+
+////////////SHOPPING LIST
+
+// describe('Fetch shopping list (GET)', () => {
+//   test('Fetch shopping list (200 OK)', (done) => {
+//     axios.get('/shoppinglist/:user_id').then((response) => {
+//       expect(response.status).toEqual(200);
+//       expect(response.data).toEqual(testShoppingListInfo);
+//       done();
+//     });
+//   });
+// });
