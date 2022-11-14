@@ -10,6 +10,8 @@ const testRecipes: Recipe[] = [
   { recipe_id: 3, name: 'Onion soup', category: 'soup', country: 'France' },
 ];
 
+// const testRecipeIngredients;
+
 const testShoppingLists: ShoppingListInfo[] = [];
 
 // Since API is not compatible with v1, API version is increased to v2
@@ -58,7 +60,7 @@ afterAll((done) => {
 });
 
 describe('Fetch recipes (GET)', () => {
-  test('Fetch all tasks (200 OK)', (done) => {
+  test('Fetch all recipes (200 OK)', (done) => {
     axios.get('/recipes').then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual(testRecipes);
@@ -66,7 +68,7 @@ describe('Fetch recipes (GET)', () => {
     });
   });
 
-  test('Fetch task (200 OK)', (done) => {
+  test('Fetch recipe (200 OK)', (done) => {
     axios.get('/recipes/1').then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual(testRecipes[0]);
@@ -103,5 +105,21 @@ describe('Delete recipe (DELETE)', () => {
       expect(response.status).toEqual(200);
       done();
     });
+  });
+});
+
+describe('Edit recipe (PUT)', () => {
+  test('Edit recipe (200 OK)', (done) => {
+    axios
+      .put('/recipes', {
+        recipe_id: 1,
+        name: 'edited recipename',
+        category: 'edited category',
+        country: 'edited country',
+      })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        done();
+      });
   });
 });
