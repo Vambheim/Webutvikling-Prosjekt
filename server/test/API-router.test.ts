@@ -53,26 +53,26 @@ afterAll((done) => {
   webServer.close(() => pool.end(() => done()));
 });
 
-describe('Fetch tasks (GET)', () => {
+describe('Fetch recipes (GET)', () => {
   test('Fetch all tasks (200 OK)', (done) => {
-    axios.get('/tasks').then((response) => {
+    axios.get('/recipes').then((response) => {
       expect(response.status).toEqual(200);
-      expect(response.data).toEqual(testTasks);
+      expect(response.data).toEqual(testRecipes);
       done();
     });
   });
 
   test('Fetch task (200 OK)', (done) => {
-    axios.get('/tasks/1').then((response) => {
+    axios.get('/recipes/1').then((response) => {
       expect(response.status).toEqual(200);
-      expect(response.data).toEqual(testTasks[0]);
+      expect(response.data).toEqual(testRecipes[0]);
       done();
     });
   });
 
-  test('Fetch task (404 Not Found)', (done) => {
+  test('Fetch recipe (404 Not Found)', (done) => {
     axios
-      .get('/tasks/4')
+      .get('/recipes/4')
       .then((_response) => done(new Error()))
       .catch((error) => {
         expect(error.message).toEqual('Request failed with status code 404');
@@ -81,19 +81,21 @@ describe('Fetch tasks (GET)', () => {
   });
 });
 
-describe('Create new task (POST)', () => {
-  test('Create new task (200 OK)', (done) => {
-    axios.post('/tasks', { title: 'Ny oppgave' }).then((response) => {
-      expect(response.status).toEqual(200);
-      expect(response.data).toEqual({ id: 4 });
-      done();
-    });
+describe('Create new recipe (POST)', () => {
+  test('Create new recipe (200 OK)', (done) => {
+    axios
+      .post('/recipes', { name: 'new recipe', category: 'new category', country: 'new country' })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual({ id: 4 });
+        done();
+      });
   });
 });
 
-describe('Delete task (DELETE)', () => {
-  test('Delete task (200 OK)', (done) => {
-    axios.delete('/tasks/2').then((response) => {
+describe('Delete recipe (DELETE)', () => {
+  test('Delete recipe (200 OK)', (done) => {
+    axios.delete('/recipes/2').then((response) => {
       expect(response.status).toEqual(200);
       done();
     });
