@@ -42,8 +42,8 @@ beforeEach((done) => {
           testRecipes[2].category,
           testRecipes[2].country
         )
-      ) // Create testTask[2] after testTask[1] has been created
-      .then(() => done()); // Call done() after testTask[2] has been created
+      ) // Create testRecipes[2] after testRecipes[1] has been created
+      .then(() => done()); // Call done() after testRecipes[2] has been created
   });
 });
 
