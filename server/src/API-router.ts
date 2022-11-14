@@ -225,7 +225,17 @@ router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
   const step_id = Number(request.params.step_id);
 
-  if (data && recipe_id && step_id) {
+  if (
+    data &&
+    typeof recipe_id == 'number' &&
+    recipe_id != 0 &&
+    typeof step_id == 'number' &&
+    step_id != 0 &&
+    typeof data.order_number == 'number' &&
+    data.order_number != 0 &&
+    typeof data.description == 'string' &&
+    data.description.length != 0
+  ) {
     recipeService
       .updateSteps(data.order_number, data.description, step_id, recipe_id)
       .then(() => response.send('Step was updated'))
