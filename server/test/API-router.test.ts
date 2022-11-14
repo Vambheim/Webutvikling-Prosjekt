@@ -107,19 +107,6 @@ describe('Delete recipe (DELETE)', () => {
   });
 });
 
-////////////USER
-
-////////////SHOPPING LIST
-describe('Fetch shopping list (GET)', () => {
-  test('Fetch shopping list (200 OK)', (done) => {
-    axios.get('/shoppinglist/:user_id').then((response) => {
-      expect(response.status).toEqual(200);
-      expect(response.data).toEqual(ShoppingListInfo[]);
-      done();
-    });
-  });
-});
-
 describe('Edit recipe (PUT)', () => {
   test('Edit recipe (200 OK)', (done) => {
     axios
@@ -135,3 +122,18 @@ describe('Edit recipe (PUT)', () => {
       });
   });
 });
+
+////////////USER
+
+////////////SHOPPING LIST
+describe('Fetch shopping list (GET)', () => {
+  test('Fetch shopping list (200 OK)', (done) => {
+    axios.get('/shoppinglist/:user_id').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual(ShoppingListInfo[]);
+      done();
+    });
+  });
+});
+
+
