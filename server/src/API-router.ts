@@ -295,11 +295,17 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
   }
 });
 
-router.delete('/recipes/:id', (request, response) => {
-  recipeService
-    .delete(Number(request.params.id))
-    .then((_result) => response.send())
-    .catch((error) => response.status(500).send(error));
+router.delete('/recipes/:recipe_id', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+
+  if (typeof recipe_id == 'number' && recipe_id != 0) {
+    recipeService
+      .delete(recipe_id)
+      .then((_result) => response.send())
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
 });
 
 // Creates a like in the database
