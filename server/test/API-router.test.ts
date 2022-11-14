@@ -1,7 +1,7 @@
 import axios from 'axios';
 import pool from '../src/mysql-pool';
 import app from '../src/app';
-import recipeService, { Ingredient, Recipe } from '../src/recipe-service';
+import recipeService, { Ingredient, Recipe, Step } from '../src/recipe-service';
 import shoppingListService, {
   ShoppingListInfo,
   ShoppingListUserInfo,
@@ -37,6 +37,24 @@ const testShoppingListUser: ShoppingListUserInfo = {
   measurement_unit: 'cans',
 };
 
+const testSteps: Step[] = [
+  {
+    step_id: 1,
+    order_number: 1,
+    description: 'Mix flour, water and yeast together',
+    recipe_id: 2,
+  },
+
+  { step_id: 2, order_number: 2, description: 'let the dough rest', recipe_id: 2 },
+
+  { step_id: 3, order_number: 1, description: 'Peel and chop onions', recipe_id: 3 },
+  { step_id: 4, order_number: 2, description: 'Caramlize the onions in a pan', recipe_id: 3 },
+
+  { step_id: 5, order_number: 1, description: 'Chop chili', recipe_id: 1 },
+
+  { step_id: 6, order_number: 2, description: 'Mix tomatosauce and beans together', recipe_id: 1 },
+];
+
 // Since API is not compatible with v1, API version is increased to v2
 axios.defaults.baseURL = 'http://localhost:3001/api/v2';
 
@@ -63,6 +81,19 @@ beforeEach((done) => {
 
       testRecipes.map((testRecipe) => {
         recipeService.createRecipe(testRecipe.name, testRecipe.country, testRecipe.category);
+      });
+    });
+  });
+
+  pool.query('DELETE FROM step', (error) => {
+    if (error) return done(error);
+    //reset AUTO_INCREMENT
+
+    pool.query('ALTER TABLE step AUTO_INCREMENT = 1', (error) => {
+      if (error) return done(error);
+
+      testSteps.map((testStep) => {
+        recipeService.createStep(testStep.order_number, testStep.description, testStep.recipe_id);
       });
     });
   });
@@ -269,6 +300,57 @@ describe('Edit recipe (PUT)', () => {
 });
 
 ////////////STEPS
+
+describe('Fetch steps (GET)', () => {
+  test('Fetch all steps (200 OK) for the recipe with recipe_id = 1 ', (done) => {
+    axios.get('/recipes/1/steps').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testSteps[4], testSteps[5]]);
+      done();
+    });
+  });
+});
+
+describe('Edit step (PUT)', () => {
+  test('Edit step (200 OK)', (done) => {
+    axios.put('/recipes/1/steps/4').then((response) => {
+      expect(response.status).toEqual(200);
+      done();
+    });
+  });
+
+  test('Edit step (404 not found) via unknown path', (done) => {
+    axios.put('/unknownPath/2/steps/1').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+      done();
+    });
+  });
+
+  //Se over:
+  test.skip('Edit step (400 bad request)', (done) => {
+    axios.put('/recipes/"1"/steps/"1"').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 400');
+      done();
+    });
+  });
+
+  test('Edit step (500 internal server error) via a currently non-existing recipe_id ', (done) => {
+    axios.put('/recipes/two/steps/1').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
+});
+
+describe('Create new step (POST)', () => {
+  test.skip('Create new step (200 OK)', (done) => {
+    axios.post('/ingredients', { name: 'new ingredient' }).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual({ ingredient_id: 5 });
+      done();
+    });
+  });
+});
 
 ////////////RECIPEINGREDIENT
 
