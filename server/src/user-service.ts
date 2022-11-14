@@ -41,7 +41,7 @@ class UserService {
 
   // se over denne og getUser: er jo egt samme greia
   userExistsCheck(email: string) {
-    return new Promise<User | undefined>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
         if (error) return reject(error);
 
@@ -49,7 +49,7 @@ class UserService {
         if (results.length > 0) {
           return reject();
         } else {
-          return resolve(results[0] as User);
+          resolve();
         }
       });
     });

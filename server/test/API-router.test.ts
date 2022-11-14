@@ -7,7 +7,9 @@ import shoppingListService, {
   ShoppingListUserInfo,
 } from '../src/shoppingList-service';
 import userService, { User } from '../src/user-service';
+import { salt } from '../src/API-router';
 import { response } from 'express';
+import bcrypt from 'bcryptjs';
 
 const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
@@ -53,9 +55,8 @@ const testUser: User = {
   email: 'test@mail',
   first_name: 'Test',
   last_name: 'Testerson',
-  password: '123abc',
+  password: '123',
 };
-const password2: string = '123abc';
 
 const testShoppingListInfo: ShoppingListInfo = {
   shopping_list_id: 1,
@@ -88,12 +89,17 @@ beforeEach((done) => {
     if (error) return done(error);
     pool.query('ALTER TABLE user AUTO_INCREMENT = 1', (error) => {
       if (error) return done(error);
-      userService.createUser(
-        testUser.email,
-        testUser.first_name,
-        testUser.last_name,
-        testUser.password
-      );
+
+      bcrypt.hash(testUser.password, salt, (error, hash) => {
+        if (error) throw error;
+        testUser.password = hash;
+        userService.createUser(
+          testUser.email,
+          testUser.first_name,
+          testUser.last_name,
+          testUser.password
+        );
+      });
     });
   });
 
@@ -363,11 +369,89 @@ describe('Create new ingredient (POST)', () => {
 ////////////RECIPE INGREDIENT
 
 ////////////USER
-describe('Test log in (GET)', () => {
-  test('Log in (200 OK)', (done) => {
-    axios.get('/users/login/test@mail/123abc').then((response) => {
-      // expect(response.status).toEqual(200);
-      expect(response.data).toEqual(testUser);
+describe('User register (POST)', () => {
+  test('Create new user (200 OK)', (done) => {
+    axios
+      .post('/users/register', {
+        email: 'newuser@mail',
+        first_name: 'Test',
+        last_name: 'Testerson',
+        password: '123abc',
+        password2: '123abc',
+      })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        //Cannot test if the response data is equal to the hash, because it is different every time
+        done();
+      });
+  });
+
+  test('Create new user with existing email (400 bad request)', (done) => {
+    axios
+      .post('/users/register', {
+        email: 'test@mail',
+        first_name: 'Test',
+        last_name: 'Testerson',
+        password: '123abc',
+        password2: '123abc',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+
+  test('Create new user with passwords not matching (400 bad request)', (done) => {
+    axios
+      .post('/users/register', {
+        email: 'new@mail',
+        first_name: 'New',
+        last_name: 'New',
+        password: '123abc',
+        password2: 'Notmatchingpassword',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+
+  test('Create new user with missing input (400 bad request)', (done) => {
+    axios
+      .post('/users/register', {
+        email: '',
+        first_name: '',
+        last_name: '',
+        password: '',
+        password2: '',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+
+  test('Create new user with unvalid email (400 bad request)', (done) => {
+    axios
+      .post('/users/register', {
+        email: 'mail',
+        first_name: 'Test',
+        last_name: 'Testerson',
+        password: '123',
+        password2: '123',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+});
+
+describe('User log in (GET)', () => {
+  test.skip('Log in (200 OK)', (done) => {
+    axios.get('/users/login/test@mail/password').then((response) => {
+      expect(response.status).toEqual(200);
+      // expect(response.data).toEqual('noe');
       done();
     });
   });
@@ -379,7 +463,7 @@ describe('Test log in (GET)', () => {
     });
   });
 
-  test('No user or password (404 Not Found)', (done) => {
+  test('No password (404 Not Found)', (done) => {
     axios.get('/users/login/test@mail/').catch((error) => {
       expect(error.message).toEqual('Request failed with status code 404');
       done();
