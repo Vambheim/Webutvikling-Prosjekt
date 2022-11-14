@@ -1,11 +1,12 @@
 import axios from 'axios';
 import pool from '../src/mysql-pool';
 import app from '../src/app';
-import recipeService, { Ingredient, Recipe, Step } from '../src/recipe-service';
+import recipeService, { Ingredient, Recipe, RecipeIngredient, Step } from '../src/recipe-service';
 import shoppingListService, {
   ShoppingListInfo,
   ShoppingListUserInfo,
 } from '../src/shoppingList-service';
+import userService, { User } from '../src/user-service';
 import { response } from 'express';
 
 const testRecipes: Recipe[] = [
@@ -20,6 +21,41 @@ const testIngredients: Ingredient[] = [
   { ingredient_id: 3, name: 'flour' }, // til recipe 2
   { ingredient_id: 4, name: 'onion' }, // til recipe 3
 ];
+
+const testRecipeIngredients: RecipeIngredient[] = [
+  { ingredient_id: 1, name: 'beans', recipe_id: 1, amount_per_person: 2, measurement_unit: 'cans' },
+  {
+    ingredient_id: 2,
+    name: 'tomato',
+    recipe_id: 1,
+    amount_per_person: 4,
+    measurement_unit: 'pieces',
+  }, // til recipe 1 og 2
+  {
+    ingredient_id: 2,
+    name: 'tomato',
+    recipe_id: 2,
+    amount_per_person: 1,
+    measurement_unit: 'pack',
+  }, // til recipe 1 og 2
+  {
+    ingredient_id: 3,
+    name: 'flour',
+    recipe_id: 2,
+    amount_per_person: 500,
+    measurement_unit: 'gram',
+  }, // til recipe 2
+  { ingredient_id: 4, name: 'onion', recipe_id: 3, amount_per_person: 6, measurement_unit: '' }, // til recipe 3 }
+];
+
+const testUser: User = {
+  user_id: 1,
+  email: 'test@mail',
+  first_name: 'Test',
+  last_name: 'Testerson',
+  password: '123abc',
+};
+const password2: string = '123abc';
 
 const testShoppingListInfo: ShoppingListInfo = {
   shopping_list_id: 1,
@@ -65,6 +101,20 @@ beforeAll((done) => {
 });
 
 beforeEach((done) => {
+  // Delete all users, and reset user_id auto-increment start value
+  pool.query('DELETE FROM user', (error) => {
+    if (error) return done(error);
+    pool.query('ALTER TABLE user AUTO_INCREMENT = 1', (error) => {
+      if (error) return done(error);
+      userService.createUser(
+        testUser.email,
+        testUser.first_name,
+        testUser.last_name,
+        testUser.password
+      );
+    });
+  });
+
   // Delete all recipes, and reset recipe_id auto-increment start value
   pool.query('DELETE FROM recipe', (error) => {
     if (error) return done(error);
@@ -108,7 +158,17 @@ beforeEach((done) => {
         .then(() => recipeService.createIngredient(testIngredients[1].name))
         .then(() => recipeService.createIngredient(testIngredients[2].name))
         .then(() => recipeService.createIngredient(testIngredients[3].name))
-        .then(() => done()); // slett hvis noen andre kjøres under
+        .then(() => {
+          testRecipeIngredients.map((data) => {
+            recipeService.createRecipeIngredient(
+              data.ingredient_id,
+              data.recipe_id,
+              data.amount_per_person,
+              data.measurement_unit
+            );
+          });
+        })
+        .then(() => done());
     });
   });
 
@@ -385,6 +445,36 @@ describe('Create new ingredient (POST)', () => {
 ////////////RECIPE INGREDIENT
 
 ////////////USER
+describe('Test log in (GET)', () => {
+  test('Log in (200 OK)', (done) => {
+    axios.get('/users/login/test@mail/123abc').then((response) => {
+      // expect(response.status).toEqual(200);
+      expect(response.data).toEqual(testUser);
+      done();
+    });
+  });
+
+  test('Wrong password (400 bad request)', (done) => {
+    axios.get('/users/login/test@mail/fakePassword').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 400');
+      done();
+    });
+  });
+
+  test('No user or password (404 Not Found)', (done) => {
+    axios.get('/users/login/test@mail/').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+      done();
+    });
+  });
+
+  test('No user with given email (500 Internal Server Error)', (done) => {
+    axios.get('/users/login/wrong@mail/password').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
+});
 
 ////////////SHOPPING LIST
 describe('Fetch shopping list (GET)', () => {
