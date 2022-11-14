@@ -2,7 +2,7 @@ import pool from './mysql-pool';
 import type { RowDataPacket, ResultSetHeader, OkPacket } from 'mysql2';
 
 export type User = {
-  user_id: string;
+  user_id: number;
   email: string;
   first_name: string;
   last_name: string;
@@ -12,14 +12,14 @@ export type User = {
 class UserService {
   createUser(email: string, first_name: string, last_name: string, password: string) {
     // endre parametere til bare user? ^
-    return new Promise((resolve, reject) => {
+    return new Promise<User>((resolve, reject) => {
       pool.query(
         'INSERT INTO user SET email=?, first_name=?, last_name=?, password=?',
         [email, first_name, last_name, password],
-        (error, results) => {
+        (error, results: RowDataPacket[]) => {
           if (error) return reject(error);
 
-          resolve(results);
+          resolve(results[0] as User);
         }
       );
     });

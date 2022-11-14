@@ -14,7 +14,12 @@ var salt = bcrypt.genSaltSync(10);
 router.get('/users/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
   const password = String(request.params.password);
-  if (email.length != 0 && password.length != 0) {
+  if (
+    typeof email == 'string' &&
+    email.length != 0 &&
+    typeof password == 'string' &&
+    password.length > 0
+  ) {
     userService
       .getUser(email)
       .then((user) => {
