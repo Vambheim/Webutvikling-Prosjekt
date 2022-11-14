@@ -53,24 +53,11 @@ beforeEach((done) => {
     pool.query('ALTER TABLE recipe AUTO_INCREMENT = 1', (error) => {
       if (error) return done(error);
 
-      // Create testRecipes sequentially in order to set correct recipe_id, and call done() when finished
-      recipeService
-        //kanskje mappe denne?
-        .createRecipe(testRecipes[0].name, testRecipes[0].country, testRecipes[0].category)
-        .then(() =>
-          recipeService.createRecipe(
-            testRecipes[1].name,
-            testRecipes[1].country,
-            testRecipes[1].category
-          )
-        ) // Create testTask[1] after testTask[0] has been created
-        .then(() =>
-          recipeService.createRecipe(
-            testRecipes[2].name,
-            testRecipes[2].country,
-            testRecipes[2].category
-          )
-        ); // Create testRecipes[2] after testRecipes[1] has been created
+      // Create testTasks sequentially in order to set correct id, and call done() when finished
+      // recipeService
+        //   .create(testTasks[0].title)
+      //   .then(() => taskService.create(testTasks[1].title)) // Create testTask[1] after testTask[0] has been created
+      //   .then(() => taskService.create(testTasks[2].title)); // Create testTask[2] after testTask[1] has been created
       // .then(() => done()); // Call done() after testRecipes[2] has been created
     });
   });
@@ -85,7 +72,13 @@ beforeEach((done) => {
         .then(() => recipeService.createIngredient(testIngredients[1].name))
         .then(() => recipeService.createIngredient(testIngredients[2].name))
         .then(() => recipeService.createIngredient(testIngredients[3].name))
-        .then(() => done()); // Call done() after testRecipes[2] has been created
+      //   .then(() => done()); // Call done() after testTask[2] has been created
+
+      testRecipes.map((testRecipe) => {
+        recipeService.createRecipe(testRecipe.name, testRecipe.country, testRecipe.category);
+      });
+
+      done();
     });
   });
 
@@ -142,6 +135,14 @@ describe('Create new recipe (POST)', () => {
         expect(response.data).toEqual({ recipe_id: 4 });
         done();
       });
+  });
+
+  test('Create new recipe (400 bad request)', (done) => {
+    axios.post('/recipes', { name: 'new recipe' }).catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 400');
+
+      done();
+    });
   });
 });
 
