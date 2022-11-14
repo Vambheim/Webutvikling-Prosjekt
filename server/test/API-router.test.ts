@@ -115,7 +115,7 @@ describe('Fetch recipes (GET)', () => {
     });
   });
 
-  test('Fetch recipe (404 Not Found)', (done) => {
+  test('Fetch recipe (404 Not Found) via wrong path to a recipe that does not exists', (done) => {
     axios
       .get('/recipes/4')
       .then((_response) => done(new Error()))
@@ -137,7 +137,7 @@ describe('Create new recipe (POST)', () => {
       });
   });
 
-  test('Create new recipe (400 bad request)', (done) => {
+  test('Create new recipe (400 bad request) without necesary input', (done) => {
     axios.post('/recipes', { name: 'new recipe' }).catch((error) => {
       expect(error.message).toEqual('Request failed with status code 400');
 
@@ -145,7 +145,21 @@ describe('Create new recipe (POST)', () => {
     });
   });
 
-  test('Create new recipe (500 internal server error)', (done) => {
+  test('Create new recipe (404 not found) via a path that does not exists', (done) => {
+    axios
+      .post('/unknownPath', {
+        name: 'new recipe',
+        country: 'new country in Norwegian',
+        category: 'new category',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 404');
+
+        done();
+      });
+  });
+
+  test('Create new recipe (500 internal server error) too large input', (done) => {
     axios
       .post('/recipes', {
         //Since the column-type "name" is defined as Varchar(50) in the database,
@@ -170,6 +184,27 @@ describe('Delete recipe (DELETE)', () => {
   test('Delete recipe (200 OK)', (done) => {
     axios.delete('/recipes/2').then((response) => {
       expect(response.status).toEqual(200);
+      done();
+    });
+  });
+
+  test('Delete recipe (404 not found) via a unknown path', (done) => {
+    axios.delete('/unknownPath/1').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+      done();
+    });
+  });
+
+  test('Delete recipe (400 bad request) with input that is 0', (done) => {
+    axios.delete('/recipes/0').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 400');
+      done();
+    });
+  });
+
+  test('Delete recipe (500 internal server error) when deleting a recipe that does not exist', (done) => {
+    axios.delete('/recipes/20').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
       done();
     });
   });
@@ -232,6 +267,10 @@ describe('Edit recipe (PUT)', () => {
       });
   });
 });
+
+////////////STEPS
+
+////////////RECIPEINGREDIENT
 
 ////////////INGREDIENTS
 describe('Fetch ingredients (GET)', () => {
