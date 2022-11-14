@@ -226,7 +226,11 @@ router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
     typeof recipe_id == 'number' &&
     recipe_id != 0 &&
     typeof step_id == 'number' &&
-    step_id != 0
+    step_id != 0 &&
+    typeof data.order_number == 'number' &&
+    data.order_number != 0 &&
+    typeof data.description == 'string' &&
+    data.description.length != 0
   ) {
     recipeService
       .updateSteps(data.order_number, data.description, step_id, recipe_id)

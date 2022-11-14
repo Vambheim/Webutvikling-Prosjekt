@@ -329,7 +329,7 @@ describe('Edit recipe (PUT)', () => {
       });
   });
 
-  test('Edit recipe (404 not found)', (done) => {
+  test('Edit recipe (404 not found) via a non-currently existing path', (done) => {
     axios
       .put('/recipessss', {
         recipe_id: 1,
@@ -373,32 +373,47 @@ describe('Fetch steps (GET)', () => {
 
 describe('Edit step (PUT)', () => {
   test('Edit step (200 OK)', (done) => {
-    axios.put('/recipes/1/steps/4').then((response) => {
-      expect(response.status).toEqual(200);
-      done();
-    });
+    axios
+      .put('/recipes/1/steps/4', {
+        order_number: 1,
+        description: 'Edited description',
+      })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        done();
+      });
   });
 
   test('Edit step (404 not found) via unknown path', (done) => {
-    axios.put('/unknownPath/2/steps/1').catch((error) => {
-      expect(error.message).toEqual('Request failed with status code 404');
-      done();
-    });
+    axios
+      .put('/unknownPath/2/steps/1', {
+        order_number: 1,
+        description: 'Edited description',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 404');
+        done();
+      });
   });
 
   //Se over:
   test.skip('Edit step (400 bad request)', (done) => {
-    axios.put('/recipes/"1"/steps/"1"').catch((error) => {
+    axios.put('/recipes/1/steps/5', { order_number: 1, description: '' }).catch((error) => {
       expect(error.message).toEqual('Request failed with status code 400');
       done();
     });
   });
 
-  test('Edit step (500 internal server error) via a currently non-existing recipe_id ', (done) => {
-    axios.put('/recipes/two/steps/1').catch((error) => {
-      expect(error.message).toEqual('Request failed with status code 500');
-      done();
-    });
+  test.skip('Edit step (500 internal server error) via a currently non-existing recipe_id ', (done) => {
+    axios
+      .put('/recipes/1/steps/1', {
+        order_number: 1,
+        description: 'Edited description',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 500');
+        done();
+      });
   });
 });
 
