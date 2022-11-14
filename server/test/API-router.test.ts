@@ -6,6 +6,7 @@ import shoppingListService, {
   ShoppingListInfo,
   ShoppingListUserInfo,
 } from '../src/shoppingList-service';
+import { response } from 'express';
 
 const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
@@ -52,6 +53,14 @@ beforeEach((done) => {
     //resets the auto_increment
     pool.query('ALTER TABLE recipe AUTO_INCREMENT = 1', (error) => {
       if (error) return done(error);
+
+      // Create testTasks sequentially in order to set correct id, and call done() when finished
+      // recipeService
+      //   .create(testTasks[0].title)
+      //   .then(() => taskService.create(testTasks[1].title)) // Create testTask[1] after testTask[0] has been created
+      //   .then(() => taskService.create(testTasks[2].title)) // Create testTask[2] after testTask[1] has been created
+      //   .then(() => done()); // Call done() after testTask[2] has been created
+
       testRecipes.map((testRecipe) => {
         recipeService.createRecipe(testRecipe.name, testRecipe.country, testRecipe.category);
       });
@@ -88,6 +97,7 @@ afterAll((done) => {
   webServer.close(() => pool.end(() => done()));
 });
 
+////RECIPE
 describe('Fetch recipes (GET)', () => {
   test('Fetch all recipes (200 OK)', (done) => {
     axios.get('/recipes').then((response) => {
@@ -119,7 +129,7 @@ describe('Fetch recipes (GET)', () => {
 describe('Create new recipe (POST)', () => {
   test('Create new recipe (200 OK)', (done) => {
     axios
-      .post('/recipes', { name: 'new recipe', category: 'new category', country: 'new country' })
+      .post('/recipes', { name: 'new recipe', country: 'new country', category: 'new category' })
       .then((response) => {
         expect(response.status).toEqual(200);
         expect(response.data).toEqual({ recipe_id: 4 });
@@ -130,8 +140,29 @@ describe('Create new recipe (POST)', () => {
   test('Create new recipe (400 bad request)', (done) => {
     axios.post('/recipes', { name: 'new recipe' }).catch((error) => {
       expect(error.message).toEqual('Request failed with status code 400');
+
       done();
     });
+  });
+
+  test('Create new recipe (500 internal server error)', (done) => {
+    axios
+      .post('/recipes', {
+        //Since the column-type "name" is defined as Varchar(50) in the database,
+        //input that exceeds this limit will return a 500 internal server error.
+        //Given that the if-statement of router.post in API-roter checks if the input
+        //is of a valid type (string) and !=0, it will not be sufficient to aasign a number to the name-varibale
+        //as it will return an error code of 400 and not 500.
+        name: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        country: 'new country',
+        category: 'new category',
+      })
+
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 500');
+
+        done();
+      });
   });
 });
 
@@ -150,11 +181,53 @@ describe('Edit recipe (PUT)', () => {
       .put('/recipes', {
         recipe_id: 1,
         name: 'edited recipename',
-        category: 'edited category',
         country: 'edited country',
+        category: 'edited category',
       })
       .then((response) => {
         expect(response.status).toEqual(200);
+        done();
+      });
+  });
+
+  test('Edit recipe (400 bad request)', (done) => {
+    axios
+      .put('/recipes', {
+        recipe_id: 1,
+        name: 'edited recipename',
+        category: 'edited category',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+
+  test('Edit recipe (404 not found)', (done) => {
+    axios
+      .put('/recipessss', {
+        recipe_id: 1,
+        name: 'edited recipename',
+        country: 'edited country',
+        category: 'edited category',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 404');
+        done();
+      });
+  });
+
+  test('Edit recipe (500 internal server error)', (done) => {
+    axios
+      .put('/recipes', {
+        recipe_id: 1,
+        name: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        country: 'edited country',
+        category: 'edited category',
+      })
+
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 500');
         done();
       });
   });
@@ -193,7 +266,6 @@ describe('Create new ingredient (POST)', () => {
 ////////////USER
 
 ////////////SHOPPING LIST
-
 describe('Fetch shopping list (GET)', () => {
   test.skip('Fetch shopping list (200 OK)', (done) => {
     axios.get('/shoppinglist/:user_id').then((response) => {
