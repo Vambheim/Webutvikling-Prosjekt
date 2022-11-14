@@ -10,10 +10,8 @@ const testRecipes: Recipe[] = [
   { recipe_id: 3, name: 'Onion soup', category: 'soup', country: 'France' },
 ];
 
-// const testRecipeIngredients;
-
-const testShoppingLists: ShoppingListInfo[] = [];
-
+const testShoppingLists: ShoppingListInfo = {shopping_list_id: 1, recipe_id:1, ingredient_id:1, name:"beans", amount:2, measurement_unit:"cans"};
+const testShoppingListUser: ShoppingListUserInfo = {}
 // Since API is not compatible with v1, API version is increased to v2
 axios.defaults.baseURL = 'http://localhost:3001/api/v2';
 
@@ -125,3 +123,18 @@ describe('Edit recipe (PUT)', () => {
       });
   });
 });
+
+////////////USER
+
+////////////SHOPPING LIST
+describe('Fetch shopping list (GET)', () => {
+  test('Fetch shopping list (200 OK)', (done) => {
+    axios.get('/shoppinglist/:user_id').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual(ShoppingListInfo[]);
+      done();
+    });
+  });
+});
+
+
