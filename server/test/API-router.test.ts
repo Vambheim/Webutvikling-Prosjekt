@@ -31,19 +31,19 @@ beforeEach((done) => {
 
       // Create testRecipes sequentially in order to set correct recipe_id, and call done() when finished
       recipeService
-        .createRecipe(testRecipes[0].name, testRecipes[0].category, testRecipes[0].country)
+        .createRecipe(testRecipes[0].name, testRecipes[0].country, testRecipes[0].category)
         .then(() =>
           recipeService.createRecipe(
             testRecipes[1].name,
-            testRecipes[1].category,
-            testRecipes[1].country
+            testRecipes[1].country,
+            testRecipes[1].category
           )
         ) // Create testTask[1] after testTask[0] has been created
         .then(() =>
           recipeService.createRecipe(
             testRecipes[2].name,
-            testRecipes[2].category,
-            testRecipes[2].country
+            testRecipes[2].country,
+            testRecipes[2].category
           )
         ) // Create testRecipes[2] after testRecipes[1] has been created
         .then(() => done()); // Call done() after testRecipes[2] has been created
