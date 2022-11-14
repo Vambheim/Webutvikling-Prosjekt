@@ -80,7 +80,7 @@ router.get('/likedRecipes/:user_id', (request, response) => {
 router.get('/recipes', (_request, response) => {
   recipeService
     .getAll()
-    .then((rows) => response.status(200).send(rows))
+    .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
 });
 
@@ -112,12 +112,21 @@ router.get('/recipes/:recipe_id/ingredients', (request, response) => {
 
 router.post('/recipes', (request, response) => {
   const data = request.body;
-  if (data && data.name != 0 && data.category != 0 && data.country != 0)
+  if (
+    typeof data.name == 'string' &&
+    data.name.length != 0 &&
+    typeof data.country == 'string' &&
+    data.country.length != 0 &&
+    typeof data.category == 'string' &&
+    data.category != 0
+  ) {
     recipeService
-      .createRecipe(data.name, data.category, data.country)
+      .createRecipe(data.name, data.country, data.category)
       .then((recipe_id) => response.send({ recipe_id: recipe_id }))
       .catch((error) => response.status(500).send(error));
-  else response.status(400).send('Missing recipe details');
+  } else {
+    response.status(400).send('Missing recipe details');
+  }
 });
 
 router.post('/recipes/ingredients', (request, response) => {
