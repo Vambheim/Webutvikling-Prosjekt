@@ -1,7 +1,7 @@
 import axios from 'axios';
 import pool from '../src/mysql-pool';
 import app from '../src/app';
-import { Recipe } from '../src/recipe-service';
+import recipeService, { Recipe } from '../src/recipe-service';
 import { ShoppingListInfo } from '../src/shoppingList-service';
 
 const testRecipes: Recipe[] = [
@@ -22,15 +22,27 @@ beforeAll((done) => {
 });
 
 beforeEach((done) => {
-  // Delete all tasks, and reset id auto-increment start value
-  pool.query('TRUNCATE TABLE Tasks', (error) => {
+  // Delete all recipes, and reset recipe_id auto-increment start value
+  pool.query('TRUNCATE TABLE recipe', (error) => {
     if (error) return done(error);
 
-    // Create testTasks sequentially in order to set correct id, and call done() when finished
-    taskService
-      .create(testTasks[0].title)
-      .then(() => taskService.create(testTasks[1].title)) // Create testTask[1] after testTask[0] has been created
-      .then(() => taskService.create(testTasks[2].title)) // Create testTask[2] after testTask[1] has been created
+    // Create testRecipes sequentially in order to set correct recipe_id, and call done() when finished
+    recipeService
+      .createRecipe(testRecipes[0].name, testRecipes[0].category, testRecipes[0].country)
+      .then(() =>
+        recipeService.createRecipe(
+          testRecipes[1].name,
+          testRecipes[1].category,
+          testRecipes[1].country
+        )
+      ) // Create testTask[1] after testTask[0] has been created
+      .then(() =>
+        recipeService.createRecipe(
+          testRecipes[2].name,
+          testRecipes[2].category,
+          testRecipes[2].country
+        )
+      ) // Create testTask[2] after testTask[1] has been created
       .then(() => done()); // Call done() after testTask[2] has been created
   });
 });
