@@ -91,7 +91,7 @@ describe('Create new recipe (POST)', () => {
       .post('/recipes', { name: 'new recipe', category: 'new category', country: 'new country' })
       .then((response) => {
         expect(response.status).toEqual(200);
-        expect(response.data).toEqual({ id: 4 });
+        expect(response.data).toEqual({ recipe_id: 4 });
         done();
       });
   });
