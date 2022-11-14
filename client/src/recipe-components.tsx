@@ -437,6 +437,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   likeRecipe() {
     if (!loggedIn) {
       Alert.info(`You have to log in to like this recipe`);
+      history.push('/recipes/login');
     } else {
       recipeService
         .likeRecipe(currentUser.user_id, this.recipe.recipe_id)
