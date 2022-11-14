@@ -80,7 +80,7 @@ router.get('/likedRecipes/:user_id', (request, response) => {
 router.get('/recipes', (_request, response) => {
   recipeService
     .getAll()
-    .then((rows) => response.send(rows))
+    .then((rows) => response.status(200).send(rows))
     .catch((error) => response.status(500).send(error));
 });
 
