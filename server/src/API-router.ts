@@ -142,14 +142,14 @@ router.post('/recipes', (request, response) => {
 router.post('/recipes/ingredients', (request, response) => {
   const data = request.body;
   if (
-    // se over denne
+    // se over data.amount_per_person om den tolkes som nummer eller string?
     typeof data.name == 'string' &&
     data.name.length != 0 &&
     typeof data.recipe_id == 'number' &&
-    data.recipe_id.length != 0 &&
+    data.recipe_id != 0 &&
     typeof data.amount_per_person == 'number' &&
-    data.amount_per_person.length != 0 &&
-    typeof data.measurement_unit == 'string'
+    data.amount_per_person != 0 &&
+    (typeof data.measurement_unit == 'string' || data.measurement_unit == undefined)
   ) {
     //Check if ingredient exists in the database to avoid redundancy
     recipeService
@@ -253,7 +253,18 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
   const ingredient_id = Number(request.params.ingredient_id);
 
   //må se over denne, fungerer ikke med data.amount_per_person.length != 0
-  if (data) {
+  if (
+    data &&
+    typeof data.amount_per_person == 'number' &&
+    data.amount_per_person != 0 &&
+    (isNaN(data.measurement_unit) || data.measurement_unit == undefined) &&
+    typeof recipe_id == 'number' &&
+    recipe_id != 0 &&
+    typeof ingredient_id == 'number' &&
+    ingredient_id != 0 &&
+    typeof data.name == 'string' &&
+    data.name != 0
+  ) {
     recipeService
       // makes sure the check is done with input in lower case
       .ingredientExistsCheck(data.name.toLowerCase())
