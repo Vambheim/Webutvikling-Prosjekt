@@ -9,6 +9,7 @@ const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
   { recipe_id: 2, name: 'Pizza', category: 'dinner', country: 'Italy' },
   { recipe_id: 3, name: 'Onion soup', category: 'soup', country: 'France' },
+  { recipe_id: 4, name: 'No ingredients', category: 'empty', country: 'empty' },
 ];
 
 const testIngredients: Ingredient[] = [
@@ -155,7 +156,7 @@ describe('Fetch recipes (GET)', () => {
 
   test('Fetch recipe (404 Not Found) via wrong path to a recipe that does not exists', (done) => {
     axios
-      .get('/recipes/4')
+      .get('/recipes/9')
       .then((_response) => done(new Error()))
       .catch((error) => {
         expect(error.message).toEqual('Request failed with status code 404');
@@ -170,7 +171,7 @@ describe('Create new recipe (POST)', () => {
       .post('/recipes', { name: 'new recipe', country: 'new country', category: 'new category' })
       .then((response) => {
         expect(response.status).toEqual(200);
-        expect(response.data).toEqual({ recipe_id: 4 });
+        expect(response.data).toEqual({ recipe_id: 5 });
         done();
       });
   });
@@ -375,7 +376,7 @@ describe('Edit step (PUT)', () => {
 describe('Create new step (POST)', () => {
   test('Create new step (200 OK)', (done) => {
     axios
-      .post('/steps', { order_number: 1, description: 'new description', recipe_id: 3 })
+      .post('/steps', { order_number: 3, description: 'new description', recipe_id: 3 })
       .then((response) => {
         expect(response.status).toEqual(200);
         //Er det under nøvendig/relevant å ha med?
@@ -475,10 +476,84 @@ describe('Fetch recipeIngredients (GET)', () => {
     });
   });
 
-  // test('Fetch all recipeIngredients (500 internal server error)', (done) => {
-  //   axios.get('/recipes/invalidDBInput/ingredients/').catch((error) => {
-  //     expect(error.message).toEqual('Request failed with status code 500');
-  //     done();
-  //   });
-  // });
+  test('Fetch all recipeIngredients (500 internal server error) with invalidDBinput of type string', (done) => {
+    axios.get('/recipes/invalidDBInput/ingredients/').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
+});
+
+describe('Update recipeIngredients (PUT)', () => {
+  test('Edit recipeIngredients (200 OK)', (done) => {
+    axios
+      .put('/recipes/1/ingredients/1', {
+        amount_per_person: 1,
+        measurement_unit: 'edited measurement_unit',
+        name: 'edited ingredient_name',
+      })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual('Updated with new ingredient');
+        done();
+      });
+  });
+
+  test('Edit recipeIngredients (400 bad request) in terms missing necesary input/propperties', (done) => {
+    axios
+      .put('/recipes/1/ingredients/1', {
+        amount_per_person: 1,
+        measurement_unit: 'Edited measurement_unit',
+      })
+
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+
+  test('Edit recipeIngredients (404 not found) in terms of a unknown path', (done) => {
+    axios
+      .put('/recipes/1/uknownPath/1', {
+        amount_per_person: 1,
+        measurement_unit: 'Edited measurement_unit',
+        name: 'Edited name',
+      })
+
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 404');
+        done();
+      });
+  });
+
+  test('Edit recipeIngredients (500 internal server error) in terms of too large input for the column-type', (done) => {
+    axios
+      .put('/recipes/1/ingredients/1', {
+        amount_per_person: 1,
+        measurement_unit: 'Edited measurement_unit',
+        name: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      })
+
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 500');
+        done();
+      });
+  });
+});
+
+describe('Create new recipeIngredient (POST)', () => {
+  test('Create new recipeIngredient (200 OK)', (done) => {
+    axios
+      .post('/recipes/ingredients', {
+        name: 'New ingredient',
+        recipe_id: 4,
+        amount_per_person: 40,
+        measurement_unit: 'gram',
+      })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual('Created with new ingredient');
+        done();
+      });
+  });
 });
