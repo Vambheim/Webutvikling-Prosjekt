@@ -730,7 +730,7 @@ export class RecipeAdd extends Component {
               .createRecipeIngredients(
                 ing.name,
                 recipe_id,
-                ing.amount / this.portions,
+                Number(ing.amount / this.portions),
                 ing.measurement_unit
               )
               .then((response) => console.log(response))
@@ -936,7 +936,7 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
         this.recipeIngredients.map((ing) => {
           recipeService
             .updateRecipeIngredient(
-              ing.amount_per_person,
+              Number(ing.amount_per_person),
               ing.measurement_unit,
               this.recipe.recipe_id,
               ing.ingredient_id,
