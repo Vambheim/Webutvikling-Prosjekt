@@ -9,7 +9,12 @@ import shoppingListService from './shoppingList-service';
  */
 const router = express.Router();
 export const salt = bcrypt.genSaltSync(10);
-
+export const createHash = (password: string) => {
+  bcrypt.hash(password, salt, (error, hash) => {
+    if (error) throw error;
+    return String(hash);
+  });
+};
 ///////////////////USER
 router.get('/users/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
@@ -26,9 +31,6 @@ router.get('/users/login/:email/:password', (request, response) => {
         if (bcrypt.compareSync(password, String(user.password))) {
           response.send(user);
         } else {
-          console.log(bcrypt.compareSync(password, String(user.password)));
-          console.log('Input password: ' + password);
-          console.log('Hashed password: ' + user.password);
           response.status(400).send('Incorrect Email and/or Password! ');
         }
       })
@@ -59,15 +61,16 @@ router.post('/users/register', (request, response) => {
       //tror vi ikke trenger denne egt, kan nok bruke getUser
       .userExistsCheck(data.email)
       .then(() => {
-        bcrypt.hash(data.password, salt, (error, hash) => {
-          if (error) throw error;
-          data.password = hash;
-          userService
-            .createUser(data.email, data.first_name, data.last_name, data.password)
-            .then((user) => response.status(200).send(user))
-            .catch((error) => response.status(500).send(error));
-          return;
-        });
+        userService
+          .createUser(
+            data.email,
+            data.first_name,
+            data.last_name,
+            String(createHash(data.password))
+          )
+          .then((user) => response.status(200).send(user))
+          .catch((error) => response.status(500).send(error));
+        return;
       })
       .catch(() => response.status(400).send('Email: ' + data.email + ' is already in use'));
     return;
@@ -488,11 +491,10 @@ router.get('/shoppinglist/:user_id', (request, response) => {
 router.post('/shoppinglist', (request, response) => {
   const data = request.body;
   if (
-    data &&
-    data.recipe_id != 0 &&
-    data.ingredient_id != 0 &&
-    data.user_id != 0 &&
-    data.amount != 0
+    data.recipe_id.length != 0 &&
+    data.ingredient_id.length != 0 &&
+    data.user_id.length != 0 &&
+    data.amount.length != 0
   )
     shoppingListService
       .addToShoppingList(data)
