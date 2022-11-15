@@ -3,6 +3,7 @@ import pool from '../src/mysql-pool';
 import app from '../src/app';
 import recipeService, { Ingredient, Recipe, RecipeIngredient, Step } from '../src/recipe-service';
 import userService, { User } from '../src/user-service';
+import { response } from 'express';
 
 const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
@@ -262,7 +263,7 @@ describe('Edit recipe (PUT)', () => {
       });
   });
 
-  test('Edit recipe (400 bad request)', (done) => {
+  test('Edit recipe (400 bad request) without necesary (country-) input', (done) => {
     axios
       .put('/recipes', {
         recipe_id: 1,
@@ -315,6 +316,8 @@ describe('Fetch steps (GET)', () => {
       done();
     });
   });
+
+  //Mangler feil ved henting av steps her:
 });
 
 describe('Edit step (PUT)', () => {
@@ -336,18 +339,24 @@ describe('Edit step (PUT)', () => {
         order_number: 1,
         description: 'Edited description',
       })
+
       .catch((error) => {
         expect(error.message).toEqual('Request failed with status code 404');
         done();
       });
   });
 
-  //Se over:
-  test.skip('Edit step (400 bad request)', (done) => {
-    axios.put('/recipes/1/steps/5', { order_number: 1, description: '' }).catch((error) => {
-      expect(error.message).toEqual('Request failed with status code 400');
-      done();
-    });
+  test('Edit step (400 bad request) in terms of missing description-input', (done) => {
+    axios
+      .put('/recipes/2/steps/2', { order_number: 1 })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        done();
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
   });
 
   test.skip('Edit step (500 internal server error) via a currently non-existing recipe_id ', (done) => {
@@ -364,12 +373,51 @@ describe('Edit step (PUT)', () => {
 });
 
 describe('Create new step (POST)', () => {
-  test.skip('Create new step (200 OK)', (done) => {
-    axios.post('/ingredients', { name: 'new ingredient' }).then((response) => {
-      expect(response.status).toEqual(200);
-      expect(response.data).toEqual({ ingredient_id: 5 });
-      done();
-    });
+  test('Create new step (200 OK)', (done) => {
+    axios
+      .post('/steps', { order_number: 1, description: 'new description', recipe_id: 3 })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        //Er det under nøvendig/relevant å ha med?
+        expect(response.data).toEqual('Step added successfully');
+        done();
+      });
+  });
+
+  test('Create new step (400 bad reequest) with wrong inputype regarding order_number (string) ', (done) => {
+    axios
+      .post('/steps', { order_number: '1', description: 'new description', recipe_id: 3 })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+
+  test('Create new step (404 not found) via a udefined redirected path ', (done) => {
+    axios
+      .post('/add/steps', {
+        order_number: 1,
+        description: 'new description',
+        recipe_id: 3,
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 404');
+        done();
+      });
+  });
+
+  test('Create new step (500 internal server error) with input that exceedes the column-value-type of VARCHAR(500) in the database', (done) => {
+    axios
+      .post('/steps', {
+        order_number: 10,
+        description:
+          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        recipe_id: 1,
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 500');
+        done();
+      });
   });
 });
 
@@ -404,3 +452,19 @@ describe('Create new ingredient (POST)', () => {
 });
 
 ////////////RECIPE INGREDIENT
+describe('Fetch recipeIngredients (GET)', () => {
+  test('Fetch all recipeIngredients (200 OK)', (done) => {
+    axios.get('/recipes/1/ingredients').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipeIngredients[0], testRecipeIngredients[1]]);
+      done();
+    });
+  });
+
+  test('Fetch all recipeIngredient (400 bad request)', (done) => {
+    axios.get('/recipes/1/ingredients/').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 400');
+      done();
+    });
+  });
+});
