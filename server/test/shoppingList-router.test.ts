@@ -43,21 +43,9 @@ beforeAll((done) => {
 });
 
 beforeEach((done) => {
-  // Delete all users, and reset user_id auto-increment start value
-  pool.query('DELETE FROM user', (error) => {
-    if (error) return done(error);
-    pool.query('ALTER TABLE user AUTO_INCREMENT = 1', (error) => {
-      if (error) return done(error);
+  // Delete all shoppinglists, and reset shopping_list_id auto-increment start value
+  
 
-      bcrypt.hash(testUser.password, salt, (error, hash) => {
-        if (error) throw error;
-        testUser.password = hash;
-        userService
-          .createUser(testUser.email, testUser.first_name, testUser.last_name, testUser.password)
-          .then(() => done());
-      });
-    });
-  });
 });
 
 // Stop web server and close connection to MySQL server
