@@ -461,9 +461,16 @@ describe('Fetch recipeIngredients (GET)', () => {
     });
   });
 
-  test('Fetch all recipeIngredient (400 bad request)', (done) => {
-    axios.get('/recipes/1/ingredients/').catch((error) => {
+  test('Fetch all recipeIngredient (400 bad request) with invalid recipe_id-input of 0', (done) => {
+    axios.get('/recipes/0/ingredients/').catch((error) => {
       expect(error.message).toEqual('Request failed with status code 400');
+      done();
+    });
+  });
+
+  test('Fetch all recipeIngredient (404 not found) via a invalid path', (done) => {
+    axios.get('/invalidPath/1/ingredients/').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
       done();
     });
   });
