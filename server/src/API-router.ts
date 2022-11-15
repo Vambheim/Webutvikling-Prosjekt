@@ -8,7 +8,7 @@ import shoppingListService from './shoppingList-service';
  * Express router containing task methods.
  */
 const router = express.Router();
-var salt = bcrypt.genSaltSync(10);
+export const salt = bcrypt.genSaltSync(10);
 
 ///////////////////USER
 router.get('/users/login/:email/:password', (request, response) => {
@@ -18,7 +18,7 @@ router.get('/users/login/:email/:password', (request, response) => {
     typeof email == 'string' &&
     email.length != 0 &&
     typeof password == 'string' &&
-    password.length > 0
+    password.length != 0
   ) {
     userService
       .getUser(email)
@@ -26,6 +26,9 @@ router.get('/users/login/:email/:password', (request, response) => {
         if (bcrypt.compareSync(password, String(user.password))) {
           response.send(user);
         } else {
+          console.log(bcrypt.compareSync(password, String(user.password)));
+          console.log('Input password: ' + password);
+          console.log('Hashed password: ' + user.password);
           response.status(400).send('Incorrect Email and/or Password! ');
         }
       })
@@ -33,7 +36,7 @@ router.get('/users/login/:email/:password', (request, response) => {
         response.status(500).send(error);
       });
   } else {
-    response.status(400).send('Please fill all the fields');
+    response.status(469).send('Please fill all the fields');
   }
 });
 
@@ -41,18 +44,19 @@ router.post('/users/register', (request, response) => {
   const data = request.body;
   //Check required fields
   if (!data.first_name || !data.last_name || !data.email || !data.password || !data.password2) {
-    response.send('Please fill in all the fields');
+    response.status(400).send('Please fill in all the fields');
     return;
   }
   //Check passwords match
   if (data.password != data.password2) {
-    response.send('Passwords does not match, please try again');
+    response.status(400).send('Passwords does not match, please try again');
     return;
   }
 
   //Check if email-adress has @
   if (data.email.includes('@')) {
     userService
+      //tror vi ikke trenger denne egt, kan nok bruke getUser
       .userExistsCheck(data.email)
       .then(() => {
         bcrypt.hash(data.password, salt, (error, hash) => {
@@ -60,15 +64,15 @@ router.post('/users/register', (request, response) => {
           data.password = hash;
           userService
             .createUser(data.email, data.first_name, data.last_name, data.password)
-            .then((rows) => response.send(rows))
+            .then((user) => response.status(200).send(user))
             .catch((error) => response.status(500).send(error));
           return;
         });
       })
-      .catch(() => response.send('Email: ' + data.email + ' is already in use'));
+      .catch(() => response.status(400).send('Email: ' + data.email + ' is already in use'));
     return;
   } else {
-    response.send('Not a valid email address');
+    response.status(400).send('Not a valid email address');
     return;
   }
 });
