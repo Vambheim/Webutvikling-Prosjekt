@@ -2,7 +2,8 @@ import ReactDOM from 'react-dom';
 import * as React from 'react';
 import { Component } from 'react-simplified';
 import { HashRouter, Route } from 'react-router-dom';
-import { NavBar, Card, Alert } from './widgets';
+import { Alert } from './widgets';
+import { Carousel, Card, Button, Row, Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { RecipeAdd, RecipeList, RecipeDetails, RecipeEdit } from './recipe-components';
 import { ShoppingList } from './shoppingList-components';
 import RecipeService, {
@@ -146,20 +147,121 @@ class Menu extends Component {
 
   render() {
     return (
-      <NavBar brand="/ˈres.A.PI/ -An app">
-        <NavBar.Link to="/recipes">Recipes</NavBar.Link>
-        <NavBar.Link to="/recipes/add">Add Recipes</NavBar.Link>
-        <NavBar.Link to="/recipes/shoppinglist">Shopping List</NavBar.Link>
-        <NavBar.Link to="/recipes/user">{'User 👤'}</NavBar.Link>
-      </NavBar>
+      /*
+      <Navbar bg="light">
+        <Container>
+          <Navbar.Brand href="/">'/res.A.P.I/'</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link href="/#/recipes">Recipes</Nav.Link>
+              <Nav.Link href="/#/recipes/add">Add recipes</Nav.Link>
+              <Nav.Link href="/#/recipes/shoppinglist">Shopping List</Nav.Link>
+
+              <Navbar.Collapse className="justify-content-end">
+                <Navbar.Text>
+                  Signed in as: <a href="/#/recipes/user">Mark Otto</a>
+                </Navbar.Text>
+              </Navbar.Collapse>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+*/
+      <Navbar
+        collapseOnSelect
+        expand="lg"
+        variant="dark"
+        style={{ backgroundColor: 'rgb(82 130 101)' }}
+      >
+        <Container style={{ fontFamily: 'Chivo' }}>
+          <Navbar.Brand href="#">
+            <img
+              src="https://tihldestorage.blob.core.windows.net/imagepng/a70fd0bd-f8c0-45eb-b808-293149cf2620resapi-high-resolution-logo-white-on-transparent-background.png"
+              width="110"
+              height="40"
+              className="d-inline-block align-top"
+            />
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto"></Nav>
+            <Nav>
+              <Nav.Link href="/#/recipes">Recipes</Nav.Link>
+              <Nav.Link href="/#/recipes/add">Add recipe</Nav.Link>
+              <Nav.Link href="/#/recipes/shoppinglist">Shopping List</Nav.Link>
+              <Nav.Link href="/#/recipes/user">My account</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
     );
   }
 }
 
 class Home extends Component {
   render() {
-    return <Card title="Welcome">This is your favourite food recipe app</Card>;
+    return (
+      <Container style={{ flex: 'column' }}>
+        <Card
+          style={{
+            border: 'none',
+            textAlign: 'center',
+            fontFamily: 'Chivo',
+            backgroundColor: '',
+          }}
+        >
+          <Card.Body>
+            <Card style={{ border: 'none', textAlign: 'center', backgroundColor: '' }}>
+              <Card.Body>
+                <Carousel>
+                  <Carousel.Item interval={1500}>
+                    <img
+                      className="d-block w-100"
+                      src="https://tihldestorage.blob.core.windows.net/imagepng/aa23e943-6b21-4ebc-b791-1c9560e04e6anylogo.png"
+                      alt="First slide"
+                      height={'auto'}
+                    />
+                    <Carousel.Caption>
+                      <h3>Burger til under 100kr</h3>
+                      <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                    </Carousel.Caption>
+                  </Carousel.Item>
+                  <Carousel.Item interval={500}>
+                    <img
+                      className="d-block w-100"
+                      src="https://s.tihlde.org/pannekake"
+                      alt="Second slide"
+                    />
+                    <Carousel.Caption>
+                      <h3>Dessert til enhver anledning</h3>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    </Carousel.Caption>
+                  </Carousel.Item>
+                  <Carousel.Item>
+                    <img
+                      className="d-block w-100"
+                      src="https://s.tihlde.org/brownie"
+                      alt="Third slide"
+                    />
+                    <Carousel.Caption>
+                      <h3>Frokost eller middag?</h3>
+                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                    </Carousel.Caption>
+                  </Carousel.Item>
+                </Carousel>
+              </Card.Body>
+            </Card>
+          </Card.Body>
+        </Card>
+      </Container>
+    );
   }
+  /*
+  componentDidMount() {
+    document.body.style.backgroundColor = 'rgb(255, 235, 205)';
+  }
+  */
   // legg til spoontacular her i stedet for i menyen
 }
 

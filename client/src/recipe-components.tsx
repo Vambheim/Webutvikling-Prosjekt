@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
-import { Alert, Card, Row, Column, Form, Button } from './widgets';
+import { Alert, Column } from './widgets';
 import { NavLink } from 'react-router-dom';
 import recipeService, {
   Recipe,
@@ -10,6 +10,8 @@ import recipeService, {
   addIngredient,
   addStep,
 } from './recipe-service';
+import { Button, Form, Card, Row, Col, Container } from 'react-bootstrap';
+
 import { createHashHistory } from 'history';
 import shoppingListService from './shoppingList-service';
 import { loggedIn, currentUser } from './user-components';
@@ -37,153 +39,240 @@ export class RecipeList extends Component {
   render() {
     return (
       <>
-        <Card title="Filter by country and category">
-          <Row>
-            <Column width={3}>Country:</Column>
-            <Column width={3}>Category:</Column>
-          </Row>
-          <Row>
-            <Column width={3}>
-              <Form.Select
-                value={this.country}
-                onChange={(event) => (this.country = event.currentTarget.value)}
-              >
-                <option key={'blankChoice'} hidden>
-                  {'Choose country: '}
-                </option>
+        <Card title="Search" style={{ border: 'none' }}>
+          <Card.Title style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+            Search for a recipe
+          </Card.Title>
 
-                {this.recipes
-                  .map((recipe) => recipe.country)
-                  .filter((country, index, array) => array.indexOf(country) === index)
-                  .map((country, i) => (
-                    <option key={i} value={country}>
-                      {country}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Column>
-            <Column width={3}>
-              <Form.Select
-                value={this.category}
-                onChange={(event) => (this.category = event.currentTarget.value)}
-              >
-                <option key={'blankChoice'} hidden>
-                  {'Choose category: '}
-                </option>
-                {this.recipes
-                  .map((recipe) => recipe.category)
-                  .filter((category, index, array) => array.indexOf(category) === index)
-                  .map((category, i) => (
-                    <option key={i} value={category}>
-                      {category}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Column>
-          </Row>
-          <Button.Success onClick={() => this.addCountryAndOrCategoryFilter()}>
-            Add filters
-          </Button.Success>
-        </Card>
-        <Card title="Filter by ingredient">
-          <Row>
-            <Column width={3}>Ingredient</Column>
-            <Column width={3}>Ingredient</Column>
-            <Column width={3}>Ingredient</Column>
-          </Row>
-          <Row>
-            <Column width={3}>
-              <Form.Select
-                value={this.ingredient1['name']}
-                onChange={(event) => (this.ingredient1['name'] = event.currentTarget.value)}
-              >
-                <option key={'blankChoice'} hidden>
-                  {'Choose ingredient: '}
-                </option>
-                {this.ingredients
-                  .map((ing) => ing.name)
-                  .filter((ing, index, array) => array.indexOf(ing) === index)
-                  .map((ing, i) => (
-                    <option key={i} value={ing}>
-                      {this.firstLetterUpperCase(ing)}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Column>
-            <Column width={3}>
-              <Form.Select
-                value={this.ingredient2['name']}
-                onChange={(event) => (this.ingredient2['name'] = event.currentTarget.value)}
-              >
-                <option key={'blankChoice'} hidden>
-                  {'Choose ingredient: '}
-                </option>
-                {this.ingredients
-                  .map((ing) => ing.name)
-                  .filter((ing, index, array) => array.indexOf(ing) === index)
-                  .map((ing, i) => (
-                    <option key={i} value={ing}>
-                      {this.firstLetterUpperCase(ing)}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Column>
-            <Column width={3}>
-              <Form.Select
-                value={this.ingredient3['name']}
-                onChange={(event) => (this.ingredient3['name'] = event.currentTarget.value)}
-              >
-                <option key={'blankChoice'} hidden>
-                  {'Choose ingredient: '}
-                </option>
-                {this.ingredients
-                  .map((ing) => ing.name)
-                  .filter((ing, index, array) => array.indexOf(ing) === index)
-                  .map((ing, i) => (
-                    <option key={i} value={ing}>
-                      {this.firstLetterUpperCase(ing)}
-                    </option>
-                  ))}
-              </Form.Select>
-            </Column>
-          </Row>
-          <Row>
+          <Row
+            style={{
+              textAlign: 'center',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              fontFamily: 'worksans',
+            }}
+          >
             <Column>
-              <Button.Success onClick={() => this.addIngredientFilter()}>
-                Add ingredient filters
-              </Button.Success>
-              <Button.Danger onClick={() => this.removeFilter()}>Remove filters</Button.Danger>
+              <Form.Control
+                onChange={(event) => this.search(event.currentTarget.value)}
+                value={this.search_input}
+                type="search"
+                placeholder="Search"
+                style={{
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  textAlign: 'center',
+                  width: '24rem',
+                }}
+              ></Form.Control>
             </Column>
           </Row>
         </Card>
+        <Column>
+          <Card
+            style={{ borderLeft: 'none', borderTop: 'none', borderBottom: 'none', margin: '5%' }}
+          >
+            <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
+              <Card.Title>Filter by country and Category:</Card.Title>
+              <Row>
+                <Column>Country:</Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Form.Select
+                    value={this.country}
+                    onChange={(event) => (this.country = event.currentTarget.value)}
+                    style={{ marginBottom: '10%', width: 'auto' }}
+                  >
+                    <option key={'blankChoice'} hidden>
+                      {'Choose country: '}
+                    </option>
 
-        <Card title="Search">
-          <Column>
-            <Form.Input
-              onChange={(event) => this.search(event.currentTarget.value)}
-              value={this.search_input}
-              type="search"
-              placeholder="Search"
-            ></Form.Input>
-          </Column>
-        </Card>
-        <Card title="Recepies">
-          {this.filtered_recipes.map((recipe) => (
-            <Row key={recipe.recipe_id}>
-              <Column>
-                <NavLink
-                  to={'/recipes/' + recipe.recipe_id}
+                    {this.recipes
+                      .map((recipe) => recipe.country)
+                      .filter((country, index, array) => array.indexOf(country) === index)
+                      .map((country, i) => (
+                        <option key={i} value={country}>
+                          {country}
+                        </option>
+                      ))}
+                  </Form.Select>
+                  <Row>
+                    {' '}
+                    <Column>Category:</Column>
+                  </Row>
+                  <Row>
+                    <Form.Select
+                      value={this.category}
+                      onChange={(event) => (this.category = event.currentTarget.value)}
+                    >
+                      <option key={'blankChoice'} hidden>
+                        {'Choose category: '}
+                      </option>
+                      {this.recipes
+                        .map((recipe) => recipe.category)
+                        .filter((category, index, array) => array.indexOf(category) === index)
+                        .map((category, i) => (
+                          <option key={i} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                    </Form.Select>
+                  </Row>
+                </Column>
+              </Row>
+              <Button
+                variant="success"
+                onClick={() => this.addCountryAndOrCategoryFilter()}
+                style={{ width: '60%', marginLeft: 'auto', marginRight: 'auto', marginBlock: '5%' }}
+              >
+                Add filters
+              </Button>
+            </Card>
+
+            <Card
+              style={{
+                width: '12rem',
+                border: 'none',
+              }}
+            >
+              <Card.Title> Filter by ingredient: </Card.Title>
+              <Row>
+                <Column>
+                  <Form.Select
+                    value={this.ingredient1['name']}
+                    onChange={(event) => (this.ingredient1['name'] = event.currentTarget.value)}
+                    style={{ marginBottom: '5%' }}
+                  >
+                    <option key={'blankChoice'} hidden>
+                      {'Choose ingredient: '}
+                    </option>
+                    {this.ingredients
+                      .map((ing) => ing.name)
+                      .filter((ing, index, array) => array.indexOf(ing) === index)
+                      .map((ing, i) => (
+                        <option key={i} value={ing}>
+                          {this.firstLetterUpperCase(ing)}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Form.Select
+                    value={this.ingredient2['name']}
+                    style={{ marginBottom: '5%' }}
+                    onChange={(event) => (this.ingredient2['name'] = event.currentTarget.value)}
+                  >
+                    <option key={'blankChoice'} hidden>
+                      {'Choose ingredient: '}
+                    </option>
+                    {this.ingredients
+                      .map((ing) => ing.name)
+                      .filter((ing, index, array) => array.indexOf(ing) === index)
+                      .map((ing, i) => (
+                        <option key={i} value={ing}>
+                          {this.firstLetterUpperCase(ing)}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Column>
+                <Row>
+                  <Column>
+                    <Form.Select
+                      value={this.ingredient3['name']}
+                      onChange={(event) => (this.ingredient3['name'] = event.currentTarget.value)}
+                      style={{ width: '115%' }}
+                    >
+                      <option key={'blankChoice'} hidden>
+                        {'Choose ingredient: '}
+                      </option>
+                      {this.ingredients
+                        .map((ing) => ing.name)
+                        .filter((ing, index, array) => array.indexOf(ing) === index)
+                        .map((ing, i) => (
+                          <option key={i} value={ing}>
+                            {this.firstLetterUpperCase(ing)}
+                          </option>
+                        ))}
+                    </Form.Select>
+                  </Column>
+                </Row>
+              </Row>
+              <Row>
+                <Button
+                  variant="success"
+                  onClick={() => this.addIngredientFilter()}
                   style={{
-                    color: '#9FC1C0',
-                    textDecoration: 'none',
+                    width: '40%',
+
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    marginBlock: '5%',
                   }}
                 >
-                  {recipe.name}
-                </NavLink>
-              </Column>
-            </Row>
-          ))}
-        </Card>
+                  Add filters
+                </Button>
+
+                <Row>
+                  <Button
+                    variant="danger"
+                    onClick={() => this.removeFilter()}
+                    style={{
+                      width: '70%',
+
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      marginBlock: '5%',
+                    }}
+                  >
+                    Remove filters
+                  </Button>
+                </Row>
+              </Row>
+            </Card>
+          </Card>
+        </Column>
+        <Container>
+          <Row>
+            <Col lg>
+              <Row xs={1} md={4} className="g-4">
+                {this.filtered_recipes.map((recipe) => (
+                  <NavLink
+                    to={'/recipes/' + recipe.recipe_id}
+                    style={{
+                      color: '#9FC1C0',
+                    }}
+                  >
+                    <Column>
+                      <Card
+                        style={{
+                          width: '100%',
+                          margin: '1%',
+
+                          textAlign: 'center',
+                          borderLeft: 'none',
+                          borderRight: 'none',
+                          borderTop: 'none',
+                          borderRadius: 'none',
+                        }}
+                      >
+                        <Card.Body>
+                          <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
+                            {' '}
+                            {recipe.name}
+                          </Card.Title>
+                          <Card.Text>Click here for more information</Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Column>
+                  </NavLink>
+                ))}
+              </Row>
+            </Col>
+          </Row>
+        </Container>
       </>
     );
   }
@@ -320,96 +409,134 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
   render() {
     return (
       <>
-        <Card title={'Recipe for ' + this.recipe.name}>
-          <Row>
-            <Column width={2}>Name:</Column>
-            <Column>{this.recipe.name}</Column>
-          </Row>
-          <Row>
-            <Column width={2}>Category:</Column>
-            <Column width={2}>{this.recipe.category}</Column>
-          </Row>
-          <Row>
-            <Column width={2}>Country:</Column>
-            <Column width={2}>{this.recipe.country}</Column>
-          </Row>
-          <Row>
-            <Column>
-              <Button.Light onClick={() => this.likeRecipe()}>
-                Like this recipe &#10084;
-              </Button.Light>
-            </Column>
-            <Column right>
-              <Button.Success onClick={() => this.editRecipe()}>Edit</Button.Success>
-            </Column>
-          </Row>
-        </Card>
-        <Card title="This is how you make it">
-          <ol>
-            {this.steps.map((step) => (
-              <Row key={step.order_number}>
+        <Container>
+          <Card
+            style={{
+              borderLeft: 'none',
+              borderRight: 'none',
+              borderTop: 'none',
+              paddingBottom: '3%',
+              borderRadius: '0px',
+              textAlign: 'center',
+            }}
+            title={'Recipe for ' + this.recipe.name}
+          >
+            <Row className="justify-content-md-center">
+              <Col xs lg="2">
+                Name:
+              </Col>
+              <Col>{this.recipe.name}</Col>
+            </Row>
+            <Row>
+              <Col xs lg="2">
+                Category:
+              </Col>
+              <Col>{this.recipe.category}</Col>
+            </Row>
+            <Row>
+              <Col xs lg="2">
+                Country:
+              </Col>
+              <Col>{this.recipe.country}</Col>
+            </Row>
+            <Row>
+              <Column>
+                <Button variant="light" onClick={() => this.likeRecipe()}>
+                  Like this recipe &#10084;
+                </Button>
+              </Column>
+              <Column right>
+                <Button variant="success" onClick={() => this.editRecipe()}>
+                  Edit
+                </Button>
+              </Column>
+            </Row>
+          </Card>
+          <Card
+            style={{
+              borderLeft: 'none',
+              borderRight: 'none',
+              borderTop: 'none',
+              paddingBottom: '3%',
+              borderRadius: '0px',
+            }}
+            title="This is how you make it"
+          >
+            <ol>
+              {this.steps.map((step) => (
+                <Row key={step.order_number}>
+                  <Column>
+                    <li>{step.description}</li>
+                  </Column>
+                </Row>
+              ))}
+            </ol>
+          </Card>
+          <Card
+            style={{
+              borderLeft: 'none',
+              borderRight: 'none',
+              borderTop: 'none',
+              paddingBottom: '3%',
+            }}
+            title="Ingredients"
+          >
+            <Row>
+              <Column width={2}>Select portions:</Column>
+              <Column width={6}>
+                <Form.Control
+                  type="number"
+                  value={this.portions}
+                  onChange={(event) => (this.portions = Number(event.currentTarget.value))}
+                  min={1}
+                  max={50}
+                ></Form.Control>
+              </Column>
+            </Row>
+            {this.ingredients.map((ing) => (
+              <Row key={ing.ingredient_id}>
+                <Column width={2}>
+                  {(ing.amount_per_person * this.portions).toFixed(2) +
+                    ' ' +
+                    ing.measurement_unit +
+                    ' ' +
+                    ing.name}
+                </Column>
                 <Column>
-                  <li>{step.description}</li>
+                  {/* Adds to shopping list, if logged in */}
+                  <Button
+                    variant="light"
+                    onClick={() =>
+                      this.addItemToShoppingList(
+                        ing.ingredient_id,
+                        ing.amount_per_person,
+                        ing.measurement_unit
+                      )
+                    }
+                  >
+                    &#128722;
+                  </Button>
                 </Column>
               </Row>
             ))}
-          </ol>
-        </Card>
-        <Card title="Ingredients">
-          <Row>
-            <Column width={2}>Select portions:</Column>
-            <Column width={6}>
-              <Form.Input
-                type="number"
-                value={this.portions}
-                onChange={(event) => (this.portions = Number(event.currentTarget.value))}
-                min={1}
-                max={50}
-              ></Form.Input>
-            </Column>
-          </Row>
-          {this.ingredients.map((ing) => (
-            <Row key={ing.ingredient_id}>
-              <Column width={2}>
-                {(ing.amount_per_person * this.portions).toFixed(2) +
-                  ' ' +
-                  ing.measurement_unit +
-                  ' ' +
-                  ing.name}
-              </Column>
+            <Row>
               <Column>
-                {/* Adds to shopping list, if logged in */}
-                <Button.Light
-                  onClick={() =>
-                    this.addItemToShoppingList(
-                      ing.ingredient_id,
-                      ing.amount_per_person,
-                      ing.measurement_unit
-                    )
-                  }
-                >
-                  &#128722;
-                </Button.Light>
+                <Button variant="success" onClick={() => this.addAllToShoppingList()}>
+                  Add all ingredients to shopping list
+                </Button>
               </Column>
             </Row>
-          ))}
-          <Row>
-            <Column>
-              <Button.Success onClick={() => this.addAllToShoppingList()}>
-                Add all ingredients to shopping list
-              </Button.Success>
-            </Column>
-          </Row>
-        </Card>
-        <Card title="You may also like these recipes">
-          {this.recomended_recipes.map((recipe) => (
-            <Row key={recipe.recipe_id}>
-              <Column>
-                <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
-              </Column>
-            </Row>
-          ))}
-        </Card>
+          </Card>
+          <Card title="You may also like these recipes">
+            {this.recomended_recipes.map((recipe) => (
+              <Row key={recipe.recipe_id}>
+                <Column>
+                  <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
+                </Column>
+              </Row>
+            ))}
+          </Card>
+        </Container>
       </>
     );
   }
@@ -513,157 +640,304 @@ export class RecipeAdd extends Component {
   render() {
     return (
       <>
-        <Card title="Add Recipe">
-          <Row>
-            <Column>You can add your favourite recipe here</Column>
-          </Row>
-          <Row>
-            <Column width={3}>
-              <Form.Input
-                value={this.recipe.name}
-                type="text"
-                placeholder="Name"
-                onChange={(event) => (this.recipe.name = event.currentTarget.value)}
-              ></Form.Input>
-            </Column>
-          </Row>
-          <Row>
-            <Column width={3}>
-              <Form.Input
-                // vurdere å endre denne til drop down /select
-                value={this.recipe.category}
-                type="text"
-                placeholder="Category"
-                onChange={(event) => (this.recipe.category = event.currentTarget.value)}
-              ></Form.Input>
-            </Column>
-          </Row>
-          <Row>
-            <Column width={3}>
-              <Form.Input
-                value={this.recipe.country}
-                type="text"
-                placeholder="Country"
-                onChange={(event) => (this.recipe.country = event.currentTarget.value)}
-              ></Form.Input>
-            </Column>
-          </Row>
-          <Row>
-            <Row>
-              <Column>Choose the number of portions for this recipe:</Column>
-            </Row>
-            <Column width={3}>
-              <Form.Input
-                value={this.portions}
-                type="number"
-                // placeholder={'Number of portions'}
-                min={1}
-                onChange={(event) => (this.portions = Number(event.currentTarget.value))}
-              ></Form.Input>
-            </Column>
-          </Row>
+        <Container>
           <Row>
             <Column>
-              <Button.Light onClick={() => this.openIngredient()}>
-                Continue to add ingredients
-              </Button.Light>
-            </Column>
-          </Row>
-        </Card>
-        <div
-          style={{
-            // @ts-ignore
-            visibility: this.showIng,
-          }}
-        >
-          <Card title="Add ingredients">
-            <Row>
-              <Column>Choose amount for this ingredient:</Column>
-            </Row>
-            <Row>
-              <Column width={3}>
-                <Form.Input
-                  value={this.ingredient.amount}
+              <Card
+                title="Add Recipe"
+                style={{
+                  borderLeft: '0',
+                  borderRight: '0',
+                  borderTop: '0',
+                  borderRadius: '0',
+                  padding: '10%',
+                }}
+              >
+                <Card.Title style={{ textAlign: 'center' }}>Add your new recipe here:</Card.Title>
+
+                <Container fluid>
+                  <Row className="justify-content-md-center">
+                    <Col xs lg="7">
+                      <Row>
+                        <Form.Control
+                          value={this.recipe.name}
+                          type="text"
+                          placeholder="Name"
+                          onChange={(event) => (this.recipe.name = event.currentTarget.value)}
+                          style={{
+                            textAlign: 'center',
+                            width: '100%',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            marginBottom: '5px',
+                          }}
+                        ></Form.Control>
+                      </Row>
+                      <Row>
+                        <Form.Control
+                          // vurdere å endre denne til drop down /select
+                          value={this.recipe.category}
+                          type="text"
+                          placeholder="Category"
+                          onChange={(event) => (this.recipe.category = event.currentTarget.value)}
+                          style={{
+                            textAlign: 'center',
+                            width: '100%',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            marginBottom: '5px',
+                          }}
+                        ></Form.Control>
+                      </Row>
+                      <Row>
+                        <Form.Control
+                          value={this.recipe.country}
+                          type="text"
+                          placeholder="Country"
+                          onChange={(event) => (this.recipe.country = event.currentTarget.value)}
+                          style={{
+                            textAlign: 'center',
+                            width: '100%',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            marginBottom: '5px',
+                          }}
+                        ></Form.Control>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Container>
+                <Row
+                  style={{
+                    textAlign: 'center',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    padding: '20px',
+                  }}
+                >
+                  Choose the number of portions for this recipe:
+                </Row>
+                <Form.Control
+                  value={this.portions}
                   type="number"
-                  min={1}
-                  onChange={(event) => (this.ingredient.amount = Number(event.currentTarget.value))}
-                ></Form.Input>
-              </Column>
-            </Row>
-            <Row>
-              <Column width={3}>
-                <Form.Input
-                  value={this.ingredient.measurement_unit}
-                  type="text"
-                  placeholder="Measurement unit"
-                  // HADDE VÆRT BEST MED PRE-DEFINERTE ENHETER OG DROP DOWN
-                  onChange={(event) =>
-                    (this.ingredient.measurement_unit = event.currentTarget.value)
-                  }
-                ></Form.Input>
-              </Column>
-            </Row>
-            <Row>
-              <Column width={3}>
-                <Form.Input
-                  value={this.ingredient.name}
-                  type="text"
-                  placeholder="Ingredient"
-                  onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
-                ></Form.Input>
-              </Column>
-              <Column>
-                <Button.Light onClick={() => this.addIngredient()}>+ </Button.Light>
-                <Button.Light onClick={() => this.undoIngredient()}>&#x1F519;</Button.Light>
-              </Column>
-            </Row>
-            {this.ingredients.map((ing, i) => (
-              <Row key={i}>
-                <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
-              </Row>
-            ))}
+                  // placeholder={'Number of portions'}
+                  min={0}
+                  onChange={(event) => (this.portions = Number(event.currentTarget.value))}
+                  style={{ marginLeft: 'auto', marginRight: 'auto', width: '5rem' }}
+                ></Form.Control>
 
-            <Row>
-              <Column>
-                <Button.Light onClick={() => this.openStep()}>Continue to add steps</Button.Light>
-              </Column>
-            </Row>
-          </Card>
-        </div>
+                <Row style={{ marginLeft: 'auto', marginRight: 'auto', margin: '1%' }}>
+                  <Button variant="light" onClick={() => this.openIngredient()}>
+                    Continue to add ingredients
+                  </Button>
+                </Row>
+              </Card>
 
-        <div
-          style={{
-            //@ts-ignore
-            visibility: this.showSteps,
-          }}
-        >
-          <Card title="Add steps">
-            <Row>
-              <Column width={3}>
-                <Form.Textarea
-                  value={this.step.description}
-                  type="text"
-                  placeholder="Step"
-                  onChange={(event) => (this.step.description = event.currentTarget.value)}
-                ></Form.Textarea>
-              </Column>
-              <Column>
-                <Button.Light onClick={() => this.addStep()}>+</Button.Light>
-                <Button.Light onClick={() => this.undoStep()}>&#x1F519;</Button.Light>
-              </Column>
-            </Row>
-            {this.steps.map((step) => (
-              <Row key={step.order_number}>
-                <Column>{step.order_number + ': ' + step.description}</Column>
-              </Row>
-            ))}
-            <Row>
-              <Column>
-                <Button.Success onClick={() => this.saveRecipe()}>Save recipe</Button.Success>
-              </Column>
-            </Row>
-          </Card>
-        </div>
+              <Container fluid>
+                <div
+                  style={{
+                    // @ts-ignore
+                    visibility: this.showIng,
+                  }}
+                >
+                  <Row>
+                    <Card
+                      style={{
+                        borderBottom: '1',
+                        borderTop: '0',
+                        borderLeft: '0',
+                        borderRight: '0',
+                        marginTop: '5%',
+
+                        paddingBottom: '10%',
+                      }}
+                    >
+                      <Card.Title style={{ textAlign: 'center' }}>Add Ingredients:</Card.Title>
+                      <Card.Text style={{ textAlign: 'center' }}>Choose amount:</Card.Text>
+                      <Row>
+                        <Form.Control
+                          value={this.ingredient.amount}
+                          type="number"
+                          min={1}
+                          onChange={(event) =>
+                            (this.ingredient.amount = Number(event.currentTarget.value))
+                          }
+                          style={{
+                            textAlign: 'center',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            marginBottom: '1%',
+                          }}
+                        ></Form.Control>
+                      </Row>
+
+                      <Row>
+                        <Form.Control
+                          value={this.ingredient.measurement_unit}
+                          type="text"
+                          placeholder="Measurement unit"
+                          style={{
+                            textAlign: 'center',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            marginBottom: '1%',
+                          }}
+                          // HADDE VÆRT BEST MED PRE-DEFINERTE ENHETER OG DROP DOWN
+                          onChange={(event) =>
+                            (this.ingredient.measurement_unit = event.currentTarget.value)
+                          }
+                        ></Form.Control>
+                      </Row>
+                      <Row>
+                        <Form.Control
+                          value={this.ingredient.name}
+                          type="text"
+                          placeholder="Ingredient"
+                          onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
+                          style={{
+                            textAlign: 'center',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                          }}
+                        ></Form.Control>
+                      </Row>
+                      <Row>
+                        <Button
+                          style={{ width: '50%' }}
+                          variant="light"
+                          onClick={() => this.addIngredient()}
+                        >
+                          +{' '}
+                        </Button>
+
+                        <Button
+                          style={{ width: '50%' }}
+                          variant="light"
+                          onClick={() => this.undoIngredient()}
+                        >
+                          &#x1F519;
+                        </Button>
+                      </Row>
+
+                      <Row style={{ textAlign: 'left', marginTop: '1%' }}>
+                        {this.ingredients.map((ing, i) => (
+                          <Row key={i}>
+                            <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
+                          </Row>
+                        ))}
+                      </Row>
+
+                      <Row style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+                        <Column>
+                          <Button variant="light" onClick={() => this.openStep()}>
+                            Continue to add steps
+                          </Button>
+                        </Column>
+                      </Row>
+                    </Card>
+                  </Row>
+                </div>
+              </Container>
+
+              <div
+                style={{
+                  //@ts-ignore
+                  visibility: this.showSteps,
+                }}
+              >
+                <Card style={{ border: 'none', marginTop: '5%', paddingBottom: '40%' }}>
+                  <Card.Title style={{ textAlign: 'center' }}>Add steps</Card.Title>
+                  <Row className="justify-content-md-center">
+                    <Form.Control
+                      value={this.step.description}
+                      type="text"
+                      placeholder="Step"
+                      onChange={(event) => (this.step.description = event.currentTarget.value)}
+                      style={{
+                        textAlign: 'center',
+                        width: '95%',
+                      }}
+                    ></Form.Control>
+
+                    <Row>
+                      <Button
+                        style={{ width: '50%' }}
+                        variant="light"
+                        onClick={() => this.addStep()}
+                      >
+                        +
+                      </Button>
+                      <Button
+                        style={{ width: '50%' }}
+                        variant="light"
+                        onClick={() => this.undoStep()}
+                      >
+                        &#x1F519;
+                      </Button>
+                    </Row>
+                  </Row>
+                  {this.steps.map((step) => (
+                    <Row key={step.order_number}>
+                      <Column>{step.order_number + ': ' + step.description}</Column>
+                    </Row>
+                  ))}
+                </Card>
+              </div>
+            </Column>
+            <Col sm>
+              <Card
+                style={{
+                  width: '18rem',
+
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  marginTop: '30%',
+                }}
+              >
+                <Card.Body style={{ textAlign: 'center' }}>
+                  <Card.Title>Your recipe:</Card.Title>
+                  <Card.Title className="mb-2 text-muted">
+                    {}
+                    {' ' + this.recipe.name}
+                  </Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    {' ' + this.recipe.category}
+                  </Card.Subtitle>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    {' ' + this.recipe.country}
+                  </Card.Subtitle>
+                  <Card.Subtitle>
+                    {' '}
+                    {this.ingredients.map((ing, i) => (
+                      <Row key={i}>
+                        <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
+                      </Row>
+                    ))}
+                  </Card.Subtitle>
+                  <Card.Subtitle>
+                    {this.steps.map((step) => (
+                      <Row key={step.order_number}>
+                        <Column>{step.order_number + ': ' + step.description}</Column>
+                      </Row>
+                    ))}
+                  </Card.Subtitle>
+                </Card.Body>
+              </Card>
+              <Card style={{ border: 'none' }}>
+                <Button
+                  style={{
+                    marginTop: '10%',
+                    margin: 'auto',
+                  }}
+                  variant="success"
+                  onClick={() => this.saveRecipe()}
+                >
+                  Save recipe
+                </Button>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
       </>
     );
   }
@@ -776,7 +1050,7 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                 <Form.Label>Name:</Form.Label>
               </Column>
               <Column>
-                <Form.Input
+                <Form.Control
                   type="text"
                   value={this.recipe.name}
                   onChange={(event) => (this.recipe.name = event.currentTarget.value)}
@@ -831,13 +1105,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                 Amount per Person
                 {this.recipeIngredients.map((recipeIngredient) => (
                   <Row key={recipeIngredient.ingredient_id}>
-                    <Form.Input
+                    <Form.Control
                       value={recipeIngredient.amount_per_person}
                       type="number"
                       onChange={(event) =>
                         (recipeIngredient.amount_per_person = Number(event.currentTarget.value))
                       }
-                    ></Form.Input>
+                    ></Form.Control>
                   </Row>
                 ))}
               </Column>
@@ -846,13 +1120,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                 Measurement unit
                 {this.recipeIngredients.map((recipeIngredient) => (
                   <Row key={recipeIngredient.ingredient_id}>
-                    <Form.Input
+                    <Form.Control
                       value={recipeIngredient.measurement_unit}
                       type="text"
                       onChange={(event) =>
                         (recipeIngredient.measurement_unit = event.currentTarget.value)
                       }
-                    ></Form.Input>
+                    ></Form.Control>
                   </Row>
                 ))}
               </Column>
@@ -861,11 +1135,11 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                 Ingredient
                 {this.recipeIngredients.map((recipeIngredient) => (
                   <Row key={recipeIngredient.ingredient_id}>
-                    <Form.Input
+                    <Form.Control
                       value={recipeIngredient.name}
                       type="text"
                       onChange={(event) => (recipeIngredient.name = event.currentTarget.value)}
-                    ></Form.Input>
+                    ></Form.Control>
                   </Row>
                 ))}
               </Column>
@@ -878,11 +1152,11 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                   <Row key={step.step_id}>
                     <li>
                       {' '}
-                      <Form.Textarea
+                      <Form.Control
                         value={step.description}
                         type="text"
                         onChange={(event) => (step.description = event.currentTarget.value)}
-                      ></Form.Textarea>
+                      ></Form.Control>
                     </li>
                   </Row>
                 ))}
@@ -892,10 +1166,14 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
 
           <Row>
             <Column>
-              <Button.Success onClick={() => this.updateRecipe()}>Save</Button.Success>
+              <Button variant="success" onClick={() => this.updateRecipe()}>
+                Save
+              </Button>
             </Column>
             <Column right>
-              <Button.Danger onClick={() => this.deleteRecipe()}>Delete</Button.Danger>
+              <Button variant="danger" onClick={() => this.deleteRecipe()}>
+                Delete
+              </Button>
             </Column>
           </Row>
         </Card>
