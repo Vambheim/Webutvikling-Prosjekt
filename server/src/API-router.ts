@@ -113,7 +113,7 @@ router.get('/recipes/:recipe_id/steps', (request, response) => {
 
 router.get('/recipes/:recipe_id/ingredients', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
-  if (typeof recipe_id == 'string' && recipe_id != 0) {
+  if (typeof recipe_id == 'number' && recipe_id != 0) {
     recipeService
       .getIngredientsToRecipe(recipe_id)
       .then((rows) => response.send(rows))
