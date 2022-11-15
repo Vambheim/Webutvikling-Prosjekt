@@ -42,7 +42,7 @@ const testRecipeIngredients: RecipeIngredient[] = [
     amount_per_person: 500,
     measurement_unit: 'gram',
   }, // til recipe 2
-  { ingredient_id: 4, name: 'onion', recipe_id: 3, amount_per_person: 6, measurement_unit: '' }, // til recipe 3 }
+  { ingredient_id: 4, name: 'onion', recipe_id: 1, amount_per_person: 6, measurement_unit: '' }, // til recipe 1 }
 ];
 
 //denne må sjekkes ut
@@ -422,8 +422,6 @@ describe('Create new step (POST)', () => {
   });
 });
 
-////////////RECIPEINGREDIENT
-
 ////////////INGREDIENTS
 describe('Fetch ingredients (GET)', () => {
   test('Fetch all ingredients (200 OK)', (done) => {
@@ -452,12 +450,16 @@ describe('Create new ingredient (POST)', () => {
   });
 });
 
-////////////RECIPE INGREDIENT
+////////////RECIPEINGREDIENT
 describe('Fetch recipeIngredients (GET)', () => {
   test('Fetch all recipeIngredients (200 OK)', (done) => {
     axios.get('/recipes/1/ingredients').then((response) => {
       expect(response.status).toEqual(200);
-      expect(response.data).toEqual([testRecipeIngredients[0], testRecipeIngredients[1]]);
+      expect(response.data).toEqual([
+        testRecipeIngredients[0],
+        testRecipeIngredients[1],
+        testRecipeIngredients[4],
+      ]);
       done();
     });
   });
@@ -476,6 +478,7 @@ describe('Fetch recipeIngredients (GET)', () => {
     });
   });
 
+  //teste sjekken på denne i API-router.ts
   test('Fetch all recipeIngredients (500 internal server error) with invalidDBinput of type string', (done) => {
     axios.get('/recipes/invalidDBInput/ingredients/').catch((error) => {
       expect(error.message).toEqual('Request failed with status code 500');
@@ -555,5 +558,129 @@ describe('Create new recipeIngredient (POST)', () => {
         expect(response.data).toEqual('Created with new ingredient');
         done();
       });
+  });
+
+  test('Create new recipeIngredient (400 bad request) regarding missing input', (done) => {
+    axios
+      .post('/recipes/ingredients', {
+        recipe_id: 4,
+        amount_per_person: 40,
+        measurement_unit: 'gram',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+
+        done();
+      });
+  });
+
+  test('Create new recipeIngredient (404 not found) via uknown path', (done) => {
+    axios
+      .post('/unknownPath/ingredients', {
+        name: 'New ingredient',
+        recipe_id: 4,
+        amount_per_person: 40,
+        measurement_unit: 'gram',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 404');
+
+        done();
+      });
+  });
+});
+
+/////////FILTERS
+describe('Fetch filtered recipes by ingredients (GET)', () => {
+  test('Fetch recipes filtered by one ingredient (200 OK)', (done) => {
+    axios.get('/oneingredientfilter/tomato').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[0], testRecipes[1]]);
+      done();
+    });
+  });
+
+  test('Fetch recipes filtered by one ingredient (404 bad request) via unknown path', (done) => {
+    axios.get('/uknownPath/tomato').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+
+      done();
+    });
+  });
+
+  // IMPOSSIBLE TO CATCH BOTH 400 AND 500 ERROR GIVING THE INPUT AND IF-CHECKS IN API ROUTER
+  //--------------------------------------------------------------------------------------------
+  // test('Fetch recipes filtered by one ingredient (500 internal server error) trying to extract ingredientname with wrong datatype (number) ', (done) => {
+  //   axios.get('/oneingredientfilter/1').catch((error) => {
+  //     expect(error.message).toEqual('Request failed with status code 500');
+
+  //     done();
+  //   });
+  // });
+
+  // test('Fetch recipes filtered by one ingredient (400 bad request) with missing input (":ingredient1")', (done) => {
+  //   axios.get('/oneingredientfilter/ ').catch((error) => {
+  //     expect(error.message).toEqual('Request failed with status code 400');
+
+  //     done();
+  //   });
+  // });
+
+  test('Fetch recipes filtered by two ingredient (200 OK)', (done) => {
+    axios.get('/twoingredientsfilter/tomato/beans').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[0]]);
+      done();
+    });
+  });
+
+  test('Fetch recipes filtered by one ingredient (404 bad request) via unknown path', (done) => {
+    axios.get('/uknownpath/tomatp/beans').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+
+      done();
+    });
+  });
+
+  test('Fetch recipes filtered by two ingredients (200 OK)', (done) => {
+    axios.get('/threeingredientsfilter/tomato/beans/onion').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[0]]);
+      done();
+    });
+  });
+
+  test('Fetch recipes filtered by three ingredients (404 bad request) via unknown path', (done) => {
+    axios.get('/uknownpath/tomatp/beans/onion').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+
+      done();
+    });
+  });
+});
+
+describe('Fetch filtered recipes by country and/or category (GET)', () => {
+  test('Fetch recipes filtered by category (200 OK)', (done) => {
+    axios.get('/categoryfilter/stew').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[0]]);
+      done();
+    });
+  });
+
+  test('Fetch recipes filtered by country (200 OK)', (done) => {
+    axios.get('/countryfilter/Mexico').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[0]]);
+      done();
+    });
+  });
+
+  test('Fetch recipes filtered by both country and category (200 OK)', (done) => {
+    axios.get('/countryandcategoryfilter/Mexico/stew').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[0]]);
+      done();
+    });
   });
 });

@@ -151,8 +151,8 @@ router.post('/recipes/ingredients', (request, response) => {
     typeof data.recipe_id == 'number' &&
     data.recipe_id != 0 &&
     typeof data.amount_per_person == 'number' &&
-    data.amount_per_person != 0
-    // (typeof data.measurement_unit == 'string' || data.measurement_unit == undefined)
+    data.amount_per_person != 0 &&
+    (typeof data.measurement_unit == 'string' || data.measurement_unit == undefined)
   ) {
     //Check if ingredient exists in the database to avoid redundancy
     recipeService
