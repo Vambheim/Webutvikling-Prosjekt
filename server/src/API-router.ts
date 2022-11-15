@@ -347,6 +347,7 @@ router.post('/recipes/like', (request, response) => {
   } else response.status(400).send('wrong parameters');
 });
 
+//Her bør det nok kjøres en sjekk på inputvariablene:
 router.get('/recipes/:recipe_id/recommended/:category/:country', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
   const category = String(request.params.category);
