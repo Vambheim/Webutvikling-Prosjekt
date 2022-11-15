@@ -2,14 +2,7 @@ import axios from 'axios';
 import pool from '../src/mysql-pool';
 import app from '../src/app';
 import recipeService, { Ingredient, Recipe, RecipeIngredient, Step } from '../src/recipe-service';
-import shoppingListService, {
-  ShoppingListInfo,
-  ShoppingListUserInfo,
-} from '../src/shoppingList-service';
 import userService, { User } from '../src/user-service';
-import { salt } from '../src/API-router';
-import { response } from 'express';
-import bcrypt from 'bcryptjs';
 
 const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
@@ -50,7 +43,7 @@ const testRecipeIngredients: RecipeIngredient[] = [
   { ingredient_id: 4, name: 'onion', recipe_id: 3, amount_per_person: 6, measurement_unit: '' }, // til recipe 3 }
 ];
 
-//denne må sjekkes ut 
+//denne må sjekkes ut
 const testUser: User = {
   user_id: 1,
   email: 'test@mail',
