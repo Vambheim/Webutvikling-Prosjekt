@@ -113,10 +113,14 @@ router.get('/recipes/:recipe_id/steps', (request, response) => {
 
 router.get('/recipes/:recipe_id/ingredients', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
-  recipeService
-    .getIngredientsToRecipe(recipe_id)
-    .then((rows) => response.send(rows))
-    .catch((error) => response.status(500).send(error));
+  if (typeof recipe_id == 'string' && recipe_id != 0) {
+    recipeService
+      .getIngredientsToRecipe(recipe_id)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Incorrect paramter-propperties');
+  }
 });
 
 router.post('/recipes', (request, response) => {
@@ -240,6 +244,8 @@ router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
       .updateSteps(data.order_number, data.description, step_id, recipe_id)
       .then(() => response.send('Step was updated'))
       .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
   }
 });
 
