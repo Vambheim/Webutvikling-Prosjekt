@@ -511,6 +511,18 @@ router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
 // Poster spørring til tabell Recipe
 router.post('/spoonacular/recipes', (request, response) => {
   var data = request.body;

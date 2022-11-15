@@ -34,12 +34,12 @@ const testShoppingListUser: ShoppingListUserInfo = {
 };
 
 // Since API is not compatible with v1, API version is increased to v2
-axios.defaults.baseURL = 'http://localhost:3002/api/v2';
+axios.defaults.baseURL = 'http://localhost:3003/api/v2';
 
 let webServer: any;
 beforeAll((done) => {
   // Use separate port for testing
-  webServer = app.listen(3002, () => done());
+  webServer = app.listen(3003, () => done());
 });
 
 beforeEach((done) => {
