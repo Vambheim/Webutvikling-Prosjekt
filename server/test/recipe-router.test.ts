@@ -935,3 +935,15 @@ describe('Fetch filtered recipes by country and/or category (GET)', () => {
     });
   });
 });
+
+///////LIKES
+describe('Create likes for a given recipe (POST)', () => {
+  test('Create like for a given recipe (200 ok)', (done) => {
+    axios.post('/recipes/like', { user_id: 1, recipe_id: 3 }).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual('Recipe was liked');
+
+      done();
+    });
+  });
+});
