@@ -7,7 +7,7 @@ import shoppingListService, {
   ShoppingListUserInfo,
   ShoppingListInfo,
 } from '../src/shoppingList-service';
-import { salt, createHash } from '../src/API-router';
+import { salt } from '../src/API-router';
 import bcrypt from 'bcryptjs';
 
 const testRecipes: Recipe[] = [
@@ -105,11 +105,10 @@ axios.defaults.baseURL = 'http://localhost:3001/api/v2';
 
 let webServer: any;
 beforeAll((done) => {
-  createHash(testUser.password);
-  // bcrypt.hash(testUser.password, salt, (error, hash) => {
-  //   if (error) throw error;
-  //   testUser.password = hash;
-  // });
+  bcrypt.hash(testUser.password, salt, (error, hash) => {
+    if (error) throw error;
+    testUser.password = hash;
+  });
   // Use separate port for testing
   webServer = app.listen(3001, () => done());
 });
