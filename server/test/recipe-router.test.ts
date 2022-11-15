@@ -3,7 +3,12 @@ import pool from '../src/mysql-pool';
 import app from '../src/app';
 import recipeService, { Ingredient, Recipe, RecipeIngredient, Step } from '../src/recipe-service';
 import userService, { User } from '../src/user-service';
-import { response } from 'express';
+import shoppingListService, {
+  ShoppingListUserInfo,
+  ShoppingListInfo,
+} from '../src/shoppingList-service';
+import { salt } from '../src/API-router';
+import bcrypt from 'bcryptjs';
 
 const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
@@ -54,6 +59,30 @@ const testUser: User = {
   password: '123',
 };
 
+const testShoppingListUser: ShoppingListUserInfo[] = [
+  { recipe_id: 1, ingredient_id: 1, user_id: 1, amount: 2, measurement_unit: 'cans' },
+  { recipe_id: 1, ingredient_id: 2, user_id: 1, amount: 4, measurement_unit: 'pieces' },
+];
+
+const testShoppingListInfo: ShoppingListInfo[] = [
+  {
+    shopping_list_id: 1,
+    recipe_id: 1,
+    ingredient_id: 1,
+    name: 'beans',
+    amount: 2,
+    measurement_unit: 'cans',
+  },
+  {
+    shopping_list_id: 2,
+    recipe_id: 1,
+    ingredient_id: 2,
+    name: 'tomato',
+    amount: 4,
+    measurement_unit: 'pieces',
+  },
+];
+
 const testSteps: Step[] = [
   {
     step_id: 1,
@@ -77,6 +106,10 @@ axios.defaults.baseURL = 'http://localhost:3001/api/v2';
 
 let webServer: any;
 beforeAll((done) => {
+  bcrypt.hash(testUser.password, salt, (error, hash) => {
+    if (error) throw error;
+    testUser.password = hash;
+  });
   // Use separate port for testing
   webServer = app.listen(3001, () => done());
 });
@@ -125,7 +158,36 @@ beforeEach((done) => {
             );
           });
         })
-        .then(() => done());
+        .then(() => {
+          pool.query('DELETE FROM user', (error) => {
+            if (error) return done(error);
+            pool.query('ALTER TABLE user AUTO_INCREMENT = 1', (error) => {
+              if (error) return done(error);
+
+              userService
+                .createUser(
+                  testUser.email,
+                  testUser.first_name,
+                  testUser.last_name,
+                  testUser.password
+                )
+                .then(() => {
+                  pool.query('DELETE FROM shopping_list', (error) => {
+                    if (error) return done(error);
+                    pool.query('ALTER TABLE shopping_list AUTO_INCREMENT = 1', (error) => {
+                      if (error) return done(error);
+                      shoppingListService
+                        .addToShoppingList(testShoppingListUser[0])
+                        .then(() => {
+                          shoppingListService.addToShoppingList(testShoppingListUser[1]);
+                        })
+                        .then(() => done());
+                    });
+                  });
+                });
+            });
+          });
+        });
     });
   });
 });
@@ -478,6 +540,7 @@ describe('Fetch recipeIngredients (GET)', () => {
     });
   });
 
+
   //teste sjekken på denne i API-router.ts
   test('Fetch all recipeIngredients (500 internal server error) with invalidDBinput of type string', (done) => {
     axios.get('/recipes/invalidDBInput/ingredients/').catch((error) => {
@@ -487,6 +550,30 @@ describe('Fetch recipeIngredients (GET)', () => {
   });
 });
 
+
+///////////////SHOPPING LIST
+describe('Fetch shopping list (GET)', () => {
+  test('Fetch shopping list (200 OK)', (done) => {
+    axios.get('/shoppinglist/1').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testShoppingListInfo[0], testShoppingListInfo[1]]);
+      done();
+    });
+  });
+});
+
+describe('Add to shopping list (POST)', () => {
+  test('Add ingredient to shopping list (200 OK)', (done) => {
+    axios
+      .post('/shoppinglist', {
+        recipe_id: 1,
+        ingredient_id: 1,
+        user_id: 1,
+        amount: 2,
+      })
+      .then((response) => {
+        expect(response.data).toEqual('Added to shopping list');
+        
 describe('Update recipeIngredients (PUT)', () => {
   test('Edit recipeIngredients (200 OK)', (done) => {
     axios
@@ -502,6 +589,89 @@ describe('Update recipeIngredients (PUT)', () => {
       });
   });
 
+
+  test('Add ingredient to shopping list with wrong input (400 bad request)', (done) => {
+    axios
+      .post('/shoppinglist', {
+        recipe_id: '',
+        ingredient_id: '',
+        user_id: '',
+        amount: '',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        //Cannot test if the response data is equal to the hash, because it is different every time
+        done();
+      });
+  });
+  
+  test('Add ingredient to shopping list (500 Internal Server Error)', (done) => {
+    axios
+      .post('/shoppinglist', {
+        recipe_id: 'ONE',
+        ingredient_id: 1,
+        user_id: 1,
+        amount: 2,
+      })
+      .catch((error) => {
+        expect(error.response.status).toEqual(500);
+        expect(error.message).toEqual('Request failed with status code 500');
+        //Cannot test if the response data is equal to the hash, because it is different every time
+        done();
+      });
+  });
+});
+
+describe('Delete from shopping list (DELETE)', () => {
+  test('Delete all items from shopping list (200 OK)', (done) => {
+    axios.delete('/shoppinglist/1').then((response) => {
+      expect(response.status).toEqual(200);
+      done();
+    });
+  });
+
+  test('Delete all items from shopping list (500 Internal Server Error)', (done) => {
+    axios.delete('/shoppinglist/99').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
+
+  test('Delete one item from shopping list (200 OK)', (done) => {
+    axios.delete('/shoppinglistitem/1').then((response) => {
+      expect(response.status).toEqual(200);
+      done();
+    });
+  });
+
+  test('Delete one item from shopping list (500 Internal Server Error)', (done) => {
+    axios.delete('/shoppinglistitem/99').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
+});
+
+////////////USER
+describe('User register (POST)', () => {
+  test('Create new user (200 OK)', (done) => {
+    axios
+      .post('/users/register', {
+        email: 'newuser@mail',
+        first_name: 'Test',
+        last_name: 'Testerson',
+        password: '123abc',
+        password2: '123abc',
+      })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        //Cannot test if the response data is equal to the hash, because it is different every time
+                done();
+      });
+          });
+        
+        
+        
   test('Edit recipeIngredients (400 bad request) in terms missing necesary input/propperties', (done) => {
     axios
       .put('/recipes/1/ingredients/1', {
@@ -560,6 +730,23 @@ describe('Create new recipeIngredient (POST)', () => {
       });
   });
 
+
+  test('Create new user with existing email (400 bad request)', (done) => {
+    axios
+      .post('/users/register', {
+        email: 'test@mail',
+        first_name: 'Test',
+        last_name: 'Testerson',
+        password: '123abc',
+        password2: '123abc',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+                done();
+      });
+  });
+
+//flytt
   test('Create new recipeIngredient (400 bad request) regarding missing input', (done) => {
     axios
       .post('/recipes/ingredients', {
@@ -569,11 +756,68 @@ describe('Create new recipeIngredient (POST)', () => {
       })
       .catch((error) => {
         expect(error.message).toEqual('Request failed with status code 400');
-
         done();
       });
   });
 
+
+  test('Create new user with passwords not matching (400 bad request)', (done) => {
+    axios
+      .post('/users/register', {
+        email: 'new@mail',
+        first_name: 'New',
+        last_name: 'New',
+        password: '123abc',
+        password2: 'Notmatchingpassword',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+
+  test('Create new user with missing input (400 bad request)', (done) => {
+    axios
+      .post('/users/register', {
+        email: '',
+        first_name: '',
+        last_name: '',
+        password: '',
+        password2: '',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+
+  test('Create new user with unvalid email (400 bad request)', (done) => {
+    axios
+      .post('/users/register', {
+        email: 'mail',
+        first_name: 'Test',
+        last_name: 'Testerson',
+        password: '123',
+        password2: '123',
+      })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 400');
+        done();
+      });
+  });
+});
+
+describe('User log in (GET)', () => {
+  test('Log in (200 OK)', (done) => {
+    axios.get('/users/login/test@mail/123').then((response) => {
+      expect(response.status).toEqual(200);
+          done();
+    });
+  });
+      
+      
+      
+//flytt
   test('Create new recipeIngredient (404 not found) via uknown path', (done) => {
     axios
       .post('/unknownPath/ingredients', {
@@ -589,6 +833,7 @@ describe('Create new recipeIngredient (POST)', () => {
       });
   });
 });
+
 
 /////////FILTERS
 describe('Fetch filtered recipes by ingredients (GET)', () => {
@@ -613,18 +858,18 @@ describe('Fetch filtered recipes by ingredients (GET)', () => {
   // test('Fetch recipes filtered by one ingredient (500 internal server error) trying to extract ingredientname with wrong datatype (number) ', (done) => {
   //   axios.get('/oneingredientfilter/1').catch((error) => {
   //     expect(error.message).toEqual('Request failed with status code 500');
-
-  //     done();
-  //   });
-  // });
-
-  // test('Fetch recipes filtered by one ingredient (400 bad request) with missing input (":ingredient1")', (done) => {
-  //   axios.get('/oneingredientfilter/ ').catch((error) => {
-  //     expect(error.message).toEqual('Request failed with status code 400');
-
-  //     done();
-  //   });
-  // });
+//
+//       done();
+//     });
+//   });
+//
+//   test('Fetch recipes filtered by one ingredient (400 bad request) with missing input (":ingredient1")', (done) => {
+//     axios.get('/oneingredientfilter/ ').catch((error) => {
+//       expect(error.message).toEqual('Request failed with status code 400');
+//
+//      done();
+//     });
+//   });
 
   test('Fetch recipes filtered by two ingredient (200 OK)', (done) => {
     axios.get('/twoingredientsfilter/tomato/beans').then((response) => {
@@ -634,14 +879,39 @@ describe('Fetch filtered recipes by ingredients (GET)', () => {
     });
   });
 
-  test('Fetch recipes filtered by one ingredient (404 bad request) via unknown path', (done) => {
-    axios.get('/uknownpath/tomatp/beans').catch((error) => {
-      expect(error.message).toEqual('Request failed with status code 404');
 
+  test('Wrong password (400 bad request)', (done) => {
+    axios.get('/users/login/test@mail/fakePassword').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 400');
       done();
     });
   });
 
+
+  test('Fetch recipes filtered by one ingredient (404 bad request) via unknown path', (done) => {
+    axios.get('/uknownpath/tomatp/beans').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+      done();
+    });
+  });
+
+
+  test('No password (404 Not Found)', (done) => {
+    axios.get('/users/login/test@mail/').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+      done();
+    });
+  });
+
+  test('No user with given email (500 Internal Server Error)', (done) => {
+    axios.get('/users/login/wrong@mail/password').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
+});
+
+//flytt
   test('Fetch recipes filtered by two ingredients (200 OK)', (done) => {
     axios.get('/threeingredientsfilter/tomato/beans/onion').then((response) => {
       expect(response.status).toEqual(200);

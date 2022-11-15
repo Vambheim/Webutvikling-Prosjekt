@@ -26,9 +26,6 @@ router.get('/users/login/:email/:password', (request, response) => {
         if (bcrypt.compareSync(password, String(user.password))) {
           response.send(user);
         } else {
-          console.log(bcrypt.compareSync(password, String(user.password)));
-          console.log('Input password: ' + password);
-          console.log('Hashed password: ' + user.password);
           response.status(400).send('Incorrect Email and/or Password! ');
         }
       })
@@ -499,11 +496,10 @@ router.get('/shoppinglist/:user_id', (request, response) => {
 router.post('/shoppinglist', (request, response) => {
   const data = request.body;
   if (
-    data &&
-    data.recipe_id != 0 &&
-    data.ingredient_id != 0 &&
-    data.user_id != 0 &&
-    data.amount != 0
+    data.recipe_id.length != 0 &&
+    data.ingredient_id.length != 0 &&
+    data.user_id.length != 0 &&
+    data.amount.length != 0
   )
     shoppingListService
       .addToShoppingList(data)
