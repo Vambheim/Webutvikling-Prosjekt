@@ -179,7 +179,7 @@ export class RegisterUser extends Component {
           history.push('/recipes/login');
         }
       })
-      .catch((error) => console.log('Error creating user: ' + error.message));
+      .catch((error) => Alert.danger(error.response.data));
   }
 
   clearInput() {

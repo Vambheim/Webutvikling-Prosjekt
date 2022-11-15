@@ -700,7 +700,7 @@ export class RecipeAdd extends Component {
     if (this.ingredients.length != 0) {
       this.showSteps = 'visible';
     } else {
-      Alert.danger('Add some ingredients to continue');
+      Alert.danger('Please add some ingredients to continue');
     }
   }
 
@@ -721,30 +721,34 @@ export class RecipeAdd extends Component {
   }
 
   saveRecipe() {
-    recipeService
-      .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
-      .then((recipe_id) => {
-        this.ingredients.map((ing) =>
-          recipeService
-            .createRecipeIngredients(
-              ing.name,
-              recipe_id,
-              ing.amount / this.portions,
-              ing.measurement_unit
-            )
-            .then((response) => console.log(response))
-            .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
-        );
-        this.steps.map((step) => {
-          recipeService
-            .createStep(step.order_number, step.description, recipe_id)
-            .then((response) => console.log(response))
-            .catch((error) => Alert.danger(error.message));
-        });
-        Alert.success('Recipe for ' + this.recipe.name + ' was created');
-        history.push('/recipes/' + recipe_id);
-      })
-      .catch((error) => Alert.danger(error.message));
+    if (this.steps.length != 0) {
+      recipeService
+        .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
+        .then((recipe_id) => {
+          this.ingredients.map((ing) =>
+            recipeService
+              .createRecipeIngredients(
+                ing.name,
+                recipe_id,
+                ing.amount / this.portions,
+                ing.measurement_unit
+              )
+              .then((response) => console.log(response))
+              .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
+          );
+          this.steps.map((step) => {
+            recipeService
+              .createStep(step.order_number, step.description, recipe_id)
+              .then((response) => console.log(response))
+              .catch((error) => Alert.danger(error.message));
+          });
+          Alert.success('Recipe for ' + this.recipe.name + ' was created');
+          history.push('/recipes/' + recipe_id);
+        })
+        .catch((error) => Alert.danger(error.message));
+    } else {
+      Alert.danger('Please add some steps to save this recipe ');
+    }
   }
 }
 

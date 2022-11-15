@@ -60,14 +60,13 @@ shopping_list_id INT NOT NULL AUTO_INCREMENT,
 recipe_id INT NOT NULL,
 ingredient_id INT NOT NULL,
 user_id INT NOT NULL,
-amount varchar(50),
+amount INT,
 measurement_unit varchar(50),
 PRIMARY KEY (shopping_list_id),
 FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE,
 FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id) ON DELETE CASCADE,
 FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 ); 
-
 
 
 SELECT recipe.name, COUNT(liked) as likes

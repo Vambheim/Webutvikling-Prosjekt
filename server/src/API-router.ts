@@ -8,19 +8,27 @@ import shoppingListService from './shoppingList-service';
  * Express router containing task methods.
  */
 const router = express.Router();
-var salt = bcrypt.genSaltSync(10);
+export const salt = bcrypt.genSaltSync(10);
 
 ///////////////////USER
 router.get('/users/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
   const password = String(request.params.password);
-  if (email.length != 0 && password.length != 0) {
+  if (
+    typeof email == 'string' &&
+    email.length != 0 &&
+    typeof password == 'string' &&
+    password.length != 0
+  ) {
     userService
       .getUser(email)
       .then((user) => {
         if (bcrypt.compareSync(password, String(user.password))) {
           response.send(user);
         } else {
+          console.log(bcrypt.compareSync(password, String(user.password)));
+          console.log('Input password: ' + password);
+          console.log('Hashed password: ' + user.password);
           response.status(400).send('Incorrect Email and/or Password! ');
         }
       })
@@ -28,7 +36,7 @@ router.get('/users/login/:email/:password', (request, response) => {
         response.status(500).send(error);
       });
   } else {
-    response.status(400).send('Please fill all the fields');
+    response.status(469).send('Please fill all the fields');
   }
 });
 
@@ -36,18 +44,19 @@ router.post('/users/register', (request, response) => {
   const data = request.body;
   //Check required fields
   if (!data.first_name || !data.last_name || !data.email || !data.password || !data.password2) {
-    response.send('Please fill in all the fields');
+    response.status(400).send('Please fill in all the fields');
     return;
   }
   //Check passwords match
   if (data.password != data.password2) {
-    response.send('Passwords does not match, please try again');
+    response.status(400).send('Passwords does not match, please try again');
     return;
   }
 
   //Check if email-adress has @
   if (data.email.includes('@')) {
     userService
+      //tror vi ikke trenger denne egt, kan nok bruke getUser
       .userExistsCheck(data.email)
       .then(() => {
         bcrypt.hash(data.password, salt, (error, hash) => {
@@ -55,15 +64,15 @@ router.post('/users/register', (request, response) => {
           data.password = hash;
           userService
             .createUser(data.email, data.first_name, data.last_name, data.password)
-            .then((rows) => response.send(rows))
+            .then((user) => response.status(200).send(user))
             .catch((error) => response.status(500).send(error));
           return;
         });
       })
-      .catch(() => response.send('Email: ' + data.email + ' is already in use'));
+      .catch(() => response.status(400).send('Email: ' + data.email + ' is already in use'));
     return;
   } else {
-    response.send('Not a valid email address');
+    response.status(400).send('Not a valid email address');
     return;
   }
 });
@@ -104,20 +113,33 @@ router.get('/recipes/:recipe_id/steps', (request, response) => {
 
 router.get('/recipes/:recipe_id/ingredients', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
-  recipeService
-    .getIngredientsToRecipe(recipe_id)
-    .then((rows) => response.send(rows))
-    .catch((error) => response.status(500).send(error));
+  if (typeof recipe_id == 'number' && recipe_id != 0) {
+    recipeService
+      .getIngredientsToRecipe(recipe_id)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Incorrect paramter-propperties');
+  }
 });
 
 router.post('/recipes', (request, response) => {
   const data = request.body;
-  if (data && data.name != 0 && data.category != 0 && data.country != 0)
+  if (
+    typeof data.name == 'string' &&
+    data.name.length != 0 &&
+    typeof data.country == 'string' &&
+    data.country.length != 0 &&
+    typeof data.category == 'string' &&
+    data.category != 0
+  ) {
     recipeService
-      .createRecipe(data.name, data.category, data.country)
+      .createRecipe(data.name, data.country, data.category)
       .then((recipe_id) => response.send({ recipe_id: recipe_id }))
       .catch((error) => response.status(500).send(error));
-  else response.status(400).send('Missing recipe details');
+  } else {
+    response.status(400).send('Missing recipe details');
+  }
 });
 
 router.post('/recipes/ingredients', (request, response) => {
@@ -207,11 +229,23 @@ router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
   const step_id = Number(request.params.step_id);
 
-  if (data && recipe_id && step_id) {
+  if (
+    data &&
+    typeof recipe_id == 'number' &&
+    recipe_id != 0 &&
+    typeof step_id == 'number' &&
+    step_id != 0 &&
+    typeof data.order_number == 'number' &&
+    data.order_number != 0 &&
+    typeof data.description == 'string' &&
+    data.description.length != 0
+  ) {
     recipeService
       .updateSteps(data.order_number, data.description, step_id, recipe_id)
       .then(() => response.send('Step was updated'))
       .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
   }
 });
 
@@ -281,11 +315,17 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
   }
 });
 
-router.delete('/recipes/:id', (request, response) => {
-  recipeService
-    .delete(Number(request.params.id))
-    .then((_result) => response.send())
-    .catch((error) => response.status(500).send(error));
+router.delete('/recipes/:recipe_id', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+
+  if (typeof recipe_id == 'number' && recipe_id != 0) {
+    recipeService
+      .delete(recipe_id)
+      .then((_result) => response.send())
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
 });
 
 // Creates a like in the database
