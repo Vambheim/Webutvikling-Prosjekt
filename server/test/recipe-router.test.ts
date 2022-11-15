@@ -474,4 +474,11 @@ describe('Fetch recipeIngredients (GET)', () => {
       done();
     });
   });
+
+  test('Fetch all recipeIngredient (500 internal server error)', (done) => {
+    axios.get('/recipes/1/ingredients/').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 404');
+      done();
+    });
+  });
 });
