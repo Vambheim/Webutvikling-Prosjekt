@@ -64,7 +64,6 @@ class Home extends Component {
         clearInterval(intervalAPI);
       }, 7500);
     }
-    getRecipesBulk(null)
 
   }
   render() {
