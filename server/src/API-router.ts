@@ -540,7 +540,7 @@ router.post('/spoonacular/recipes', (request, response) => {
       .catch((error) => response.status(500).send(error));
 });
 
-// Poster spørring til tabell Ingridient
+// Poster spørring til tabell Ingridient --> BURDE VEL KANSKJE VÆRT INGREDIENT
 router.post('/spoonacular/ingridients', (request, response) => {
   var data = request.body;
 
