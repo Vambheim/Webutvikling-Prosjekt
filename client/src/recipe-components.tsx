@@ -549,7 +549,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
           >
             <Card.Title>You may also like:</Card.Title>
-            <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+            <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: '10%' }}>
               {this.recomended_recipes.map((recipe) => (
                 <Row key={recipe.recipe_id}>
                   <Column>
