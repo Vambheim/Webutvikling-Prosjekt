@@ -438,39 +438,11 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               {' '}
               {'Recipe for ' + this.recipe.name}
             </Card.Title>
-            <Card.Body>
-              <Row className="justify-content-md-center">
-                <Col xs={2}>
-                  <Row>
-                    <Button
-                      style={{ width: '4rem', margin: 'auto', marginTop: '10%' }}
-                      variant="light"
-                      onClick={() => this.likeRecipe()}
-                    >
-                      Like &#10084;
-                    </Button>
-                  </Row>
 
-                  <Row>
-                    <Button
-                      style={{ width: '4rem', margin: 'auto', marginTop: '1%' }}
-                      variant="success"
-                      onClick={() => this.editRecipe()}
-                    >
-                      Edit
-                    </Button>
-                  </Row>
-                  <Row>
-                    <Button
-                      style={{ width: '4rem', margin: 'auto', marginTop: '1%' }}
-                      variant="success"
-                      onClick={() => this.addAllToShoppingList()}
-                    >
-                      Add to cart
-                    </Button>
-                  </Row>
-                </Col>
-                <Col>
+            <Row className="justify-content-md-center">
+              <Col xs={5}>
+                <h6>Steps: </h6>
+                <ol>
                   {this.steps.map((step) => (
                     <Row key={step.order_number}>
                       <Column>
@@ -478,28 +450,35 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       </Column>
                     </Row>
                   ))}
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-
-          <Card
-            style={{
-              border: 'none',
-              paddingBottom: '3%',
-            }}
-          >
-            <Card.Title style={{ textAlign: 'center', marginTop: '2%' }}>Ingredients:</Card.Title>
-            <Card
-              style={{
-                borderLeft: 'none',
-                borderRight: 'none',
-                borderTop: 'none',
-                borderRadius: 'none',
-              }}
-            >
-              <Card.Body>
+                </ol>
+                <Row>
+                  <Button
+                    style={{
+                      width: '5rem',
+                      margin: 'auto',
+                      marginTop: '10%',
+                      height: '4rem',
+                      // border: '1px',
+                      // borderStyle: 'solid',
+                    }}
+                    variant="outline-danger"
+                    onClick={() => this.likeRecipe()}
+                  >
+                    Like &#10084;
+                  </Button>
+                  <Button
+                    style={{ width: '5rem', margin: 'auto', marginTop: '10%', height: '4rem' }}
+                    variant="success"
+                    onClick={() => this.editRecipe()}
+                  >
+                    Edit
+                  </Button>
+                </Row>
+              </Col>
+              <Col>
+                <h6>Ingredients: </h6>
                 <Row className="justify-content-md-center">
+                  Portion:
                   <Col md="auto">
                     <Form.Control
                       type="number"
@@ -509,49 +488,51 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       max={50}
                       style={{ width: '100%' }}
                     ></Form.Control>
-                    Portions
                   </Col>
                 </Row>
-              </Card.Body>
-            </Card>
-            <Card style={{ border: 'none' }}>
-              <Card.Body>
-                <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
-                  {this.ingredients.map((ing) => (
-                    <Row key={ing.ingredient_id}>
-                      <Col>
-                        {(ing.amount_per_person * this.portions).toFixed(2) +
-                          ' ' +
-                          ing.measurement_unit +
-                          ' ' +
-                          ing.name}
+                {this.ingredients.map((ing) => (
+                  <Row key={ing.ingredient_id}>
+                    <Col>
+                      {(ing.amount_per_person * this.portions).toFixed(2) +
+                        ' ' +
+                        ing.measurement_unit +
+                        ' ' +
+                        ing.name}
 
-                        {/* Adds to shopping list, if logged in */}
-                        <Button
-                          variant="light"
-                          onClick={() =>
-                            this.addItemToShoppingList(
-                              ing.ingredient_id,
-                              ing.amount_per_person,
-                              ing.measurement_unit
-                            )
-                          }
-                        >
-                          &#128722;
-                        </Button>
-                      </Col>
-                    </Row>
-                  ))}
-                </Card.Text>
-              </Card.Body>
-            </Card>
+                      {/* Adds to shopping list, if logged in */}
+                      <Button
+                        variant="light"
+                        onClick={() =>
+                          this.addItemToShoppingList(
+                            ing.ingredient_id,
+                            ing.amount_per_person,
+                            ing.measurement_unit
+                          )
+                        }
+                      >
+                        &#128722;
+                      </Button>
+                    </Col>
+                  </Row>
+                ))}
+                <Row>
+                  <Button
+                    style={{ width: '7rem', margin: 'auto', marginTop: '1%' }}
+                    variant="success"
+                    onClick={() => this.addAllToShoppingList()}
+                  >
+                    Add to cart
+                  </Button>
+                </Row>
+              </Col>
+            </Row>
           </Card>
+
           <Card
             style={{
+              padding: '20px',
               textAlign: 'center',
-              borderBottom: 'none',
-              borderRight: 'none',
-              borderLeft: 'none',
+              border: 'none',
             }}
           >
             <Card.Title>You may also like:</Card.Title>
