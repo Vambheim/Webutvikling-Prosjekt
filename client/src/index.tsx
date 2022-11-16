@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 import * as React from 'react';
 import { Component } from 'react-simplified';
-import { HashRouter, Route } from 'react-router-dom';
+import { HashRouter, NavLink, Route } from 'react-router-dom';
 import { Alert } from './widgets';
 import { Carousel, Card, Button, Row, Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { RecipeAdd, RecipeList, RecipeDetails, RecipeEdit } from './recipe-components';
@@ -174,7 +174,7 @@ class Menu extends Component {
         variant="dark"
         style={{ backgroundColor: 'rgb(82 130 101)' }}
       >
-        <Container style={{ fontFamily: 'Chivo' }}>
+        <Container>
           <Navbar.Brand href="#">
             <img
               src="https://tihldestorage.blob.core.windows.net/imagepng/a70fd0bd-f8c0-45eb-b808-293149cf2620resapi-high-resolution-logo-white-on-transparent-background.png"
@@ -202,30 +202,25 @@ class Menu extends Component {
 class Home extends Component {
   render() {
     return (
-      <Container style={{ flex: 'column' }}>
+      <Container>
         <Card
           style={{
             border: 'none',
             textAlign: 'center',
-            fontFamily: 'Chivo',
-            backgroundColor: '',
+            margin: '2%',
           }}
         >
           <Card.Body>
             <Card style={{ border: 'none', textAlign: 'center', backgroundColor: '' }}>
               <Card.Body>
-                <Carousel>
+                <Carousel variant="dark">
                   <Carousel.Item interval={1500}>
                     <img
                       className="d-block w-100"
-                      src="https://tihldestorage.blob.core.windows.net/imagepng/aa23e943-6b21-4ebc-b791-1c9560e04e6anylogo.png"
+                      src="https://tihldestorage.blob.core.windows.net/imagepng/5ca4cfc7-6cec-4315-a39b-cf5911fc84e6resapi-high-resolution-color-logo%20%281%29.png"
                       alt="First slide"
                       height={'auto'}
                     />
-                    <Carousel.Caption>
-                      <h3>Burger til under 100kr</h3>
-                      <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                    </Carousel.Caption>
                   </Carousel.Item>
                   <Carousel.Item interval={500}>
                     <img
@@ -233,20 +228,28 @@ class Home extends Component {
                       src="https://s.tihlde.org/pannekake"
                       alt="Second slide"
                     />
-                    <Carousel.Caption>
-                      <h3>Dessert til enhver anledning</h3>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <Carousel.Caption style={{ color: 'white' }}>
+                      <h3>In need of inspiration?: </h3>
+
+                      <NavLink to={'/recipes'} style={{ color: 'white', textDecoration: 'none' }}>
+                        See our recipes here
+                      </NavLink>
                     </Carousel.Caption>
                   </Carousel.Item>
                   <Carousel.Item>
                     <img
                       className="d-block w-100"
-                      src="https://s.tihlde.org/brownie"
+                      src="https://s.tihlde.org/suppe"
                       alt="Third slide"
                     />
-                    <Carousel.Caption>
-                      <h3>Frokost eller middag?</h3>
-                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                    <Carousel.Caption style={{ color: 'white' }}>
+                      <h3>Logged in yet? </h3>
+                      <NavLink
+                        to={'/recipes/user'}
+                        style={{ color: 'white', textDecoration: 'none' }}
+                      >
+                        Click here to visit your profile
+                      </NavLink>
                     </Carousel.Caption>
                   </Carousel.Item>
                 </Carousel>

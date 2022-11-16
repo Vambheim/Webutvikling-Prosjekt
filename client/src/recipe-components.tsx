@@ -49,7 +49,6 @@ export class RecipeList extends Component {
               textAlign: 'center',
               marginLeft: 'auto',
               marginRight: 'auto',
-              fontFamily: 'worksans',
             }}
           >
             <Column>
@@ -80,10 +79,10 @@ export class RecipeList extends Component {
             <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
               <Card.Title>Filter by country and category:</Card.Title>
               <Row>
-                <Column>Country:</Column>
+                <Col>Country:</Col>
               </Row>
               <Row>
-                <Column>
+                <Col>
                   <Form.Select
                     value={this.country}
                     onChange={(event) => (this.country = event.currentTarget.value)}
@@ -103,7 +102,7 @@ export class RecipeList extends Component {
                       ))}
                   </Form.Select>
                   <Row>
-                    <Column>Category:</Column>
+                    <Col>Category:</Col>
                   </Row>
                   <Form.Select
                     value={this.category}
@@ -122,7 +121,7 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                </Column>
+                </Col>
               </Row>
               <Button
                 variant="success"
@@ -238,7 +237,7 @@ export class RecipeList extends Component {
         </Column>
 
         {/* Sjekke hvordan man får imporetrt egen skrifttype */}
-        <Container style={{ fontFamily: 'resapi-work-sans' }}>
+        <Container>
           <Row>
             <Col lg>
               <Row xs={1} md={4} className="g-4">
@@ -768,7 +767,6 @@ export class RecipeAdd extends Component {
                         borderLeft: '0',
                         borderRight: '0',
                         marginTop: '5%',
-
                         paddingBottom: '10%',
                       }}
                     >
@@ -916,28 +914,38 @@ export class RecipeAdd extends Component {
               >
                 <Card.Body style={{ textAlign: 'center' }}>
                   <Card.Title>Your recipe:</Card.Title>
-                  <Card.Title className="mb-2 text-muted">
+                  <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
                     {}
                     {' ' + this.recipe.name}
                   </Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
+                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
                     {' ' + this.recipe.category}
                   </Card.Subtitle>
-                  <Card.Subtitle className="mb-2 text-muted">
+                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
                     {' ' + this.recipe.country}
                   </Card.Subtitle>
-                  <Card.Subtitle>
-                    {' '}
+                  <Card.Subtitle
+                    style={{
+                      color: 'rgb(82, 130, 101)',
+                    }}
+                  >
+                    {'Ingredients:'}
                     {this.ingredients.map((ing, i) => (
                       <Row key={i}>
                         <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
                       </Row>
                     ))}
                   </Card.Subtitle>
-                  <Card.Subtitle>
+                  <Card.Subtitle
+                    style={{
+                      color: 'rgb(82, 130, 101)',
+                      marginTop: '1%',
+                    }}
+                  >
+                    {'Steps: '}
                     {this.steps.map((step) => (
                       <Row key={step.order_number}>
-                        <Column>{step.order_number + ': ' + step.description}</Column>
+                        <Col>{step.order_number + ': ' + step.description}</Col>
                       </Row>
                     ))}
                   </Card.Subtitle>
