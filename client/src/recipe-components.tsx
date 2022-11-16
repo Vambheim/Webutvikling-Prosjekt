@@ -15,6 +15,7 @@ import { Button, Form, Card, Row, Col, Container } from 'react-bootstrap';
 import { createHashHistory } from 'history';
 import shoppingListService from './shoppingList-service';
 import { loggedIn, currentUser } from './user-components';
+import CardHeader from 'react-bootstrap/esm/CardHeader';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a recipe
 
@@ -421,113 +422,117 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
             title={'Recipe for ' + this.recipe.name}
           >
-            <Row className="justify-content-md-center">
-              <Col xs lg="2">
-                Name:
-              </Col>
-              <Col>{this.recipe.name}</Col>
-            </Row>
-            <Row>
-              <Col xs lg="2">
-                Category:
-              </Col>
-              <Col>{this.recipe.category}</Col>
-            </Row>
-            <Row>
-              <Col xs lg="2">
-                Country:
-              </Col>
-              <Col>{this.recipe.country}</Col>
-            </Row>
-            <Row>
-              <Column>
-                <Button variant="light" onClick={() => this.likeRecipe()}>
-                  Like this recipe &#10084;
-                </Button>
-              </Column>
-              <Column right>
-                <Button variant="success" onClick={() => this.editRecipe()}>
-                  Edit
-                </Button>
-              </Column>
-            </Row>
-          </Card>
-          <Card
-            style={{
-              borderLeft: 'none',
-              borderRight: 'none',
-              borderTop: 'none',
-              paddingBottom: '3%',
-              borderRadius: '0px',
-            }}
-            title="This is how you make it"
-          >
-            <ol>
-              {this.steps.map((step) => (
-                <Row key={step.order_number}>
-                  <Column>
-                    <li>{step.description}</li>
-                  </Column>
-                </Row>
-              ))}
-            </ol>
-          </Card>
-          <Card
-            style={{
-              borderLeft: 'none',
-              borderRight: 'none',
-              borderTop: 'none',
-              paddingBottom: '3%',
-            }}
-            title="Ingredients"
-          >
-            <Row>
-              <Column width={2}>Select portions:</Column>
-              <Column width={6}>
-                <Form.Control
-                  type="number"
-                  value={this.portions}
-                  onChange={(event) => (this.portions = Number(event.currentTarget.value))}
-                  min={1}
-                  max={50}
-                ></Form.Control>
-              </Column>
-            </Row>
-            {this.ingredients.map((ing) => (
-              <Row key={ing.ingredient_id}>
-                <Column width={2}>
-                  {(ing.amount_per_person * this.portions).toFixed(2) +
-                    ' ' +
-                    ing.measurement_unit +
-                    ' ' +
-                    ing.name}
-                </Column>
-                <Column>
-                  {/* Adds to shopping list, if logged in */}
-                  <Button
-                    variant="light"
-                    onClick={() =>
-                      this.addItemToShoppingList(
-                        ing.ingredient_id,
-                        ing.amount_per_person,
-                        ing.measurement_unit
-                      )
-                    }
-                  >
-                    &#128722;
-                  </Button>
-                </Column>
+            <Card.Title style={{ paddingTop: '5%' }}>
+              {' '}
+              {'Recipe for ' + this.recipe.name}
+            </Card.Title>
+            <Card.Body style={{ background: 'yellow' }}>
+              <Row className="justify-content-md-center">
+                <Col xs={3}>
+                  <Row>
+                    <Button
+                      style={{ width: '4rem', margin: 'auto', marginTop: '10%' }}
+                      variant="light"
+                      onClick={() => this.likeRecipe()}
+                    >
+                      Like &#10084;
+                    </Button>
+                  </Row>
+                  <Row>
+                    <Button
+                      style={{ width: '4rem', margin: 'auto', marginTop: '1%' }}
+                      variant="success"
+                      onClick={() => this.editRecipe()}
+                    >
+                      Edit
+                    </Button>
+                  </Row>
+                </Col>
+                <Col>
+                  {this.steps.map((step) => (
+                    <Row key={step.order_number}>
+                      <Column>
+                        <li> {step.description}</li>
+                      </Column>
+                    </Row>
+                  ))}
+                </Col>
               </Row>
-            ))}
-            <Row>
-              <Column>
-                <Button variant="success" onClick={() => this.addAllToShoppingList()}>
-                  Add all ingredients to shopping list
-                </Button>
-              </Column>
-            </Row>
+            </Card.Body>
           </Card>
-          <Card title="You may also like these recipes">
+
+          <Card
+            style={{
+              border: 'none',
+              paddingBottom: '3%',
+            }}
+          >
+            <Card.Title style={{ textAlign: 'center', marginTop: '2%' }}>Ingredients:</Card.Title>
+            <Card
+              style={{
+                borderLeft: 'none',
+                borderRight: 'none',
+                borderTop: 'none',
+                borderRadius: 'none',
+              }}
+            >
+              <Card.Body>
+                <Row className="justify-content-md-center">
+                  <Col md="auto">
+                    <Form.Control
+                      type="number"
+                      value={this.portions}
+                      onChange={(event) => (this.portions = Number(event.currentTarget.value))}
+                      min={1}
+                      max={50}
+                      style={{ width: '100%' }}
+                    ></Form.Control>
+                    Portions
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+            <Card style={{ border: 'none' }}>
+              <Card.Body>
+                <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
+                  {this.ingredients.map((ing) => (
+                    <Row key={ing.ingredient_id}>
+                      <Col>
+                        {(ing.amount_per_person * this.portions).toFixed(2) +
+                          ' ' +
+                          ing.measurement_unit +
+                          ' ' +
+                          ing.name}
+
+                        {/* Adds to shopping list, if logged in */}
+                        <Button
+                          variant="light"
+                          onClick={() =>
+                            this.addItemToShoppingList(
+                              ing.ingredient_id,
+                              ing.amount_per_person,
+                              ing.measurement_unit
+                            )
+                          }
+                        >
+                          &#128722;
+                        </Button>
+                      </Col>
+                    </Row>
+                  ))}
+                  <Row>
+                    <Column>
+                      <Button variant="success" onClick={() => this.addAllToShoppingList()}>
+                        Add all ingredients to shopping list
+                      </Button>
+                    </Column>
+                  </Row>
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          </Card>
+          <Card>
+            <Card.Title>You may also like:</Card.Title>
             {this.recomended_recipes.map((recipe) => (
               <Row key={recipe.recipe_id}>
                 <Column>
