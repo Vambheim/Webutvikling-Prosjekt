@@ -426,7 +426,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
             title={'Recipe for ' + this.recipe.name}
           >
-
             <Card.Title style={{ paddingTop: '5%' }}>
               {' '}
               {'Recipe for ' + this.recipe.name}
@@ -436,8 +435,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               <Col xs={5}>
                 <h6>Steps: </h6>
                 <ol>
-
-            
                   {this.steps.map((step) => (
                     <Row key={step.order_number}>
                       <Column>
@@ -445,7 +442,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       </Column>
                     </Row>
                   ))}
-<<<<<<
                 </ol>
                 <Row>
                   <Button
