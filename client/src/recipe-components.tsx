@@ -71,9 +71,20 @@ export class RecipeList extends Component {
         </Card>
         <Column>
           <Card
-            style={{ borderLeft: 'none', borderTop: 'none', borderBottom: 'none', margin: '5%' }}
+            style={{
+              borderLeft: 'none',
+              borderTop: 'none',
+              borderBottom: 'none',
+              margin: '5%',
+            }}
           >
-            <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
+            <Card
+              style={{
+                width: '12rem',
+                border: 'none',
+                textAlign: 'center',
+              }}
+            >
               <Card.Title>Filter by country and Category:</Card.Title>
               <Row>
                 <Column>Country:</Column>
@@ -235,7 +246,9 @@ export class RecipeList extends Component {
             </Card>
           </Card>
         </Column>
-        <Container>
+
+        {/* Sjekke hvordan man får imporetrt egen skrifttype */}
+        <Container style={{ fontFamily: 'resapi-work-sans' }}>
           <Row>
             <Col lg>
               <Row xs={1} md={4} className="g-4">
