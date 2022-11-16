@@ -28,6 +28,7 @@ export class RecipeList extends Component {
   ingredient1: Ingredient = { ingredient_id: 0, name: '' };
   ingredient2: Ingredient = { ingredient_id: 0, name: '' };
   ingredient3: Ingredient = { ingredient_id: 0, name: '' };
+
   activeIngredientFilters: number = 0;
   ingredients: Ingredient[] = [];
 
@@ -49,10 +50,10 @@ export class RecipeList extends Component {
               textAlign: 'center',
               marginLeft: 'auto',
               marginRight: 'auto',
-              fontFamily: 'worksans',
             }}
           >
-            <Column>
+            {/* Search bar for easy access to gicen recipe */}
+            <Col>
               <Form.Control
                 onChange={(event) => this.search(event.currentTarget.value)}
                 value={this.search_input}
@@ -65,10 +66,11 @@ export class RecipeList extends Component {
                   width: '24rem',
                 }}
               ></Form.Control>
-            </Column>
+            </Col>
           </Row>
         </Card>
         <Column>
+          {/* Card for displaying filters on left side of screen */}
           <Card
             style={{
               borderLeft: 'none',
@@ -80,10 +82,10 @@ export class RecipeList extends Component {
             <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
               <Card.Title>Filter by country and category:</Card.Title>
               <Row>
-                <Column>Country:</Column>
+                <Col>Country:</Col>
               </Row>
               <Row>
-                <Column>
+                <Col>
                   <Form.Select
                     value={this.country}
                     onChange={(event) => (this.country = event.currentTarget.value)}
@@ -103,7 +105,7 @@ export class RecipeList extends Component {
                       ))}
                   </Form.Select>
                   <Row>
-                    <Column>Category:</Column>
+                    <Col>Category:</Col>
                   </Row>
                   <Form.Select
                     value={this.category}
@@ -122,7 +124,7 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                </Column>
+                </Col>
               </Row>
               <Button
                 variant="success"
@@ -236,6 +238,8 @@ export class RecipeList extends Component {
             </Card>
           </Card>
         </Column>
+
+        {/* Sjekke hvordan man får imporetrt egen skrifttype */}
         <Container>
           <Row>
             <Col lg>
@@ -252,7 +256,6 @@ export class RecipeList extends Component {
                         style={{
                           width: '100%',
                           margin: '1%',
-
                           textAlign: 'center',
                           borderLeft: 'none',
                           borderRight: 'none',
@@ -261,11 +264,13 @@ export class RecipeList extends Component {
                         }}
                       >
                         <Card.Body>
+                          <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
                           <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
-                            {' '}
                             {recipe.name}
                           </Card.Title>
-                          <Card.Text>Click here for more information</Card.Text>
+                          <Card.Text>
+                            {recipe.country} {recipe.category}
+                          </Card.Text>
                         </Card.Body>
                       </Card>
                     </Column>
@@ -544,7 +549,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
           >
             <Card.Title>You may also like:</Card.Title>
-            <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+            <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: '10%' }}>
               {this.recomended_recipes.map((recipe) => (
                 <Row key={recipe.recipe_id}>
                   <Column>
@@ -766,7 +771,6 @@ export class RecipeAdd extends Component {
                         borderLeft: '0',
                         borderRight: '0',
                         marginTop: '5%',
-
                         paddingBottom: '10%',
                       }}
                     >
@@ -914,28 +918,38 @@ export class RecipeAdd extends Component {
               >
                 <Card.Body style={{ textAlign: 'center' }}>
                   <Card.Title>Your recipe:</Card.Title>
-                  <Card.Title className="mb-2 text-muted">
+                  <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
                     {}
                     {' ' + this.recipe.name}
                   </Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
+                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
                     {' ' + this.recipe.category}
                   </Card.Subtitle>
-                  <Card.Subtitle className="mb-2 text-muted">
+                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
                     {' ' + this.recipe.country}
                   </Card.Subtitle>
-                  <Card.Subtitle>
-                    {' '}
+                  <Card.Subtitle
+                    style={{
+                      color: 'rgb(82, 130, 101)',
+                    }}
+                  >
+                    {'Ingredients:'}
                     {this.ingredients.map((ing, i) => (
                       <Row key={i}>
                         <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
                       </Row>
                     ))}
                   </Card.Subtitle>
-                  <Card.Subtitle>
+                  <Card.Subtitle
+                    style={{
+                      color: 'rgb(82, 130, 101)',
+                      marginTop: '1%',
+                    }}
+                  >
+                    {'Steps: '}
                     {this.steps.map((step) => (
                       <Row key={step.order_number}>
-                        <Column>{step.order_number + ': ' + step.description}</Column>
+                        <Col>{step.order_number + ': ' + step.description}</Col>
                       </Row>
                     ))}
                   </Card.Subtitle>
@@ -992,7 +1006,7 @@ export class RecipeAdd extends Component {
     if (this.ingredients.length != 0) {
       this.showSteps = 'visible';
     } else {
-      Alert.danger('Add some ingredients to continue');
+      Alert.danger('Please add some ingredients to continue');
     }
   }
 
@@ -1013,30 +1027,34 @@ export class RecipeAdd extends Component {
   }
 
   saveRecipe() {
-    recipeService
-      .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
-      .then((recipe_id) => {
-        this.ingredients.map((ing) =>
-          recipeService
-            .createRecipeIngredients(
-              ing.name,
-              recipe_id,
-              ing.amount / this.portions,
-              ing.measurement_unit
-            )
-            .then((response) => console.log(response))
-            .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
-        );
-        this.steps.map((step) => {
-          recipeService
-            .createStep(step.order_number, step.description, recipe_id)
-            .then((response) => console.log(response))
-            .catch((error) => Alert.danger(error.message));
-        });
-        Alert.success('Recipe for ' + this.recipe.name + ' was created');
-        history.push('/recipes/' + recipe_id);
-      })
-      .catch((error) => Alert.danger(error.message));
+    if (this.steps.length != 0) {
+      recipeService
+        .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
+        .then((recipe_id) => {
+          this.ingredients.map((ing) =>
+            recipeService
+              .createRecipeIngredients(
+                ing.name,
+                recipe_id,
+                Number(ing.amount / this.portions),
+                ing.measurement_unit
+              )
+              .then((response) => console.log(response))
+              .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
+          );
+          this.steps.map((step) => {
+            recipeService
+              .createStep(step.order_number, step.description, recipe_id)
+              .then((response) => console.log(response))
+              .catch((error) => Alert.danger(error.message));
+          });
+          Alert.success('Recipe for ' + this.recipe.name + ' was created');
+          history.push('/recipes/' + recipe_id);
+        })
+        .catch((error) => Alert.danger(error.message));
+    } else {
+      Alert.danger('Please add some steps to save this recipe ');
+    }
   }
 }
 
@@ -1262,7 +1280,7 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
         this.recipeIngredients.map((ing) => {
           recipeService
             .updateRecipeIngredient(
-              ing.amount_per_person,
+              Number(ing.amount_per_person),
               ing.measurement_unit,
               this.recipe.recipe_id,
               ing.ingredient_id,

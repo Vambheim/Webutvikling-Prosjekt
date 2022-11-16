@@ -259,7 +259,7 @@ class RecipeService {
     ingredient_id: number,
     recipe_id: number,
     amount_per_person: number,
-    measurement_unit: number
+    measurement_unit: string
   ) {
     return new Promise<void>((resolve, reject) => {
       pool.query(
