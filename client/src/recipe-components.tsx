@@ -40,6 +40,7 @@ export class RecipeList extends Component {
   render() {
     return (
       <>
+        {/* Search bar for easy access to gicen recipe */}
         <Card style={{ border: 'none', padding: '15px' }}>
           <Card.Title style={{ marginLeft: 'auto', marginRight: 'auto' }}>
             Search for a recipe
@@ -52,7 +53,6 @@ export class RecipeList extends Component {
               marginRight: 'auto',
             }}
           >
-            {/* Search bar for easy access to gicen recipe */}
             <Col>
               <Form.Control
                 onChange={(event) => this.search(event.currentTarget.value)}
@@ -232,7 +232,7 @@ export class RecipeList extends Component {
           </Container>
         </Column>
 
-        {/* Sjekke hvordan man får imporetrt egen skrifttype */}
+        {/* Map recipes with 4 recipes in each row til windowsize is too small*/}
         <Container>
           <Row>
             <Col lg>
@@ -421,11 +421,9 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
             title={'Recipe for ' + this.recipe.name}
           >
-            <Card.Title style={{ paddingTop: '5%' }}>
-              {' '}
-              {'Recipe for ' + this.recipe.name}
-            </Card.Title>
+            <Card.Title style={{ paddingTop: '5%' }}>{'Recipe for ' + this.recipe.name}</Card.Title>
             <Card.Body>
+              {/* Placing buttons to the left of steps (below)*/}
               <Row className="justify-content-md-center">
                 <Col xs={2}>
                   <Row>
@@ -457,6 +455,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                     </Button>
                   </Row>
                 </Col>
+                {/* Map steps in column to the right of important buttons */}
                 <Col>
                   {this.steps.map((step) => (
                     <Row key={step.order_number}>
@@ -469,7 +468,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               </Row>
             </Card.Body>
           </Card>
-
+          {/* Card for retrieving ingredients for the given recipe_id */}
           <Card
             style={{
               border: 'none',
@@ -494,45 +493,44 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       onChange={(event) => (this.portions = Number(event.currentTarget.value))}
                       min={1}
                       max={50}
-                      style={{ width: '100%' }}
                     ></Form.Control>
                     Portions
                   </Col>
                 </Row>
               </Card.Body>
             </Card>
-            <Card style={{ border: 'none' }}>
-              <Card.Body>
-                <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
-                  {this.ingredients.map((ing) => (
-                    <Row key={ing.ingredient_id}>
-                      <Col>
-                        {(ing.amount_per_person * this.portions).toFixed(2) +
-                          ' ' +
-                          ing.measurement_unit +
-                          ' ' +
-                          ing.name}
 
-                        {/* Adds to shopping list, if logged in */}
-                        <Button
-                          variant="light"
-                          onClick={() =>
-                            this.addItemToShoppingList(
-                              ing.ingredient_id,
-                              ing.amount_per_person,
-                              ing.measurement_unit
-                            )
-                          }
-                        >
-                          &#128722;
-                        </Button>
-                      </Col>
-                    </Row>
-                  ))}
-                </Card.Text>
-              </Card.Body>
+            <Card style={{ border: 'none' }}>
+              <Card.Text style={{ textAlign: 'center' }}>
+                {this.ingredients.map((ing) => (
+                  <Row key={ing.ingredient_id}>
+                    <Col>
+                      {(ing.amount_per_person * this.portions).toFixed(2) +
+                        ' ' +
+                        ing.measurement_unit +
+                        ' ' +
+                        ing.name}
+
+                      {/* Adds to shopping list, if logged in */}
+                      <Button
+                        variant="light"
+                        onClick={() =>
+                          this.addItemToShoppingList(
+                            ing.ingredient_id,
+                            ing.amount_per_person,
+                            ing.measurement_unit
+                          )
+                        }
+                      >
+                        &#128722;
+                      </Button>
+                    </Col>
+                  </Row>
+                ))}
+              </Card.Text>
             </Card>
           </Card>
+          {/* Card for recommended recipes based on other liked recipes */}
           <Card
             style={{
               textAlign: 'center',
@@ -658,7 +656,7 @@ export class RecipeAdd extends Component {
       <>
         <Container>
           <Row>
-            <Column>
+            <Col>
               <Card
                 title="Add Recipe"
                 style={{
@@ -898,7 +896,8 @@ export class RecipeAdd extends Component {
                   ))}
                 </Card>
               </div>
-            </Column>
+            </Col>
+            {/* Card for prototype recipe */}
             <Col sm>
               <Card
                 style={{
@@ -912,7 +911,6 @@ export class RecipeAdd extends Component {
                 <Card.Body style={{ textAlign: 'center' }}>
                   <Card.Title>Your recipe:</Card.Title>
                   <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
-                    {}
                     {' ' + this.recipe.name}
                   </Card.Title>
                   <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
@@ -966,8 +964,6 @@ export class RecipeAdd extends Component {
       </>
     );
   }
-
-  // mounted() {}
 
   openIngredient() {
     if (
@@ -1052,14 +1048,6 @@ export class RecipeAdd extends Component {
 }
 
 export class RecipeEdit extends Component<{ match: { params: { id: number } } }> {
-  // recipeIngredient: RecipeIngredient = {
-  //   ingredient_id: 0,
-  //   name: '',
-  //   recipe_id: 0,
-  //   amount_per_person: 0,
-  //   measurement_unit: '',
-  // };
-
   recipeIngredients: RecipeIngredient[] = [];
 
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
@@ -1072,13 +1060,10 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
   render() {
     return (
       <>
-        <Card>
-          <Card.Title style={{ textAlign: 'center', marginTop: '1%' }}>Edit Recipe</Card.Title>
-          <Card
-            title="Recipe information"
-            style={{ borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-          >
-            <Row className="justify-content-md-center">
+        <Container>
+          <Card style={{ borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}>
+            <Card.Title style={{ textAlign: 'center', marginTop: '1%' }}>Edit Recipe</Card.Title>
+            <Row>
               <Row className="justify-content-md-center">
                 <Col xs lg="2">
                   <Form.Label>Name:</Form.Label>
@@ -1138,16 +1123,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               </Row>
             </Row>
           </Card>
-
+          {/* Card for mapping ingredients, amount and measurement unit */}
           <Card
-            title="Ingredients"
             style={{
               borderTop: 'none',
               borderRight: 'none',
               borderLeft: 'none',
               textAlign: 'center',
-              marginLeft: 'auto',
-              marginRight: 'auto',
               marginTop: '1%',
             }}
           >
@@ -1197,9 +1179,16 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               </Col>
             </Row>
           </Card>
-          <Card style={{ textAlign: 'center' }}>
+          {/* Card for mapping steps */}
+          <Card
+            style={{
+              margin: '2%',
+              textAlign: 'center',
+              border: 'none',
+            }}
+          >
             <Card.Title>Steps</Card.Title>
-            <Row className="justify-content-md-center">
+            <Row>
               <Col>
                 {this.steps.map((step) => (
                   <Row key={step.step_id}>
@@ -1209,10 +1198,10 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                       type="text"
                       onChange={(event) => (step.description = event.currentTarget.value)}
                       style={{
+                        width: '80%',
                         marginLeft: 'auto',
                         marginRight: 'auto',
-                        width: '80%',
-                        marginBottom: '1rem',
+                        marginTop: '1%',
                       }}
                     ></Form.Control>
                   </Row>
@@ -1239,7 +1228,7 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               </Col>
             </Row>
           </Card>
-        </Card>
+        </Container>
       </>
     );
   }

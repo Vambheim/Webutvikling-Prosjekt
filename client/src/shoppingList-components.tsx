@@ -13,94 +13,67 @@ export class ShoppingList extends Component {
 
   render() {
     return (
-      // <Container style={{ backgroundColor: 'yellow' }}>
-      //   <Card style={{ backgroundColor: 'green' }}>
-      //     <Card.Title>Shopping List</Card.Title>
-
-      //     {this.shopping_list.map((list) => (
-      //       <Row key={list.shopping_list_id}>
-      //         <Column width={3}>
-      //           {list.amount + ' ' + list.measurement_unit + ' ' + list.name}
-      //         </Column>
-      //         <Column width={1}>
-      //           <Button
-      //             variant="success"
-      //             onClick={() => this.deleteOne(list.shopping_list_id, list.name)}
-      //           >
-      //             &#128465;
-      //           </Button>
-      //         </Column>
-      //       </Row>
-      //     ))}
-
-      //     <Button variant="danger" onClick={() => this.deleteAll()}>
-      //       Delete
-      //     </Button>
-      //   </Card>
-      // </Container>
-
-      <Card
-        style={{
-          // border: '5px',
-          // borderStyle: ' solid',
-          padding: '15px',
-          textAlign: 'center',
-          // marginLeft: 'auto',
-          // marginRight: 'auto',
-        }}
-      >
-        <Card.Title>Shopping list</Card.Title>
-
-        <Row
+      <Container>
+        {/* Container for funksjonalitet knyttet til shoppinglist */}
+        <Card
           style={{
-            marginLeft: '7%',
-            width: '90%',
+            padding: '15px',
+            textAlign: 'center',
+            border: 'none',
           }}
         >
-          <Col>
-            {this.shopping_list.map((list) => (
-              <Row key={list.shopping_list_id}>
-                <Col
-                  style={{
-                    textAlign: 'right',
-                  }}
-                >
-                  {list.amount + ' ' + list.measurement_unit + ' ' + list.name}
-                </Col>
-                <Col>
-                  <Button
-                    variant="outline-success"
-                    onClick={() => this.deleteOne(list.shopping_list_id, list.name)}
-                    style={{
-                      width: '5rem',
-                      marginLeft: '0px',
-                      marginRight: '100%',
-                      marginBottom: '10px',
-                    }}
-                  >
-                    &#128465;
-                  </Button>
-                </Col>
-              </Row>
-            ))}
-          </Col>
-        </Row>
-
-        <Row>
-          <Button
-            variant="danger"
-            onClick={() => this.deleteAll()}
+          <Card.Title>Shopping list</Card.Title>
+          <Row
             style={{
-              width: '15rem',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginBottom: '10px',
+              marginLeft: '7%',
+              width: '90%',
             }}
           >
-            Delete all
-          </Button>
-        </Row>
-      </Card>
+            <Col>
+              {this.shopping_list.map((list) => (
+                <Row key={list.shopping_list_id}>
+                  <Col
+                    style={{
+                      textAlign: 'right',
+                    }}
+                  >
+                    {list.amount + ' ' + list.measurement_unit + ' ' + list.name}
+                  </Col>
+                  <Col>
+                    <Button
+                      variant="outline-success"
+                      onClick={() => this.deleteOne(list.shopping_list_id, list.name)}
+                      style={{
+                        width: '5rem',
+                        marginLeft: '0px',
+                        marginRight: '100%',
+                        marginBottom: '10px',
+                      }}
+                    >
+                      &#128465;
+                    </Button>
+                  </Col>
+                </Row>
+              ))}
+            </Col>
+          </Row>
+          {/* Tøm shoppinglist */}
+          <Row>
+            <Button
+              variant="danger"
+              onClick={() => this.deleteAll()}
+              style={{
+                width: '15rem',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginBottom: '10px',
+              }}
+            >
+              Delete all
+            </Button>
+          </Row>
+        </Card>
+      </Container>
     );
   }
 
