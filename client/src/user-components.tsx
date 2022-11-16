@@ -16,7 +16,6 @@ export let currentUser: User = {
   last_name: '',
   password: '',
 };
-// Sjekke om man kan lagre dette i local storage, er teit hvis man blir "logga ut" hvis man refresher siden
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a recipe
 
@@ -362,6 +361,7 @@ export class UserDetails extends Component {
                           borderRadius: 'none',
                         }}
                       >
+                        <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
                         <Card.Body>
                           <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
                             {recipe.name}
