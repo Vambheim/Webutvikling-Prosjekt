@@ -11,7 +11,6 @@ import recipeService, {
   addStep,
 } from './recipe-service';
 import { Button, Form, Card, Row, Col, Container } from 'react-bootstrap';
-
 import { createHashHistory } from 'history';
 import shoppingListService from './shoppingList-service';
 import { loggedIn, currentUser } from './user-components';
@@ -40,7 +39,7 @@ export class RecipeList extends Component {
   render() {
     return (
       <>
-        <Card title="Search" style={{ border: 'none' }}>
+        <Card style={{ border: 'none', padding: '15px' }}>
           <Card.Title style={{ marginLeft: 'auto', marginRight: 'auto' }}>
             Search for a recipe
           </Card.Title>
@@ -57,7 +56,7 @@ export class RecipeList extends Component {
               <Form.Control
                 onChange={(event) => this.search(event.currentTarget.value)}
                 value={this.search_input}
-                type="search"
+                type="Search"
                 placeholder="Search"
                 style={{
                   marginLeft: 'auto',
@@ -71,10 +70,15 @@ export class RecipeList extends Component {
         </Card>
         <Column>
           <Card
-            style={{ borderLeft: 'none', borderTop: 'none', borderBottom: 'none', margin: '5%' }}
+            style={{
+              borderLeft: 'none',
+              borderTop: 'none',
+              borderBottom: 'none',
+              margin: '5%',
+            }}
           >
             <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
-              <Card.Title>Filter by country and Category:</Card.Title>
+              <Card.Title>Filter by country and category:</Card.Title>
               <Row>
                 <Column>Country:</Column>
               </Row>
@@ -99,27 +103,25 @@ export class RecipeList extends Component {
                       ))}
                   </Form.Select>
                   <Row>
-                    {' '}
                     <Column>Category:</Column>
                   </Row>
-                  <Row>
-                    <Form.Select
-                      value={this.category}
-                      onChange={(event) => (this.category = event.currentTarget.value)}
-                    >
-                      <option key={'blankChoice'} hidden>
-                        {'Choose category: '}
-                      </option>
-                      {this.recipes
-                        .map((recipe) => recipe.category)
-                        .filter((category, index, array) => array.indexOf(category) === index)
-                        .map((category, i) => (
-                          <option key={i} value={category}>
-                            {category}
-                          </option>
-                        ))}
-                    </Form.Select>
-                  </Row>
+                  <Form.Select
+                    value={this.category}
+                    onChange={(event) => (this.category = event.currentTarget.value)}
+                    style={{ marginBottom: '10%', width: 'auto' }}
+                  >
+                    <option key={'blankChoice'} hidden>
+                      {'Choose category: '}
+                    </option>
+                    {this.recipes
+                      .map((recipe) => recipe.category)
+                      .filter((category, index, array) => array.indexOf(category) === index)
+                      .map((category, i) => (
+                        <option key={i} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                  </Form.Select>
                 </Column>
               </Row>
               <Button
@@ -130,7 +132,6 @@ export class RecipeList extends Component {
                 Add filters
               </Button>
             </Card>
-
             <Card
               style={{
                 width: '12rem',
