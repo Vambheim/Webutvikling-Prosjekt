@@ -1,4 +1,4 @@
-import { testJSON } from './spoonacular_data.test';
+import { testJSON } from './spoonacular_data';
 import { getRecipesBulk } from '../src/thirdparty-api-formatting'
 
 describe('Data retrieval from thirdparty API test', () => {
