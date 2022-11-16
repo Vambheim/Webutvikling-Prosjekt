@@ -254,7 +254,6 @@ export class RecipeList extends Component {
                         style={{
                           width: '100%',
                           margin: '1%',
-
                           textAlign: 'center',
                           borderLeft: 'none',
                           borderRight: 'none',
@@ -267,7 +266,9 @@ export class RecipeList extends Component {
                           <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
                             {recipe.name}
                           </Card.Title>
-                          <Card.Text>Click here for more information</Card.Text>
+                          <Card.Text>
+                            {recipe.country} {recipe.category}
+                          </Card.Text>
                         </Card.Body>
                       </Card>
                     </Column>
