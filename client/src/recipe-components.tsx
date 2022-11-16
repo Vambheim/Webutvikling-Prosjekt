@@ -11,7 +11,6 @@ import recipeService, {
   addStep,
 } from './recipe-service';
 import { Button, Form, Card, Row, Col, Container } from 'react-bootstrap';
-
 import { createHashHistory } from 'history';
 import shoppingListService from './shoppingList-service';
 import { loggedIn, currentUser } from './user-components';
@@ -40,7 +39,7 @@ export class RecipeList extends Component {
   render() {
     return (
       <>
-        <Card title="Search" style={{ border: 'none' }}>
+        <Card style={{ border: 'none', padding: '15px' }}>
           <Card.Title style={{ marginLeft: 'auto', marginRight: 'auto' }}>
             Search for a recipe
           </Card.Title>
@@ -57,7 +56,7 @@ export class RecipeList extends Component {
               <Form.Control
                 onChange={(event) => this.search(event.currentTarget.value)}
                 value={this.search_input}
-                type="search"
+                type="Search"
                 placeholder="Search"
                 style={{
                   marginLeft: 'auto',
@@ -78,14 +77,8 @@ export class RecipeList extends Component {
               margin: '5%',
             }}
           >
-            <Card
-              style={{
-                width: '12rem',
-                border: 'none',
-                textAlign: 'center',
-              }}
-            >
-              <Card.Title>Filter by country and Category:</Card.Title>
+            <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
+              <Card.Title>Filter by country and category:</Card.Title>
               <Row>
                 <Column>Country:</Column>
               </Row>
@@ -110,27 +103,25 @@ export class RecipeList extends Component {
                       ))}
                   </Form.Select>
                   <Row>
-                    {' '}
                     <Column>Category:</Column>
                   </Row>
-                  <Row>
-                    <Form.Select
-                      value={this.category}
-                      onChange={(event) => (this.category = event.currentTarget.value)}
-                    >
-                      <option key={'blankChoice'} hidden>
-                        {'Choose category: '}
-                      </option>
-                      {this.recipes
-                        .map((recipe) => recipe.category)
-                        .filter((category, index, array) => array.indexOf(category) === index)
-                        .map((category, i) => (
-                          <option key={i} value={category}>
-                            {category}
-                          </option>
-                        ))}
-                    </Form.Select>
-                  </Row>
+                  <Form.Select
+                    value={this.category}
+                    onChange={(event) => (this.category = event.currentTarget.value)}
+                    style={{ marginBottom: '10%', width: 'auto' }}
+                  >
+                    <option key={'blankChoice'} hidden>
+                      {'Choose category: '}
+                    </option>
+                    {this.recipes
+                      .map((recipe) => recipe.category)
+                      .filter((category, index, array) => array.indexOf(category) === index)
+                      .map((category, i) => (
+                        <option key={i} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                  </Form.Select>
                 </Column>
               </Row>
               <Button
@@ -141,7 +132,6 @@ export class RecipeList extends Component {
                 Add filters
               </Button>
             </Card>
-
             <Card
               style={{
                 width: '12rem',
@@ -439,9 +429,9 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               {' '}
               {'Recipe for ' + this.recipe.name}
             </Card.Title>
-            <Card.Body style={{ background: 'yellow' }}>
+            <Card.Body>
               <Row className="justify-content-md-center">
-                <Col xs={3}>
+                <Col xs={2}>
                   <Row>
                     <Button
                       style={{ width: '4rem', margin: 'auto', marginTop: '10%' }}
@@ -451,6 +441,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       Like &#10084;
                     </Button>
                   </Row>
+
                   <Row>
                     <Button
                       style={{ width: '4rem', margin: 'auto', marginTop: '1%' }}
@@ -458,6 +449,15 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       onClick={() => this.editRecipe()}
                     >
                       Edit
+                    </Button>
+                  </Row>
+                  <Row>
+                    <Button
+                      style={{ width: '4rem', margin: 'auto', marginTop: '1%' }}
+                      variant="success"
+                      onClick={() => this.addAllToShoppingList()}
+                    >
+                      Add to cart
                     </Button>
                   </Row>
                 </Col>
@@ -533,26 +533,28 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       </Col>
                     </Row>
                   ))}
-                  <Row>
-                    <Column>
-                      <Button variant="success" onClick={() => this.addAllToShoppingList()}>
-                        Add all ingredients to shopping list
-                      </Button>
-                    </Column>
-                  </Row>
                 </Card.Text>
               </Card.Body>
             </Card>
           </Card>
-          <Card>
+          <Card
+            style={{
+              textAlign: 'center',
+              borderBottom: 'none',
+              borderRight: 'none',
+              borderLeft: 'none',
+            }}
+          >
             <Card.Title>You may also like:</Card.Title>
-            {this.recomended_recipes.map((recipe) => (
-              <Row key={recipe.recipe_id}>
-                <Column>
-                  <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
-                </Column>
-              </Row>
-            ))}
+            <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+              {this.recomended_recipes.map((recipe) => (
+                <Row key={recipe.recipe_id}>
+                  <Column>
+                    <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
+                  </Column>
+                </Row>
+              ))}
+            </Card.Text>
           </Card>
         </Container>
       </>
@@ -1061,65 +1063,88 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
   render() {
     return (
       <>
-        <Card title="Edit Recipe">
-          <Card title="Recipe information">
-            <Row>
-              <Column width={2}>
-                <Form.Label>Name:</Form.Label>
-              </Column>
-              <Column>
-                <Form.Control
-                  type="text"
-                  value={this.recipe.name}
-                  onChange={(event) => (this.recipe.name = event.currentTarget.value)}
-                />
-              </Column>
-            </Row>
+        <Card>
+          <Card.Title style={{ textAlign: 'center', marginTop: '1%' }}>Edit Recipe</Card.Title>
+          <Card
+            title="Recipe information"
+            style={{ borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+          >
+            <Row className="justify-content-md-center">
+              <Row className="justify-content-md-center">
+                <Col xs lg="2">
+                  <Form.Label>Name:</Form.Label>
+                </Col>
+                <Col xs lg="2">
+                  <Form.Control
+                    type="text"
+                    value={this.recipe.name}
+                    onChange={(event) => (this.recipe.name = event.currentTarget.value)}
+                    style={{ margin: '1%' }}
+                  />
+                </Col>
+              </Row>
 
-            <Row>
-              <Column width={2}>Country:</Column>
-              <Column>
-                <Form.Select
-                  value={this.recipe.country}
-                  onChange={(event) => (this.recipe.country = event.currentTarget.value)}
-                >
-                  {this.recipes
-                    .map((recipe) => recipe.country)
-                    .filter((country, index, array) => array.indexOf(country) === index)
-                    .map((country, i) => (
-                      <option key={i} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                </Form.Select>
-              </Column>
-            </Row>
+              <Row className="justify-content-md-center">
+                <Col xs lg="2">
+                  Country:
+                </Col>
+                <Col xs lg="2">
+                  <Form.Select
+                    value={this.recipe.country}
+                    onChange={(event) => (this.recipe.country = event.currentTarget.value)}
+                    style={{ margin: '1%' }}
+                  >
+                    {this.recipes
+                      .map((recipe) => recipe.country)
+                      .filter((country, index, array) => array.indexOf(country) === index)
+                      .map((country, i) => (
+                        <option key={i} value={country}>
+                          {country}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Col>
+              </Row>
 
-            <Row>
-              <Column width={2}>
-                <Form.Label>Category:</Form.Label>
-              </Column>
-              <Column>
-                <Form.Select
-                  value={this.recipe.category}
-                  onChange={(event) => (this.recipe.category = event.currentTarget.value)}
-                >
-                  {this.recipes
-                    .map((recipe) => recipe.category)
-                    .filter((category, index, array) => array.indexOf(category) === index)
-                    .map((category, i) => (
-                      <option key={i} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                </Form.Select>
-              </Column>
+              <Row className="justify-content-md-center">
+                <Col xs lg="2">
+                  <Form.Label>Category:</Form.Label>
+                </Col>
+                <Col xs lg="2">
+                  <Form.Select
+                    value={this.recipe.category}
+                    onChange={(event) => (this.recipe.category = event.currentTarget.value)}
+                    style={{ margin: '1%' }}
+                  >
+                    {this.recipes
+                      .map((recipe) => recipe.category)
+                      .filter((category, index, array) => array.indexOf(category) === index)
+                      .map((category, i) => (
+                        <option key={i} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Col>
+              </Row>
             </Row>
           </Card>
 
-          <Card title="Ingredients">
-            <Row>
-              <Column width={2}>
+          <Card
+            title="Ingredients"
+            style={{
+              borderTop: 'none',
+              borderRight: 'none',
+              borderLeft: 'none',
+              textAlign: 'center',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              marginTop: '1%',
+            }}
+          >
+            <Card.Title>Recipe Details</Card.Title>
+            <Row className="justify-content-md-center">
+              <Col>
                 Amount per Person
                 {this.recipeIngredients.map((recipeIngredient) => (
                   <Row key={recipeIngredient.ingredient_id}>
@@ -1132,9 +1157,9 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                     ></Form.Control>
                   </Row>
                 ))}
-              </Column>
+              </Col>
 
-              <Column width={2}>
+              <Col>
                 Measurement unit
                 {this.recipeIngredients.map((recipeIngredient) => (
                   <Row key={recipeIngredient.ingredient_id}>
@@ -1147,9 +1172,9 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                     ></Form.Control>
                   </Row>
                 ))}
-              </Column>
+              </Col>
 
-              <Column>
+              <Col>
                 Ingredient
                 {this.recipeIngredients.map((recipeIngredient) => (
                   <Row key={recipeIngredient.ingredient_id}>
@@ -1160,40 +1185,51 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                     ></Form.Control>
                   </Row>
                 ))}
-              </Column>
+              </Col>
             </Row>
           </Card>
-          <Card title="Steps">
-            <Column>
-              <ol>
+          <Card style={{ textAlign: 'center' }}>
+            <Card.Title>Steps</Card.Title>
+            <Row className="justify-content-md-center">
+              <Col>
                 {this.steps.map((step) => (
                   <Row key={step.step_id}>
-                    <li>
-                      {' '}
-                      <Form.Control
-                        value={step.description}
-                        type="text"
-                        onChange={(event) => (step.description = event.currentTarget.value)}
-                      ></Form.Control>
-                    </li>
+                    {' '}
+                    <Form.Control
+                      value={step.description}
+                      type="text"
+                      onChange={(event) => (step.description = event.currentTarget.value)}
+                      style={{
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        width: '80%',
+                        marginBottom: '1rem',
+                      }}
+                    ></Form.Control>
                   </Row>
                 ))}
-              </ol>
-            </Column>
-          </Card>
+              </Col>
+            </Row>
+            <Row className="justify-content-md-center">
+              <Col>
+                <Button
+                  style={{ width: '30%', textAlign: 'center', margin: '2%' }}
+                  variant="success"
+                  onClick={() => this.updateRecipe()}
+                >
+                  Save
+                </Button>
 
-          <Row>
-            <Column>
-              <Button variant="success" onClick={() => this.updateRecipe()}>
-                Save
-              </Button>
-            </Column>
-            <Column right>
-              <Button variant="danger" onClick={() => this.deleteRecipe()}>
-                Delete
-              </Button>
-            </Column>
-          </Row>
+                <Button
+                  style={{ width: '30%' }}
+                  variant="danger"
+                  onClick={() => this.deleteRecipe()}
+                >
+                  Delete
+                </Button>
+              </Col>
+            </Row>
+          </Card>
         </Card>
       </>
     );
