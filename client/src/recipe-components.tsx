@@ -71,7 +71,7 @@ export class RecipeList extends Component {
         </Card>
         <Column>
           {/* Card for displaying filters on left side of screen */}
-          <Card
+          <Container
             style={{
               borderLeft: 'none',
               borderTop: 'none',
@@ -82,14 +82,11 @@ export class RecipeList extends Component {
             <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
               <Card.Title>Filter by country and category:</Card.Title>
               <Row>
-                <Col>Country:</Col>
-              </Row>
-              <Row>
                 <Col>
                   <Form.Select
                     value={this.country}
                     onChange={(event) => (this.country = event.currentTarget.value)}
-                    style={{ marginBottom: '10%', width: 'auto' }}
+                    style={{ marginBottom: '10px' }}
                   >
                     <option key={'blankChoice'} hidden>
                       {'Choose country: '}
@@ -104,13 +101,10 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                  <Row>
-                    <Col>Category:</Col>
-                  </Row>
                   <Form.Select
                     value={this.category}
                     onChange={(event) => (this.category = event.currentTarget.value)}
-                    style={{ marginBottom: '10%', width: 'auto' }}
+                    style={{ marginBottom: '10 px' }}
                   >
                     <option key={'blankChoice'} hidden>
                       {'Choose category: '}
@@ -127,7 +121,7 @@ export class RecipeList extends Component {
                 </Col>
               </Row>
               <Button
-                variant="success"
+                variant="outline-success"
                 onClick={() => this.addCountryAndOrCategoryFilter()}
                 style={{ width: '60%', marginLeft: 'auto', marginRight: 'auto', marginBlock: '5%' }}
               >
@@ -138,15 +132,16 @@ export class RecipeList extends Component {
               style={{
                 width: '12rem',
                 border: 'none',
+                textAlign: 'center',
               }}
             >
               <Card.Title> Filter by ingredient: </Card.Title>
               <Row>
-                <Column>
+                <Col>
                   <Form.Select
                     value={this.ingredient1['name']}
                     onChange={(event) => (this.ingredient1['name'] = event.currentTarget.value)}
-                    style={{ marginBottom: '5%' }}
+                    style={{ marginBottom: '10px' }}
                   >
                     <option key={'blankChoice'} hidden>
                       {'Choose ingredient: '}
@@ -160,13 +155,13 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                </Column>
+                </Col>
               </Row>
               <Row>
-                <Column>
+                <Col>
                   <Form.Select
                     value={this.ingredient2['name']}
-                    style={{ marginBottom: '5%' }}
+                    style={{ marginBottom: '10px' }}
                     onChange={(event) => (this.ingredient2['name'] = event.currentTarget.value)}
                   >
                     <option key={'blankChoice'} hidden>
@@ -181,62 +176,60 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                </Column>
-                <Row>
-                  <Column>
-                    <Form.Select
-                      value={this.ingredient3['name']}
-                      onChange={(event) => (this.ingredient3['name'] = event.currentTarget.value)}
-                      style={{ width: '115%' }}
-                    >
-                      <option key={'blankChoice'} hidden>
-                        {'Choose ingredient: '}
-                      </option>
-                      {this.ingredients
-                        .map((ing) => ing.name)
-                        .filter((ing, index, array) => array.indexOf(ing) === index)
-                        .map((ing, i) => (
-                          <option key={i} value={ing}>
-                            {this.firstLetterUpperCase(ing)}
-                          </option>
-                        ))}
-                    </Form.Select>
-                  </Column>
-                </Row>
+                </Col>
               </Row>
               <Row>
-                <Button
-                  variant="success"
-                  onClick={() => this.addIngredientFilter()}
-                  style={{
-                    width: '40%',
-
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    marginBlock: '5%',
-                  }}
-                >
-                  Add filters
-                </Button>
-
-                <Row>
+                <Col>
+                  <Form.Select
+                    value={this.ingredient3['name']}
+                    onChange={(event) => (this.ingredient3['name'] = event.currentTarget.value)}
+                    style={{ marginBottom: '10px' }}
+                  >
+                    <option key={'blankChoice'} hidden>
+                      {'Choose ingredient: '}
+                    </option>
+                    {this.ingredients
+                      .map((ing) => ing.name)
+                      .filter((ing, index, array) => array.indexOf(ing) === index)
+                      .map((ing, i) => (
+                        <option key={i} value={ing}>
+                          {this.firstLetterUpperCase(ing)}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
                   <Button
-                    variant="danger"
-                    onClick={() => this.removeFilter()}
+                    variant="outline-success"
+                    onClick={() => this.addIngredientFilter()}
                     style={{
-                      width: '70%',
-
+                      width: '60%',
                       marginLeft: 'auto',
                       marginRight: 'auto',
                       marginBlock: '5%',
                     }}
                   >
-                    Remove filters
+                    Add filters
                   </Button>
-                </Row>
+                </Col>
+              </Row>
+              <Row>
+                <Button
+                  variant="outline-danger"
+                  onClick={() => this.removeFilter()}
+                  style={{
+                    width: '70%',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                >
+                  Remove filters
+                </Button>
               </Row>
             </Card>
-          </Card>
+          </Container>
         </Column>
 
         {/* Sjekke hvordan man får imporetrt egen skrifttype */}

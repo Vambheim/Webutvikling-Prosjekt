@@ -13,7 +13,7 @@ import RecipeService, {
   RecipeIngredient,
 } from './recipe-service';
 import { UserDetails, UserLogIn, RegisterUser } from './user-components';
-import { getRecipesBulk } from './thirdparty-api-formatting'
+import { getRecipesBulk } from './thirdparty-api-formatting';
 
 class Menu extends Component {
   render() {
@@ -25,9 +25,8 @@ class Menu extends Component {
         variant="dark"
         style={{ backgroundColor: 'rgb(82 130 101)' }}
       >
-        <Container style={{ fontFamily: 'Optima' }}>
-
-        {/* Container to wrap elements of navbar within given margin of page end and start */}
+        <Container>
+          {/* Container to wrap elements of navbar within given margin of page end and start */}
 
           <Navbar.Brand href="#">
             <img
