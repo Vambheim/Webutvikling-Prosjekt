@@ -147,33 +147,14 @@ class Menu extends Component {
 
   render() {
     return (
-      /*
-      <Navbar bg="light">
-        <Container>
-          <Navbar.Brand href="/">'/res.A.P.I/'</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="/#/recipes">Recipes</Nav.Link>
-              <Nav.Link href="/#/recipes/add">Add recipes</Nav.Link>
-              <Nav.Link href="/#/recipes/shoppinglist">Shopping List</Nav.Link>
-
-              <Navbar.Collapse className="justify-content-end">
-                <Navbar.Text>
-                  Signed in as: <a href="/#/recipes/user">Mark Otto</a>
-                </Navbar.Text>
-              </Navbar.Collapse>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-*/
+      /*Renders navbar using components from React-Bootstrap library */
       <Navbar
         collapseOnSelect
         expand="lg"
         variant="dark"
         style={{ backgroundColor: 'rgb(82 130 101)' }}
       >
+        {/* Container to wrap elements of navbar within given margin of page end and start */}
         <Container>
           <Navbar.Brand href="#">
             <img
@@ -210,6 +191,7 @@ class Home extends Component {
             margin: '2%',
           }}
         >
+          {/* Carousel on first page with navlink to recipes and user */}
           <Card.Body>
             <Card style={{ border: 'none', textAlign: 'center', backgroundColor: '' }}>
               <Card.Body>
@@ -225,14 +207,14 @@ class Home extends Component {
                   <Carousel.Item interval={500}>
                     <img
                       className="d-block w-100"
-                      src="https://s.tihlde.org/pannekake"
+                      src="https://s.tihlde.org/kake"
                       alt="Second slide"
                     />
-                    <Carousel.Caption style={{ color: 'white' }}>
-                      <h3>In need of inspiration?: </h3>
+                    <Carousel.Caption style={{ color: 'white', marginBottom: '23%' }}>
+                      <h3>In need of inspiration? </h3>
 
                       <NavLink to={'/recipes'} style={{ color: 'white', textDecoration: 'none' }}>
-                        See our recipes here
+                        Click here to see our recipes
                       </NavLink>
                     </Carousel.Caption>
                   </Carousel.Item>
@@ -242,7 +224,7 @@ class Home extends Component {
                       src="https://s.tihlde.org/suppe"
                       alt="Third slide"
                     />
-                    <Carousel.Caption style={{ color: 'white' }}>
+                    <Carousel.Caption style={{ color: 'white', marginBottom: '23%' }}>
                       <h3>Logged in yet? </h3>
                       <NavLink
                         to={'/recipes/user'}
@@ -260,12 +242,6 @@ class Home extends Component {
       </Container>
     );
   }
-  /*
-  componentDidMount() {
-    document.body.style.backgroundColor = 'rgb(255, 235, 205)';
-  }
-  */
-  // legg til spoontacular her i stedet for i menyen
 }
 
 ReactDOM.render(

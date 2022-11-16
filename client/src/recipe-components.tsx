@@ -28,6 +28,7 @@ export class RecipeList extends Component {
   ingredient1: Ingredient = { ingredient_id: 0, name: '' };
   ingredient2: Ingredient = { ingredient_id: 0, name: '' };
   ingredient3: Ingredient = { ingredient_id: 0, name: '' };
+
   activeIngredientFilters: number = 0;
   ingredients: Ingredient[] = [];
 
@@ -51,7 +52,8 @@ export class RecipeList extends Component {
               marginRight: 'auto',
             }}
           >
-            <Column>
+            {/* Search bar for easy access to gicen recipe */}
+            <Col>
               <Form.Control
                 onChange={(event) => this.search(event.currentTarget.value)}
                 value={this.search_input}
@@ -64,10 +66,11 @@ export class RecipeList extends Component {
                   width: '24rem',
                 }}
               ></Form.Control>
-            </Column>
+            </Col>
           </Row>
         </Card>
         <Column>
+          {/* Card for displaying filters on left side of screen */}
           <Card
             style={{
               borderLeft: 'none',
