@@ -9,6 +9,7 @@ import shoppingListService, {
 } from '../src/shoppingList-service';
 import { salt } from '../src/API-router';
 import bcrypt from 'bcryptjs';
+import { response } from 'express';
 
 const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
@@ -947,3 +948,27 @@ describe('Create likes for a given recipe (POST)', () => {
     });
   });
 });
+
+////SPOONTACULAR-TESTS:
+// describe('Create recipes from Spoonacular external API (POST)', () => {
+//   test('Create recipes from Spoonacular (200 ok)', (done) => {
+//     axios
+//       .post('/spoonacular/recipes', {
+//         recipe_id: 500,
+//         name_x: 'New spoonacular recipe',
+//         category_x: 'spoonacular category',
+//         country_x: 'spoonacular coutry',
+//         ingredients_x: ['new ingredient 1', 'new ingredient 2'],
+//         name_y: 'New spoonacular recipe',
+//         category_y: 'spoonacular category',
+//         country_y: 'spoonacular coutry',
+//         ingredients_y: ['new ingredient 1', 'new ingredient 2'],
+//       })
+//       .then((response) => {
+//         expect(response.status).toEqual(200);
+//         // expect(response.data).toEqual('');
+
+//         done();
+//       });
+//   });
+// });

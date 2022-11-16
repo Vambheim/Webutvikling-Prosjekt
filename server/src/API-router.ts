@@ -526,6 +526,7 @@ router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
 });
 
 // Poster spørring til tabell Recipe
+// Burde stien egt ikke være slik; '/recipes/' for å være lik som resten av APIet
 router.post('/spoonacular/recipes', (request, response) => {
   var data = request.body;
 
