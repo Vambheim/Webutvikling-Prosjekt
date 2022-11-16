@@ -28,6 +28,7 @@ export class RecipeList extends Component {
   ingredient1: Ingredient = { ingredient_id: 0, name: '' };
   ingredient2: Ingredient = { ingredient_id: 0, name: '' };
   ingredient3: Ingredient = { ingredient_id: 0, name: '' };
+
   activeIngredientFilters: number = 0;
   ingredients: Ingredient[] = [];
 
@@ -49,10 +50,10 @@ export class RecipeList extends Component {
               textAlign: 'center',
               marginLeft: 'auto',
               marginRight: 'auto',
-              fontFamily: 'worksans',
             }}
           >
-            <Column>
+            {/* Search bar for easy access to gicen recipe */}
+            <Col>
               <Form.Control
                 onChange={(event) => this.search(event.currentTarget.value)}
                 value={this.search_input}
@@ -65,10 +66,11 @@ export class RecipeList extends Component {
                   width: '24rem',
                 }}
               ></Form.Control>
-            </Column>
+            </Col>
           </Row>
         </Card>
         <Column>
+          {/* Card for displaying filters on left side of screen */}
           <Card
             style={{
               borderLeft: 'none',
@@ -86,10 +88,10 @@ export class RecipeList extends Component {
             >
               <Card.Title>Filter by country and category:</Card.Title>
               <Row>
-                <Column>Country:</Column>
+                <Col>Country:</Col>
               </Row>
               <Row>
-                <Column>
+                <Col>
                   <Form.Select
                     value={this.country}
                     onChange={(event) => (this.country = event.currentTarget.value)}
@@ -109,7 +111,7 @@ export class RecipeList extends Component {
                       ))}
                   </Form.Select>
                   <Row>
-                    <Column>Category:</Column>
+                    <Col>Category:</Col>
                   </Row>
                   <Form.Select
                     value={this.category}
@@ -128,7 +130,7 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                </Column>
+                </Col>
               </Row>
               <Button
                 variant="success"
@@ -244,7 +246,7 @@ export class RecipeList extends Component {
         </Column>
 
         {/* Sjekke hvordan man får imporetrt egen skrifttype */}
-        <Container style={{ fontFamily: 'resapi-work-sans' }}>
+        <Container>
           <Row>
             <Col lg>
               <Row xs={1} md={4} className="g-4">
@@ -260,7 +262,6 @@ export class RecipeList extends Component {
                         style={{
                           width: '100%',
                           margin: '1%',
-
                           textAlign: 'center',
                           borderLeft: 'none',
                           borderRight: 'none',
@@ -269,11 +270,13 @@ export class RecipeList extends Component {
                         }}
                       >
                         <Card.Body>
+                          <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
                           <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
-                            {' '}
                             {recipe.name}
                           </Card.Title>
-                          <Card.Text>Click here for more information</Card.Text>
+                          <Card.Text>
+                            {recipe.country} {recipe.category}
+                          </Card.Text>
                         </Card.Body>
                       </Card>
                     </Column>
@@ -774,7 +777,6 @@ export class RecipeAdd extends Component {
                         borderLeft: '0',
                         borderRight: '0',
                         marginTop: '5%',
-
                         paddingBottom: '10%',
                       }}
                     >
@@ -922,30 +924,38 @@ export class RecipeAdd extends Component {
               >
                 <Card.Body style={{ textAlign: 'center' }}>
                   <Card.Title>Your recipe:</Card.Title>
-                  <Card.Title className="mb-2 text-muted">
+                  <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
                     {}
                     {' ' + this.recipe.name}
                   </Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
+                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
                     {' ' + this.recipe.category}
                   </Card.Subtitle>
-                  <Card.Subtitle className="mb-2 text-muted">
+                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
                     {' ' + this.recipe.country}
                   </Card.Subtitle>
-
-                  <Card.Subtitle>
-                    {' '}
+                  <Card.Subtitle
+                    style={{
+                      color: 'rgb(82, 130, 101)',
+                    }}
+                  >
+                    {'Ingredients:'}
                     {this.ingredients.map((ing, i) => (
                       <Row key={i}>
                         <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
                       </Row>
                     ))}
                   </Card.Subtitle>
-
-                  <Card.Subtitle>
+                  <Card.Subtitle
+                    style={{
+                      color: 'rgb(82, 130, 101)',
+                      marginTop: '1%',
+                    }}
+                  >
+                    {'Steps: '}
                     {this.steps.map((step) => (
                       <Row key={step.order_number}>
-                        <Column>{step.order_number + ': ' + step.description}</Column>
+                        <Col>{step.order_number + ': ' + step.description}</Col>
                       </Row>
                     ))}
                   </Card.Subtitle>
