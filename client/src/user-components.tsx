@@ -34,6 +34,7 @@ export class UserLogIn extends Component {
           marginRight: 'auto',
         }}
       >
+        {/*Card forms in for log in screen */}
         <Card.Title>Log in</Card.Title>
         <Container style={{ width: '20rem', marginLeft: 'auto', marginRight: 'auto' }}>
           <Row>
@@ -54,7 +55,6 @@ export class UserLogIn extends Component {
               type="password"
               placeholder="Password"
               onChange={(event) => (this.password = event.currentTarget.value)}
-              // @ts-ignore
               // Makes it possible to log in with enter as well as with button
               onKeyUp={(event) => {
                 if (event.key == 'Enter') {
@@ -68,6 +68,7 @@ export class UserLogIn extends Component {
             ></Form.Control>
           </Row>
         </Container>
+        {/*Card for buttons in login screen before user is identified or registered */}
         <Container style={{ width: '15rem', marginLeft: 'auto', marginRight: 'auto' }}>
           <Row>
             <Button
@@ -148,6 +149,7 @@ export class RegisterUser extends Component {
           marginRight: 'auto',
         }}
       >
+        {/* Card creating forms related to creating new user */}
         <Card.Title>Create user</Card.Title>
         <Container
           style={{
@@ -198,7 +200,6 @@ export class RegisterUser extends Component {
               type="password"
               placeholder="Password"
               onChange={(event) => (this.user.password = event.currentTarget.value)}
-              // @ts-ignore
               // Makes it possible to log in with enter as well as with button
               onKeyUp={(event) => {
                 if (event.key == 'Enter') {
@@ -217,7 +218,6 @@ export class RegisterUser extends Component {
               type="password"
               placeholder="Confirm password"
               onChange={(event) => (this.confirm_password = event.currentTarget.value)}
-              // @ts-ignore
               onKeyUp={(event) => {
                 if (event.key == 'Enter') {
                   this.createUser();
@@ -230,6 +230,7 @@ export class RegisterUser extends Component {
             ></Form.Control>
           </Row>
         </Container>
+        {/* Buttons for creating user and clearing input */}
         <Container style={{ width: '15rem', marginLeft: 'auto', marginRight: 'auto' }}>
           <Row>
             <Button
@@ -299,19 +300,18 @@ export class UserDetails extends Component {
             marginRight: 'auto',
           }}
         >
+          {/* Page for all relevant user info for logged in user */}
           <Card.Title>
             {'User page for ' + currentUser.first_name + ' ' + currentUser.last_name}
           </Card.Title>
-          <Container style={{ fontSize: '17px' }}>
-            <Row>
-              <Card.Text>Your email-adress: {currentUser.email}</Card.Text>
-            </Row>
-            <Row>
-              <Card.Text>
-                Your name: {currentUser.first_name} {currentUser.last_name}
-              </Card.Text>
-            </Row>
-          </Container>
+          <Row style={{ fontSize: '17px' }}>
+            <Card.Text>Your email-adress: {currentUser.email}</Card.Text>
+          </Row>
+          <Row style={{ fontSize: '17px' }}>
+            <Card.Text>
+              Your name: {currentUser.first_name} {currentUser.last_name}
+            </Card.Text>
+          </Row>
           <Row>
             <Button
               variant="outline-danger"
@@ -328,6 +328,7 @@ export class UserDetails extends Component {
           </Row>
         </Card>
 
+        {/* Card retrieving active users liked recipes */}
         <Card
           style={{
             border: 'none',
