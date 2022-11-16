@@ -40,6 +40,7 @@ export class RecipeList extends Component {
   render() {
     return (
       <>
+        {/* Search bar for easy access to gicen recipe */}
         <Card style={{ border: 'none', padding: '15px' }}>
           <Card.Title style={{ marginLeft: 'auto', marginRight: 'auto' }}>
             Search for a recipe
@@ -52,7 +53,6 @@ export class RecipeList extends Component {
               marginRight: 'auto',
             }}
           >
-            {/* Search bar for easy access to gicen recipe */}
             <Col>
               <Form.Control
                 onChange={(event) => this.search(event.currentTarget.value)}
@@ -71,7 +71,7 @@ export class RecipeList extends Component {
         </Card>
         <Column>
           {/* Card for displaying filters on left side of screen */}
-          <Card
+          <Container
             style={{
               borderLeft: 'none',
               borderTop: 'none',
@@ -88,14 +88,11 @@ export class RecipeList extends Component {
             >
               <Card.Title>Filter by country and category:</Card.Title>
               <Row>
-                <Col>Country:</Col>
-              </Row>
-              <Row>
                 <Col>
                   <Form.Select
                     value={this.country}
                     onChange={(event) => (this.country = event.currentTarget.value)}
-                    style={{ marginBottom: '10%', width: 'auto' }}
+                    style={{ marginBottom: '10px' }}
                   >
                     <option key={'blankChoice'} hidden>
                       {'Choose country: '}
@@ -110,13 +107,10 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                  <Row>
-                    <Col>Category:</Col>
-                  </Row>
                   <Form.Select
                     value={this.category}
                     onChange={(event) => (this.category = event.currentTarget.value)}
-                    style={{ marginBottom: '10%', width: 'auto' }}
+                    style={{ marginBottom: '10 px' }}
                   >
                     <option key={'blankChoice'} hidden>
                       {'Choose category: '}
@@ -133,7 +127,7 @@ export class RecipeList extends Component {
                 </Col>
               </Row>
               <Button
-                variant="success"
+                variant="outline-success"
                 onClick={() => this.addCountryAndOrCategoryFilter()}
                 style={{ width: '60%', marginLeft: 'auto', marginRight: 'auto', marginBlock: '5%' }}
               >
@@ -144,15 +138,16 @@ export class RecipeList extends Component {
               style={{
                 width: '12rem',
                 border: 'none',
+                textAlign: 'center',
               }}
             >
               <Card.Title> Filter by ingredient: </Card.Title>
               <Row>
-                <Column>
+                <Col>
                   <Form.Select
                     value={this.ingredient1['name']}
                     onChange={(event) => (this.ingredient1['name'] = event.currentTarget.value)}
-                    style={{ marginBottom: '5%' }}
+                    style={{ marginBottom: '10px' }}
                   >
                     <option key={'blankChoice'} hidden>
                       {'Choose ingredient: '}
@@ -166,13 +161,13 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                </Column>
+                </Col>
               </Row>
               <Row>
-                <Column>
+                <Col>
                   <Form.Select
                     value={this.ingredient2['name']}
-                    style={{ marginBottom: '5%' }}
+                    style={{ marginBottom: '10px' }}
                     onChange={(event) => (this.ingredient2['name'] = event.currentTarget.value)}
                   >
                     <option key={'blankChoice'} hidden>
@@ -187,65 +182,63 @@ export class RecipeList extends Component {
                         </option>
                       ))}
                   </Form.Select>
-                </Column>
-                <Row>
-                  <Column>
-                    <Form.Select
-                      value={this.ingredient3['name']}
-                      onChange={(event) => (this.ingredient3['name'] = event.currentTarget.value)}
-                      style={{ width: '115%' }}
-                    >
-                      <option key={'blankChoice'} hidden>
-                        {'Choose ingredient: '}
-                      </option>
-                      {this.ingredients
-                        .map((ing) => ing.name)
-                        .filter((ing, index, array) => array.indexOf(ing) === index)
-                        .map((ing, i) => (
-                          <option key={i} value={ing}>
-                            {this.firstLetterUpperCase(ing)}
-                          </option>
-                        ))}
-                    </Form.Select>
-                  </Column>
-                </Row>
+                </Col>
               </Row>
               <Row>
-                <Button
-                  variant="success"
-                  onClick={() => this.addIngredientFilter()}
-                  style={{
-                    width: '40%',
-
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    marginBlock: '5%',
-                  }}
-                >
-                  Add filters
-                </Button>
-
-                <Row>
+                <Col>
+                  <Form.Select
+                    value={this.ingredient3['name']}
+                    onChange={(event) => (this.ingredient3['name'] = event.currentTarget.value)}
+                    style={{ marginBottom: '10px' }}
+                  >
+                    <option key={'blankChoice'} hidden>
+                      {'Choose ingredient: '}
+                    </option>
+                    {this.ingredients
+                      .map((ing) => ing.name)
+                      .filter((ing, index, array) => array.indexOf(ing) === index)
+                      .map((ing, i) => (
+                        <option key={i} value={ing}>
+                          {this.firstLetterUpperCase(ing)}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
                   <Button
-                    variant="danger"
-                    onClick={() => this.removeFilter()}
+                    variant="outline-success"
+                    onClick={() => this.addIngredientFilter()}
                     style={{
-                      width: '70%',
-
+                      width: '60%',
                       marginLeft: 'auto',
                       marginRight: 'auto',
                       marginBlock: '5%',
                     }}
                   >
-                    Remove filters
+                    Add filters
                   </Button>
-                </Row>
+                </Col>
+              </Row>
+              <Row>
+                <Button
+                  variant="outline-danger"
+                  onClick={() => this.removeFilter()}
+                  style={{
+                    width: '70%',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                >
+                  Remove filters
+                </Button>
               </Row>
             </Card>
-          </Card>
+          </Container>
         </Column>
 
-        {/* Sjekke hvordan man får imporetrt egen skrifttype */}
+        {/* Map recipes with 4 recipes in each row til windowsize is too small*/}
         <Container>
           <Col lg>
             <Row xs={1} md={4} className="g-4">
@@ -433,6 +426,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
             title={'Recipe for ' + this.recipe.name}
           >
+
             <Card.Title style={{ paddingTop: '5%' }}>
               {' '}
               {'Recipe for ' + this.recipe.name}
@@ -442,6 +436,8 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               <Col xs={5}>
                 <h6>Steps: </h6>
                 <ol>
+
+            
                   {this.steps.map((step) => (
                     <Row key={step.order_number}>
                       <Column>
@@ -449,6 +445,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       </Column>
                     </Row>
                   ))}
+<<<<<<
                 </ol>
                 <Row>
                   <Button
@@ -483,7 +480,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       onChange={(event) => (this.portions = Number(event.currentTarget.value))}
                       min={1}
                       max={50}
-                      style={{ width: '100%' }}
                     ></Form.Control>
                   </Col>
                 </Row>
@@ -518,7 +514,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                     variant="success"
                     onClick={() => this.addAllToShoppingList()}
                   >
-                    Add to cart
+                    Add to list
                   </Button>
                 </Row>
               </Col>
@@ -572,17 +568,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               </Row>
             </Col>
           </Card>
-
-          {/* <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-              {this.recomended_recipes.map((recipe) => (
-                <Row key={recipe.recipe_id}>
-                  <Column>
-                    <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
-                  </Column>
-                </Row>
-              ))}
-            </Card.Text>
-           </Card> */}
         </Container>
       </>
     );
@@ -689,7 +674,7 @@ export class RecipeAdd extends Component {
       <>
         <Container>
           <Row>
-            <Column>
+            <Col>
               <Card
                 title="Add Recipe"
                 style={{
@@ -929,7 +914,8 @@ export class RecipeAdd extends Component {
                   ))}
                 </Card>
               </div>
-            </Column>
+            </Col>
+            {/* Card for prototype recipe */}
             <Col sm>
               <Card
                 style={{
@@ -943,7 +929,6 @@ export class RecipeAdd extends Component {
                 <Card.Body style={{ textAlign: 'center' }}>
                   <Card.Title>Your recipe:</Card.Title>
                   <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
-                    {}
                     {' ' + this.recipe.name}
                   </Card.Title>
                   <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
@@ -998,8 +983,6 @@ export class RecipeAdd extends Component {
     );
   }
 
-  // mounted() {}
-
   openIngredient() {
     if (
       this.recipe.name == '' ||
@@ -1030,7 +1013,7 @@ export class RecipeAdd extends Component {
     if (this.ingredients.length != 0) {
       this.showSteps = 'visible';
     } else {
-      Alert.danger('Add some ingredients to continue');
+      Alert.danger('Please add some ingredients to continue');
     }
   }
 
@@ -1051,42 +1034,38 @@ export class RecipeAdd extends Component {
   }
 
   saveRecipe() {
-    recipeService
-      .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
-      .then((recipe_id) => {
-        this.ingredients.map((ing) =>
-          recipeService
-            .createRecipeIngredients(
-              ing.name,
-              recipe_id,
-              ing.amount / this.portions,
-              ing.measurement_unit
-            )
-            .then((response) => console.log(response))
-            .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
-        );
-        this.steps.map((step) => {
-          recipeService
-            .createStep(step.order_number, step.description, recipe_id)
-            .then((response) => console.log(response))
-            .catch((error) => Alert.danger(error.message));
-        });
-        Alert.success('Recipe for ' + this.recipe.name + ' was created');
-        history.push('/recipes/' + recipe_id);
-      })
-      .catch((error) => Alert.danger(error.message));
+    if (this.steps.length != 0) {
+      recipeService
+        .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
+        .then((recipe_id) => {
+          this.ingredients.map((ing) =>
+            recipeService
+              .createRecipeIngredients(
+                ing.name,
+                recipe_id,
+                Number(ing.amount / this.portions),
+                ing.measurement_unit
+              )
+              .then((response) => console.log(response))
+              .catch((error) => console.log('Error creating recipe_ingredient ' + error.message))
+          );
+          this.steps.map((step) => {
+            recipeService
+              .createStep(step.order_number, step.description, recipe_id)
+              .then((response) => console.log(response))
+              .catch((error) => Alert.danger(error.message));
+          });
+          Alert.success('Recipe for ' + this.recipe.name + ' was created');
+          history.push('/recipes/' + recipe_id);
+        })
+        .catch((error) => Alert.danger(error.message));
+    } else {
+      Alert.danger('Please add some steps to save this recipe ');
+    }
   }
 }
 
 export class RecipeEdit extends Component<{ match: { params: { id: number } } }> {
-  // recipeIngredient: RecipeIngredient = {
-  //   ingredient_id: 0,
-  //   name: '',
-  //   recipe_id: 0,
-  //   amount_per_person: 0,
-  //   measurement_unit: '',
-  // };
-
   recipeIngredients: RecipeIngredient[] = [];
 
   recipe: Recipe = { recipe_id: 0, name: '', category: '', country: '' };
@@ -1099,13 +1078,10 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
   render() {
     return (
       <>
-        <Card>
-          <Card.Title style={{ textAlign: 'center', marginTop: '1%' }}>Edit Recipe</Card.Title>
-          <Card
-            title="Recipe information"
-            style={{ borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-          >
-            <Row className="justify-content-md-center">
+        <Container>
+          <Card style={{ borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}>
+            <Card.Title style={{ textAlign: 'center', marginTop: '1%' }}>Edit Recipe</Card.Title>
+            <Row>
               <Row className="justify-content-md-center">
                 <Col xs lg="2">
                   <Form.Label>Name:</Form.Label>
@@ -1165,16 +1141,13 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               </Row>
             </Row>
           </Card>
-
+          {/* Card for mapping ingredients, amount and measurement unit */}
           <Card
-            title="Ingredients"
             style={{
               borderTop: 'none',
               borderRight: 'none',
               borderLeft: 'none',
               textAlign: 'center',
-              marginLeft: 'auto',
-              marginRight: 'auto',
               marginTop: '1%',
             }}
           >
@@ -1224,9 +1197,16 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               </Col>
             </Row>
           </Card>
-          <Card style={{ textAlign: 'center' }}>
+          {/* Card for mapping steps */}
+          <Card
+            style={{
+              margin: '2%',
+              textAlign: 'center',
+              border: 'none',
+            }}
+          >
             <Card.Title>Steps</Card.Title>
-            <Row className="justify-content-md-center">
+            <Row>
               <Col>
                 {this.steps.map((step) => (
                   <Row key={step.step_id}>
@@ -1236,10 +1216,10 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
                       type="text"
                       onChange={(event) => (step.description = event.currentTarget.value)}
                       style={{
+                        width: '80%',
                         marginLeft: 'auto',
                         marginRight: 'auto',
-                        width: '80%',
-                        marginBottom: '1rem',
+                        marginTop: '1%',
                       }}
                     ></Form.Control>
                   </Row>
@@ -1266,7 +1246,7 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               </Col>
             </Row>
           </Card>
-        </Card>
+        </Container>
       </>
     );
   }
@@ -1300,7 +1280,7 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
         this.recipeIngredients.map((ing) => {
           recipeService
             .updateRecipeIngredient(
-              ing.amount_per_person,
+              Number(ing.amount_per_person),
               ing.measurement_unit,
               this.recipe.recipe_id,
               ing.ingredient_id,

@@ -1,21 +1,21 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
-import { Alert, Card, Row, Column, Form, Button } from './widgets';
+import { Alert, Column } from './widgets';
+import { Button, Form, Card, Row, Col, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import recipeService, { Recipe } from './recipe-service';
 import userService, { User } from './user-service';
 import { createHashHistory } from 'history';
 
 //false as default
-export let loggedIn: boolean = true;
+export let loggedIn: boolean = false;
 export let currentUser: User = {
-  user_id: 7,
+  user_id: 0,
   email: '',
   first_name: '',
   last_name: '',
   password: '',
 };
-// Sjekke om man kan lagre dette i local storage, er teit hvis man blir "logga ut" hvis man refresher siden
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a recipe
 
@@ -25,45 +25,85 @@ export class UserLogIn extends Component {
 
   render() {
     return (
-      <Card title="Log In">
-        <Row>
-          <Column width={6}>
-            <Form.Input
+      <Card
+        style={{
+          border: 'none',
+          padding: '15px',
+          textAlign: 'center',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
+      >
+        {/*Card forms in for log in screen */}
+        <Card.Title>Log in</Card.Title>
+        <Container style={{ width: '20rem', marginLeft: 'auto', marginRight: 'auto' }}>
+          <Row>
+            <Form.Control
               value={this.email}
               type="text"
               placeholder="Email"
               onChange={(event) => (this.email = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column width={6}>
-            <Form.Input
+              style={{
+                textAlign: 'center',
+                marginBottom: '10px',
+              }}
+            ></Form.Control>
+          </Row>
+          <Row>
+            <Form.Control
               value={this.password}
               type="password"
               placeholder="Password"
               onChange={(event) => (this.password = event.currentTarget.value)}
-              // @ts-ignore
               // Makes it possible to log in with enter as well as with button
               onKeyUp={(event) => {
                 if (event.key == 'Enter') {
                   this.logIn();
                 }
               }}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Button.Success onClick={() => this.logIn()}>Log in</Button.Success>
-            <Button.Light onClick={() => this.clearInput()}>Clear</Button.Light>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Button.Light onClick={() => this.createUser()}>No user? Create one here</Button.Light>
-          </Column>
-        </Row>
+              style={{
+                textAlign: 'center',
+                marginBottom: '10px',
+              }}
+            ></Form.Control>
+          </Row>
+        </Container>
+        {/*Card for buttons in login screen before user is identified or registered */}
+        <Container style={{ width: '15rem', marginLeft: 'auto', marginRight: 'auto' }}>
+          <Row>
+            <Button
+              variant="success"
+              onClick={() => this.logIn()}
+              style={{
+                marginBottom: '10px',
+              }}
+            >
+              Log in
+            </Button>
+          </Row>
+          <Row>
+            <Button
+              variant="outline-success"
+              onClick={() => this.createUser()}
+              style={{
+                marginBottom: '10px',
+              }}
+            >
+              No user? Create one here
+            </Button>
+          </Row>
+          <Row>
+            <Button
+              variant="outline-success"
+              onClick={() => this.clearInput()}
+              style={{
+                marginBottom: '10px',
+              }}
+            >
+              Clear input
+            </Button>
+          </Row>
+        </Container>
       </Card>
     );
   }
@@ -100,63 +140,121 @@ export class RegisterUser extends Component {
 
   render() {
     return (
-      <Card title="Create your user here">
-        <Row>
-          <Column>
-            <Form.Input
-              type="text"
+      <Card
+        style={{
+          border: 'none',
+          padding: '15px',
+          textAlign: 'center',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
+      >
+        {/* Card creating forms related to creating new user */}
+        <Card.Title>Create user</Card.Title>
+        <Container
+          style={{
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            width: '20rem',
+          }}
+        >
+          <Row>
+            <Form.Control
               value={this.user.email}
+              type="text"
               placeholder="Email"
               onChange={(event) => (this.user.email = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Form.Input
-              type="text"
+              style={{
+                marginBottom: '10px',
+                textAlign: 'center',
+              }}
+            ></Form.Control>
+          </Row>
+          <Row>
+            <Form.Control
               value={this.user.first_name}
+              type="text"
               placeholder="First name"
               onChange={(event) => (this.user.first_name = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Form.Input
-              type="text"
+              style={{
+                marginBottom: '10px',
+                textAlign: 'center',
+              }}
+            ></Form.Control>
+          </Row>
+          <Row>
+            <Form.Control
               value={this.user.last_name}
+              type="text"
               placeholder="Last name"
               onChange={(event) => (this.user.last_name = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Form.Input
-              type="password"
+              style={{
+                marginBottom: '10px',
+                textAlign: 'center',
+              }}
+            ></Form.Control>
+          </Row>
+          <Row>
+            <Form.Control
               value={this.user.password}
+              type="password"
               placeholder="Password"
               onChange={(event) => (this.user.password = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Form.Input
-              type="password"
+              // Makes it possible to log in with enter as well as with button
+              onKeyUp={(event) => {
+                if (event.key == 'Enter') {
+                  this.createUser();
+                }
+              }}
+              style={{
+                marginBottom: '10px',
+                textAlign: 'center',
+              }}
+            ></Form.Control>
+          </Row>
+          <Row>
+            <Form.Control
               value={this.confirm_password}
+              type="password"
               placeholder="Confirm password"
               onChange={(event) => (this.confirm_password = event.currentTarget.value)}
-            ></Form.Input>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Button.Success onClick={() => this.createUser()}>Create user</Button.Success>
-            <Button.Light onClick={() => this.clearInput()}>Clear</Button.Light>
-          </Column>
-        </Row>
+              onKeyUp={(event) => {
+                if (event.key == 'Enter') {
+                  this.createUser();
+                }
+              }}
+              style={{
+                marginBottom: '10px',
+                textAlign: 'center',
+              }}
+            ></Form.Control>
+          </Row>
+        </Container>
+        {/* Buttons for creating user and clearing input */}
+        <Container style={{ width: '15rem', marginLeft: 'auto', marginRight: 'auto' }}>
+          <Row>
+            <Button
+              variant="success"
+              onClick={() => this.createUser()}
+              style={{
+                marginBottom: '10px',
+              }}
+            >
+              Create user
+            </Button>
+          </Row>
+          <Row>
+            <Button
+              variant="outline-success"
+              onClick={() => this.clearInput()}
+              style={{
+                marginBottom: '10px',
+              }}
+            >
+              Clear input
+            </Button>
+          </Row>
+        </Container>
       </Card>
     );
   }
@@ -179,7 +277,7 @@ export class RegisterUser extends Component {
           history.push('/recipes/login');
         }
       })
-      .catch((error) => console.log('Error creating user: ' + error.message));
+      .catch((error) => Alert.danger(error.response.data));
   }
 
   clearInput() {
@@ -188,36 +286,98 @@ export class RegisterUser extends Component {
   }
 }
 
-//her må det endres litt greier vvvvvvvv
 export class UserDetails extends Component {
   likedRecipes: Recipe[] = [];
   render() {
     return (
       <>
-        <Card title={'User page for ' + currentUser.first_name + ' ' + currentUser.last_name}>
-          <Row>
-            <Column>Welcome to your unique user page</Column>
+        <Card
+          style={{
+            // border: 'none',
+            padding: '15px',
+            textAlign: 'center',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        >
+          {/* Page for all relevant user info for logged in user */}
+          <Card.Title>
+            {'User page for ' + currentUser.first_name + ' ' + currentUser.last_name}
+          </Card.Title>
+          <Row style={{ fontSize: '17px' }}>
+            <Card.Text>Your email-adress: {currentUser.email}</Card.Text>
+          </Row>
+          <Row style={{ fontSize: '17px' }}>
+            <Card.Text>
+              Your name: {currentUser.first_name} {currentUser.last_name}
+            </Card.Text>
           </Row>
           <Row>
-            <Column>Tips for this website:</Column>
-          </Row>
-          <Row>
-            <Column>Email: {currentUser.email}</Column>
-          </Row>
-          <Row>
-            <Column>
-              <Button.Danger onClick={() => this.logOut()}>Log out</Button.Danger>
-            </Column>
+            <Button
+              variant="outline-danger"
+              onClick={() => this.logOut()}
+              style={{
+                width: '15rem',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginBottom: '10px',
+              }}
+            >
+              Log out
+            </Button>
           </Row>
         </Card>
-        <Card title="Liked recipes">
-          {this.likedRecipes.map((recipe) => (
-            <Row key={recipe.recipe_id}>
-              <Column>
-                <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
-              </Column>
-            </Row>
-          ))}
+
+        {/* Card retrieving active users liked recipes */}
+        <Card
+          style={{
+            border: 'none',
+            padding: '15px',
+            textAlign: 'center',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        >
+          <Card.Title>Your liked recipes</Card.Title>
+          <Row>
+            <Col lg>
+              <Row xs={1} md={4} className="g-4">
+                {this.likedRecipes.map((recipe) => (
+                  <NavLink
+                    to={'/recipes/' + recipe.recipe_id}
+                    style={{
+                      color: '#9FC1C0',
+                    }}
+                  >
+                    <Column>
+                      <Card
+                        style={{
+                          width: '100%',
+                          margin: '1%',
+
+                          textAlign: 'center',
+                          borderLeft: 'none',
+                          borderRight: 'none',
+                          borderTop: 'none',
+                          borderRadius: 'none',
+                        }}
+                      >
+                        <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
+                        <Card.Body>
+                          <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
+                            {recipe.name}
+                          </Card.Title>
+                          <Card.Text>
+                            {recipe.country} {recipe.category}
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Column>
+                  </NavLink>
+                ))}
+              </Row>
+            </Col>
+          </Row>
         </Card>
       </>
     );
