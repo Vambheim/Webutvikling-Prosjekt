@@ -15,8 +15,12 @@ export class ShoppingList extends Component {
     let emptyShoppingListMessage = '';
 
     if (this.shopping_list.length == 0) {
-      emptyShoppingListMessage =
-        'Your shopping list is currently empty. You are welcome to add some via the recipe information';
+      emptyShoppingListMessage = (
+        <div>
+          Your shopping list is currently empty.<br></br>You are welcome to add some via the recipe
+          information{' '}
+        </div>
+      );
     } else {
       emptyShoppingListMessage = '';
     }
