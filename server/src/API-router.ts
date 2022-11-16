@@ -74,14 +74,6 @@ router.post('/users/register', (request, response) => {
   }
 });
 
-router.get('/likedRecipes/:user_id', (request, response) => {
-  const user_id = Number(request.params.user_id);
-  recipeService
-    .getLikedRecipes(user_id)
-    .then((rows) => response.send(rows))
-    .catch((error) => response.status(500).send(error));
-});
-
 ///////////////////RECIPES
 router.get('/recipes', (_request, response) => {
   recipeService
@@ -345,6 +337,14 @@ router.post('/recipes/like', (request, response) => {
       .then((_results) => response.send('Recipe was liked'))
       .catch((error) => response.status(500).send(error));
   } else response.status(400).send('wrong parameters');
+});
+
+router.get('/likedRecipes/:user_id', (request, response) => {
+  const user_id = Number(request.params.user_id);
+  recipeService
+    .getLikedRecipes(user_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
 });
 
 router.get('/recipes/:recipe_id/recommended/:category/:country', (request, response) => {

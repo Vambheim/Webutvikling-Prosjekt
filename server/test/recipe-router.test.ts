@@ -13,7 +13,7 @@ import bcrypt from 'bcryptjs';
 const testRecipes: Recipe[] = [
   { recipe_id: 1, name: 'Chili con carne', category: 'stew', country: 'Mexico' },
   { recipe_id: 2, name: 'Pizza', category: 'dinner', country: 'Italy' },
-  { recipe_id: 3, name: 'Onion soup', category: 'soup', country: 'France' },
+  { recipe_id: 3, name: 'Pasta', category: 'dinner', country: 'Italy' },
   { recipe_id: 4, name: 'No ingredients', category: 'empty', country: 'empty' },
 ];
 
@@ -171,6 +171,11 @@ beforeEach((done) => {
                   testUser.last_name,
                   testUser.password
                 )
+                .then(() => {
+                  recipeService.likeRecipe(1, 2).then(() => {
+                    recipeService.likeRecipe(1, 3);
+                  });
+                })
                 .then(() => {
                   pool.query('DELETE FROM shopping_list', (error) => {
                     if (error) return done(error);
@@ -380,7 +385,12 @@ describe('Fetch steps (GET)', () => {
     });
   });
 
-  //Mangler feil ved henting av steps her:
+  test('Fetch all steps (500 Internal Server Error) ', (done) => {
+    axios.get('/recipes/wrongrecipeid/steps').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
 });
 
 describe('Edit step (PUT)', () => {
@@ -422,9 +432,9 @@ describe('Edit step (PUT)', () => {
       });
   });
 
-  test.skip('Edit step (500 internal server error) via a currently non-existing recipe_id ', (done) => {
+  test('Edit step with wrong recipeid (500 internal server error)', (done) => {
     axios
-      .put('/recipes/1/steps/1', {
+      .put('/recipes/wrongrecipeid/steps/5', {
         order_number: 1,
         description: 'Edited description',
       })
@@ -939,9 +949,50 @@ describe('Fetch filtered recipes by country and/or category (GET)', () => {
 ///////LIKES
 describe('Create likes for a given recipe (POST)', () => {
   test('Create like for a given recipe (200 ok)', (done) => {
-    axios.post('/recipes/like', { user_id: 1, recipe_id: 3 }).then((response) => {
+    axios.post('/recipes/like', { user_id: 1, recipe_id: 1 }).then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual('Recipe was liked');
+
+      done();
+    });
+  });
+});
+
+describe('Get likes recipes (GET)', () => {
+  test('Get likes recipes (200 ok)', (done) => {
+    axios.get('/likedRecipes/1').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[1], testRecipes[2]]);
+
+      done();
+    });
+  });
+
+  test('Get likes recipes (500 internal server error)', (done) => {
+    axios.get('/likedRecipes/nocurrentuser').catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+
+      done();
+    });
+  });
+});
+
+//////////////RECOMMENDED RECIPES
+describe('Get recommended recipes (GET)', () => {
+  test('Get recommended recipes (200 ok)', (done) => {
+    axios.get('/recipes/2/recommended/dinner/Italy').then((response) => {
+      // recipe id 2
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[2]]);
+
+      done();
+    });
+  });
+
+  test('Get recommended recipes with no current recipe_id (500 Internal Server Error)', (done) => {
+    axios.get('/recipes/nocurrentrecipe/recommended/dinner/Italy').catch((error) => {
+      // recipe id 2
+      expect(error.message).toEqual('Request failed with status code 500');
 
       done();
     });
