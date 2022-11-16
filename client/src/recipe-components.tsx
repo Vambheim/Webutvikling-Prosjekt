@@ -77,7 +77,13 @@ export class RecipeList extends Component {
               margin: '5%',
             }}
           >
-            <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
+            <Card
+              style={{
+                width: '12rem',
+                border: 'none',
+                textAlign: 'center',
+              }}
+            >
               <Card.Title>Filter by country and category:</Card.Title>
               <Row>
                 <Column>Country:</Column>
@@ -926,6 +932,7 @@ export class RecipeAdd extends Component {
                   <Card.Subtitle className="mb-2 text-muted">
                     {' ' + this.recipe.country}
                   </Card.Subtitle>
+
                   <Card.Subtitle>
                     {' '}
                     {this.ingredients.map((ing, i) => (
@@ -934,6 +941,7 @@ export class RecipeAdd extends Component {
                       </Row>
                     ))}
                   </Card.Subtitle>
+
                   <Card.Subtitle>
                     {this.steps.map((step) => (
                       <Row key={step.order_number}>

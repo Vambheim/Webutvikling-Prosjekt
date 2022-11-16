@@ -12,6 +12,15 @@ export class ShoppingList extends Component {
   shopping_list: ShoppingListInfo[] = [];
 
   render() {
+    let emptyShoppingListMessage = '';
+
+    if (this.shopping_list.length == 0) {
+      emptyShoppingListMessage =
+        'Your shopping list is currently empty. You are welcome to add some via the recipe information';
+    } else {
+      emptyShoppingListMessage = '';
+    }
+
     return (
       // <Container style={{ backgroundColor: 'yellow' }}>
       //   <Card style={{ backgroundColor: 'green' }}>
@@ -58,6 +67,8 @@ export class ShoppingList extends Component {
           }}
         >
           <Col>
+            {emptyShoppingListMessage}
+
             {this.shopping_list.map((list) => (
               <Row key={list.shopping_list_id}>
                 <Col
