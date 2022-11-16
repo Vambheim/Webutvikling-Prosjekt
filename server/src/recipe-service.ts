@@ -8,6 +8,14 @@ export type Recipe = {
   country: string;
 };
 
+export type RecipeDetailed = {
+  recipe_id: number;
+  name: string;
+  category: string;
+  country: string;
+  ingriedients: Array<RecipeIngredient>;
+};
+
 export type RecipeIngredient = {
   ingredient_id: number;
   name: string;
@@ -386,7 +394,7 @@ class RecipeService {
         'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN like_information ON recipe.recipe_id = like_information.recipe_id WHERE like_information.liked = TRUE AND recipe.category =? AND recipe.country =? AND recipe.recipe_id != ? GROUP BY recipe.recipe_id ORDER BY COUNT(like_information.liked) DESC LIMIT ?',
         //Limits to three recommended recipes
         //Also put out the three most popular recipes given the same category and country
-        [category, country, recipe_id, 3],
+        [category, country, recipe_id, 4],
         (error, results: RowDataPacket[]) => {
           if (error) return reject(error);
 
@@ -400,6 +408,10 @@ class RecipeService {
   PostSpoonacularRecipes(data: Array<Recipe>) {
     return new Promise<void>((resolve, reject) => {
       for (let i = 0; i < data.length; ) {
+        if (!data[i].name || !data[i].country || !data[i].category) {
+          throw 'You need both a name, a country and a category';
+        }
+
         pool.query(
           'INSERT INTO recipe SET recipe_id=?, name=?, category=?, country=? ON DUPLICATE KEY UPDATE name=?, category=?, country=?',
           [
@@ -411,7 +423,7 @@ class RecipeService {
             data[i]['category'],
             data[i]['country'],
           ],
-          (error, results: ResultSetHeader) => {
+          (error, _results) => {
             if (error) return reject(error);
           }
         );
@@ -427,6 +439,9 @@ class RecipeService {
   PostSpoonacularIngridients(data: Array<RecipeIngredient>) {
     return new Promise<void>((resolve, reject) => {
       for (let i = 0; i < data.length; ) {
+        if (!data[i].name) {
+          throw 'You need both a name, a measurement_unit and an amount_per_person';
+        }
         pool.query(
           'INSERT INTO ingredient SET ingredient_id=?, name=? ON DUPLICATE KEY UPDATE name=?',
           [data[i]['ingredient_id'], data[i]['name'], data[i]['name']],
@@ -446,6 +461,9 @@ class RecipeService {
   PostSpoonacularRecipesIngridients(data: Array<RecipeIngredient>) {
     return new Promise<void>((resolve, reject) => {
       for (let i = 0; i < data.length; ) {
+        if (!data[i].recipe_id || !data[i].ingredient_id) {
+          throw 'You need both a name, a measurement_unit, an amount_per_person a recipe_id and an ingredient_id';
+        }
         pool.query(
           'INSERT INTO recipe_ingredient SET recipe_id=?, ingredient_id=?, amount_per_person=?, measurement_unit=? ON DUPLICATE KEY UPDATE amount_per_person=?, measurement_unit=?',
           [
@@ -472,6 +490,9 @@ class RecipeService {
   PostSpoonacularSteps(data: Array<Step>) {
     return new Promise<void>((resolve, reject) => {
       for (let i = 0; i < data.length; ) {
+        if (!data[i].description || !data[i].order_number || !data[i].recipe_id) {
+          throw 'You need both a description, an order_number and a recipe_id';
+        }
         pool.query(
           'INSERT INTO step SET order_number=?, description=?, recipe_id=? ON DUPLICATE KEY UPDATE order_number=?, description=?, recipe_id=?',
           [

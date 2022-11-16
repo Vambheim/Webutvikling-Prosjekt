@@ -228,6 +228,7 @@ class RecipeService {
 
   //Poster ingridienser
   PostSpoonacularIngriedents(ingridients: Array<RecipeIngredient>) {
+
     return axios
       .post<Array<RecipeIngredient>>('/spoonacular/ingridients/', { ingridients })
       .then((response) => response.data);
@@ -237,7 +238,7 @@ class RecipeService {
   PostSpoonacularRecipeIngriedents(data: Array<RecipeDetailed>) {
     var ingridients = [];
 
-    for (let i = 0; i < data.length; ) {
+    for (let i = 0; i < data.length;) {
       ingridients.push(data[i].ingriedients);
       i++;
     }

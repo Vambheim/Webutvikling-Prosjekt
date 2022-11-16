@@ -12,44 +12,29 @@ export class ShoppingList extends Component {
   shopping_list: ShoppingListInfo[] = [];
 
   render() {
+    let emptyShoppingListMessage = '';
+
+    if (this.shopping_list.length == 0) {
+      emptyShoppingListMessage = (
+        <div>
+          Your shopping list is currently empty.<br></br>You are welcome to add some via the recipe
+          information{' '}
+        </div>
+      );
+    } else {
+      emptyShoppingListMessage = '';
+    }
+
     return (
-      // <Container style={{ backgroundColor: 'yellow' }}>
-      //   <Card style={{ backgroundColor: 'green' }}>
-      //     <Card.Title>Shopping List</Card.Title>
-
-      //     {this.shopping_list.map((list) => (
-      //       <Row key={list.shopping_list_id}>
-      //         <Column width={3}>
-      //           {list.amount + ' ' + list.measurement_unit + ' ' + list.name}
-      //         </Column>
-      //         <Column width={1}>
-      //           <Button
-      //             variant="success"
-      //             onClick={() => this.deleteOne(list.shopping_list_id, list.name)}
-      //           >
-      //             &#128465;
-      //           </Button>
-      //         </Column>
-      //       </Row>
-      //     ))}
-
-      //     <Button variant="danger" onClick={() => this.deleteAll()}>
-      //       Delete
-      //     </Button>
-      //   </Card>
-      // </Container>
-
-      <Card
-        style={{
-          // border: '5px',
-          // borderStyle: ' solid',
-          padding: '15px',
-          textAlign: 'center',
-          // marginLeft: 'auto',
-          // marginRight: 'auto',
-        }}
-      >
-        <Card.Title>Shopping list</Card.Title>
+      
+        <Card
+          style={{
+            padding: '15px',
+            textAlign: 'center',
+            border: 'none',
+          }}
+        >
+         <Card.Title>Shopping list</Card.Title>
 
         <Row
           style={{
@@ -57,7 +42,10 @@ export class ShoppingList extends Component {
             width: '90%',
           }}
         >
+
           <Col>
+            {emptyShoppingListMessage}
+
             {this.shopping_list.map((list) => (
               <Row key={list.shopping_list_id}>
                 <Col
@@ -85,22 +73,23 @@ export class ShoppingList extends Component {
             ))}
           </Col>
         </Row>
-
-        <Row>
-          <Button
-            variant="danger"
-            onClick={() => this.deleteAll()}
-            style={{
-              width: '15rem',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginBottom: '10px',
-            }}
-          >
-            Delete all
-          </Button>
-        </Row>
-      </Card>
+        
+          <Row>
+            <Button
+              variant="danger"
+              onClick={() => this.deleteAll()}
+              style={{
+                width: '15rem',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginBottom: '10px',
+              }}
+            >
+              Delete all
+            </Button>
+          </Row>
+        </Card>
+   
     );
   }
 

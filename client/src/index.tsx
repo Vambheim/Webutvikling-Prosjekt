@@ -64,6 +64,7 @@ class Home extends Component {
         clearInterval(intervalAPI);
       }, 7500);
     }
+
   }
   render() {
     return (

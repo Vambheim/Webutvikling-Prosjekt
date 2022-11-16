@@ -16,7 +16,7 @@ export async function getRecipesBulk(testData: any) {
     ) : testData;
 
     //Formater data fra API-et
-    const data = await api.json();
+    const data = testData == null ? await api.json() : testData;
     const recipeJSON = data['recipes'];
 
     //lagerer objekter i array for å sende videre i API-et
@@ -118,3 +118,4 @@ export async function getRecipesBulk(testData: any) {
 
   return result
 }
+
