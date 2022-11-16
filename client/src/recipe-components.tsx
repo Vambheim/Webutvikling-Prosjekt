@@ -263,8 +263,8 @@ export class RecipeList extends Component {
                         }}
                       >
                         <Card.Body>
+                          <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
                           <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
-                            {' '}
                             {recipe.name}
                           </Card.Title>
                           <Card.Text>Click here for more information</Card.Text>
