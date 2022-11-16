@@ -39,6 +39,8 @@ class Home extends Component {
         clearInterval(intervalAPI);
       }, 7500);
     }
+    getRecipesBulk(null)
+
   }
   render() {
     return <Card title="Welcome">This is your favourite food recipe app</Card>;

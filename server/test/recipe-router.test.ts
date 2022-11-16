@@ -1,7 +1,13 @@
 import axios from 'axios';
 import pool from '../src/mysql-pool';
 import app from '../src/app';
-import recipeService, { Ingredient, Recipe, RecipeIngredient, Step } from '../src/recipe-service';
+import recipeService, {
+  Ingredient,
+  Recipe,
+  RecipeIngredient,
+  Step,
+  RecipeDetailed,
+} from '../src/recipe-service';
 import userService, { User } from '../src/user-service';
 import shoppingListService, {
   ShoppingListUserInfo,
@@ -659,7 +665,180 @@ describe('Create new recipeIngredient (POST)', () => {
   });
 });
 
-///////////////SHOPPING LIST
+//////////Spoonacular
+describe('Post spoonacular data (POST)', () => {
+  //////////recipe
+  test('Post spoonacular data new recipe', (done) => {
+    const recipes: Array<RecipeDetailed> = [
+      {
+        recipe_id: 716412,
+        name: 'Roasted Cranberries, Ricotta & Honey Crostini',
+        category: 'side dish',
+        country: 'Mediterranean',
+        ingriedients: [
+          {
+            ingredient_id: 18064,
+            name: 'bread',
+            recipe_id: 716412,
+            amount_per_person: 1,
+            measurement_unit: 'slice',
+          },
+        ],
+      },
+    ];
+
+    axios.post<Array<RecipeDetailed>>('/spoonacular/recipes/', { recipes }).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual('Postet Spoonacular data');
+      done();
+    });
+  });
+
+  test('Post spoonacular data new recipe (500 bad request) regarding missing input', (done) => {
+    const recipes = [
+      {
+        recipe_id: 716412,
+        category: 'side dish',
+        country: 'Mediterranean',
+        ingriedients: [
+          {
+            ingredient_id: 18064,
+            name: 'bread',
+            recipe_id: 716412,
+            amount_per_person: 1,
+            measurement_unit: 'slice',
+          },
+        ],
+      },
+    ];
+    axios.post<Array<RecipeDetailed>>('/spoonacular/recipes/', { recipes }).catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
+
+  ////////////Ingredient
+  test('Post spoonacular data new Ingredient (200 OK)', (done) => {
+    const ingridients: Array<RecipeIngredient> = [
+      {
+        ingredient_id: 9050,
+        name: 'blueberries',
+        recipe_id: 716414,
+        amount_per_person: 1,
+        measurement_unit: 'serving',
+      },
+      {
+        ingredient_id: 11529,
+        name: 'tomatoes',
+        recipe_id: 647799,
+        amount_per_person: 14.5,
+        measurement_unit: 'Oz',
+      },
+    ];
+
+    axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients/', { ingridients })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual('Postet Spoonacular data');
+        done();
+      });
+  });
+
+  test('Post spoonacular data new ingridient (500 bad request) regarding missing input', (done) => {
+    const ingridients = [
+      {
+        ingredient_id: 9050,
+      },
+    ];
+
+    axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients/', { ingridients })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 500');
+        done();
+      });
+  });
+
+  ////////////RECIPEINGREDIENT
+  test('Post spoonacular data new recipeIngredient (200 OK)', (done) => {
+    const ingridients: Array<RecipeIngredient> = [
+      {
+        ingredient_id: 9050,
+        name: 'blueberries',
+        recipe_id: 716414,
+        amount_per_person: 1,
+        measurement_unit: 'serving',
+      },
+      {
+        ingredient_id: 11529,
+        name: 'tomatoes',
+        recipe_id: 647799,
+        amount_per_person: 14.5,
+        measurement_unit: 'Oz',
+      },
+    ];
+    axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients-recipes/', { ingridients })
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual('Postet Spoonacular data');
+        done();
+      });
+  });
+
+  test('Post spoonacular data new recipeIngredient (500 bad request) regarding missing input', (done) => {
+    const ingridients = [
+      {
+        ingredient_id: 9050,
+      },
+      {
+        ingredient_id: 11529,
+        name: 'tomatoes',
+        recipe_id: 647799,
+        amount_per_person: 14.5,
+        measurement_unit: 'Oz',
+      },
+    ];
+    axios
+      .post<Array<RecipeIngredient>>('/spoonacular/ingridients-recipes/', { ingridients })
+      .catch((error) => {
+        expect(error.message).toEqual('Request failed with status code 500');
+        done();
+      });
+  });
+
+  ////////////steps
+  test('Post spoonacular data new steps (200 OK)', (done) => {
+    const steps: Array<Step> = [
+      {
+        step_id: 1,
+        description: '.',
+        order_number: 1,
+        recipe_id: 715538,
+      },
+    ];
+    axios.post<Array<Step>>('/spoonacular/steps/', { steps }).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual('Postet Spoonacular data');
+      done();
+    });
+  });
+
+  test('Post spoonacular data new steps 500 bad request) regarding missing input', (done) => {
+    const steps = [
+      {
+        step_id: 1,
+      },
+    ];
+    axios.post<Array<Step>>('/spoonacular/steps/', { steps }).catch((error) => {
+      expect(error.message).toEqual('Request failed with status code 500');
+      done();
+    });
+  });
+});
+
+/////////////SHOPPING LIST
 describe('Fetch shopping list (GET)', () => {
   test('Fetch shopping list (200 OK)', (done) => {
     axios.get('/shoppinglist/1').then((response) => {

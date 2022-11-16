@@ -535,7 +535,7 @@ router.post('/spoonacular/recipes', (request, response) => {
   if (data != null)
     recipeService
       .PostSpoonacularRecipes(recipes)
-      .then(() => response.send())
+      .then(() => response.send('Postet Spoonacular data'))
       .catch((error) => response.status(500).send(error));
 });
 
@@ -550,7 +550,7 @@ router.post('/spoonacular/ingridients', (request, response) => {
   if (data != null)
     recipeService
       .PostSpoonacularIngridients(ingridients)
-      .then(() => response.send())
+      .then(() => response.send('Postet Spoonacular data'))
       .catch((error) => response.status(500).send(error));
 });
 
@@ -565,7 +565,7 @@ router.post('/spoonacular/ingridients-recipes', (request, response) => {
   if (data != null)
     recipeService
       .PostSpoonacularRecipesIngridients(ingridients)
-      .then(() => response.send())
+      .then(() => response.send('Postet Spoonacular data'))
       .catch((error) => response.status(500).send(error));
 });
 
@@ -579,7 +579,7 @@ router.post('/spoonacular/steps', (request, response) => {
   if (data != null)
     recipeService
       .PostSpoonacularSteps(steps)
-      .then(() => response.send())
+      .then(() => response.send('Postet Spoonacular data'))
       .catch((error) => response.status(500).send(error));
 });
 
