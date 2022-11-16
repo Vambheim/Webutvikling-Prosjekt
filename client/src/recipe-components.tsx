@@ -258,27 +258,30 @@ export class RecipeList extends Component {
                     }}
                   >
                     <Column>
-                      <Card
-                        style={{
-                          width: '100%',
-                          margin: '1%',
-                          textAlign: 'center',
-                          borderLeft: 'none',
-                          borderRight: 'none',
-                          borderTop: 'none',
-                          borderRadius: 'none',
-                        }}
-                      >
-                        <Card.Body>
-                          <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
-                          <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
-                            {recipe.name}
-                          </Card.Title>
-                          <Card.Text>
-                            {recipe.country} {recipe.category}
-                          </Card.Text>
-                        </Card.Body>
-                      </Card>
+                      <Row>
+                        <Card
+                          style={{
+                            width: '100%',
+                            margin: '1%',
+                            textAlign: 'center',
+                            borderLeft: 'none',
+                            borderRight: 'none',
+                            borderTop: 'none',
+                            borderRadius: 'none',
+                            height: '100%',
+                          }}
+                        >
+                          <Card.Body>
+                            <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
+                            <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
+                              {recipe.name}
+                            </Card.Title>
+                            <Card.Text>
+                              {recipe.country} {recipe.category}
+                            </Card.Text>
+                          </Card.Body>
+                        </Card>
+                      </Row>
                     </Column>
                   </NavLink>
                 ))}
