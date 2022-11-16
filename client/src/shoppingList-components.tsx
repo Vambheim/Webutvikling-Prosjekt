@@ -12,9 +12,21 @@ export class ShoppingList extends Component {
   shopping_list: ShoppingListInfo[] = [];
 
   render() {
+    let emptyShoppingListMessage = '';
+
+    if (this.shopping_list.length == 0) {
+      emptyShoppingListMessage = (
+        <div>
+          Your shopping list is currently empty.<br></br>You are welcome to add some via the recipe
+          information{' '}
+        </div>
+      );
+    } else {
+      emptyShoppingListMessage = '';
+    }
+
     return (
-      <Container>
-        {/* Container for funksjonalitet knyttet til shoppinglist */}
+      
         <Card
           style={{
             padding: '15px',
@@ -22,42 +34,46 @@ export class ShoppingList extends Component {
             border: 'none',
           }}
         >
-          <Card.Title>Shopping list</Card.Title>
-          <Row
-            style={{
-              marginLeft: '7%',
-              width: '90%',
-            }}
-          >
-            <Col>
-              {this.shopping_list.map((list) => (
-                <Row key={list.shopping_list_id}>
-                  <Col
+         <Card.Title>Shopping list</Card.Title>
+
+        <Row
+          style={{
+            marginLeft: '7%',
+            width: '90%',
+          }}
+        >
+
+          <Col>
+            {emptyShoppingListMessage}
+
+            {this.shopping_list.map((list) => (
+              <Row key={list.shopping_list_id}>
+                <Col
+                  style={{
+                    textAlign: 'right',
+                  }}
+                >
+                  {list.amount + ' ' + list.measurement_unit + ' ' + list.name}
+                </Col>
+                <Col>
+                  <Button
+                    variant="outline-success"
+                    onClick={() => this.deleteOne(list.shopping_list_id, list.name)}
                     style={{
-                      textAlign: 'right',
+                      width: '5rem',
+                      marginLeft: '0px',
+                      marginRight: '100%',
+                      marginBottom: '10px',
                     }}
                   >
-                    {list.amount + ' ' + list.measurement_unit + ' ' + list.name}
-                  </Col>
-                  <Col>
-                    <Button
-                      variant="outline-success"
-                      onClick={() => this.deleteOne(list.shopping_list_id, list.name)}
-                      style={{
-                        width: '5rem',
-                        marginLeft: '0px',
-                        marginRight: '100%',
-                        marginBottom: '10px',
-                      }}
-                    >
-                      &#128465;
-                    </Button>
-                  </Col>
-                </Row>
-              ))}
-            </Col>
-          </Row>
-          {/* Tøm shoppinglist */}
+                    &#128465;
+                  </Button>
+                </Col>
+              </Row>
+            ))}
+          </Col>
+        </Row>
+        
           <Row>
             <Button
               variant="danger"
@@ -73,7 +89,7 @@ export class ShoppingList extends Component {
             </Button>
           </Row>
         </Card>
-      </Container>
+   
     );
   }
 

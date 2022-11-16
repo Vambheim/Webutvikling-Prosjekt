@@ -79,7 +79,13 @@ export class RecipeList extends Component {
               margin: '5%',
             }}
           >
-            <Card style={{ width: '12rem', border: 'none', textAlign: 'center' }}>
+            <Card
+              style={{
+                width: '12rem',
+                border: 'none',
+                textAlign: 'center',
+              }}
+            >
               <Card.Title>Filter by country and category:</Card.Title>
               <Row>
                 <Col>
@@ -234,44 +240,43 @@ export class RecipeList extends Component {
 
         {/* Map recipes with 4 recipes in each row til windowsize is too small*/}
         <Container>
-          <Row>
-            <Col lg>
-              <Row xs={1} md={4} className="g-4">
-                {this.filtered_recipes.map((recipe) => (
-                  <NavLink
-                    to={'/recipes/' + recipe.recipe_id}
-                    style={{
-                      color: '#9FC1C0',
-                    }}
-                  >
-                    <Column>
-                      <Card
-                        style={{
-                          width: '100%',
-                          margin: '1%',
-                          textAlign: 'center',
-                          borderLeft: 'none',
-                          borderRight: 'none',
-                          borderTop: 'none',
-                          borderRadius: 'none',
-                        }}
-                      >
-                        <Card.Body>
-                          <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
-                          <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
-                            {recipe.name}
-                          </Card.Title>
-                          <Card.Text>
-                            {recipe.country} {recipe.category}
-                          </Card.Text>
-                        </Card.Body>
-                      </Card>
-                    </Column>
-                  </NavLink>
-                ))}
-              </Row>
-            </Col>
-          </Row>
+          <Col lg>
+            <Row xs={1} md={4} className="g-4">
+              {this.filtered_recipes.map((recipe) => (
+                <NavLink
+                  to={'/recipes/' + recipe.recipe_id}
+                  style={{
+                    color: '#9FC1C0',
+                  }}
+                >
+                  <Column>
+                    <Card
+                      style={{
+                        width: '100%',
+                        margin: '1%',
+                        textAlign: 'center',
+                        borderLeft: 'none',
+                        borderRight: 'none',
+                        borderTop: 'none',
+                        borderRadius: 'none',
+                        height: '100%',
+                      }}
+                    >
+                      <Card.Body>
+                        <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
+                        <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
+                          {recipe.name}
+                        </Card.Title>
+                        <Card.Text>
+                          {recipe.country} {recipe.category}
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Column>
+                </NavLink>
+              ))}
+            </Row>
+          </Col>
         </Container>
       </>
     );
@@ -421,42 +426,18 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
             title={'Recipe for ' + this.recipe.name}
           >
-            <Card.Title style={{ paddingTop: '5%' }}>{'Recipe for ' + this.recipe.name}</Card.Title>
-            <Card.Body>
-              {/* Placing buttons to the left of steps (below)*/}
-              <Row className="justify-content-md-center">
-                <Col xs={2}>
-                  <Row>
-                    <Button
-                      style={{ width: '4rem', margin: 'auto', marginTop: '10%' }}
-                      variant="light"
-                      onClick={() => this.likeRecipe()}
-                    >
-                      Like &#10084;
-                    </Button>
-                  </Row>
 
-                  <Row>
-                    <Button
-                      style={{ width: '4rem', margin: 'auto', marginTop: '1%' }}
-                      variant="success"
-                      onClick={() => this.editRecipe()}
-                    >
-                      Edit
-                    </Button>
-                  </Row>
-                  <Row>
-                    <Button
-                      style={{ width: '4rem', margin: 'auto', marginTop: '1%' }}
-                      variant="success"
-                      onClick={() => this.addAllToShoppingList()}
-                    >
-                      Add to cart
-                    </Button>
-                  </Row>
-                </Col>
-                {/* Map steps in column to the right of important buttons */}
-                <Col>
+            <Card.Title style={{ paddingTop: '5%' }}>
+              {' '}
+              {'Recipe for ' + this.recipe.name}
+            </Card.Title>
+
+            <Row className="justify-content-md-center">
+              <Col xs={5}>
+                <h6>Steps: </h6>
+                <ol>
+
+            
                   {this.steps.map((step) => (
                     <Row key={step.order_number}>
                       <Column>
@@ -464,28 +445,34 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       </Column>
                     </Row>
                   ))}
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-          {/* Card for retrieving ingredients for the given recipe_id */}
-          <Card
-            style={{
-              border: 'none',
-              paddingBottom: '3%',
-            }}
-          >
-            <Card.Title style={{ textAlign: 'center', marginTop: '2%' }}>Ingredients:</Card.Title>
-            <Card
-              style={{
-                borderLeft: 'none',
-                borderRight: 'none',
-                borderTop: 'none',
-                borderRadius: 'none',
-              }}
-            >
-              <Card.Body>
+<<<<<<
+                </ol>
+                <Row>
+                  <Button
+                    style={{
+                      width: '5rem',
+                      margin: 'auto',
+                      marginTop: '10%',
+                      height: '4rem',
+                    }}
+                    variant="outline-danger"
+                    onClick={() => this.likeRecipe()}
+                  >
+                    Like &#10084;
+                  </Button>
+                  <Button
+                    style={{ width: '5rem', margin: 'auto', marginTop: '10%', height: '4rem' }}
+                    variant="success"
+                    onClick={() => this.editRecipe()}
+                  >
+                    Edit
+                  </Button>
+                </Row>
+              </Col>
+              <Col>
+                <h6>Ingredients: </h6>
                 <Row className="justify-content-md-center">
+                  Portion:
                   <Col md="auto">
                     <Form.Control
                       type="number"
@@ -494,14 +481,8 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       min={1}
                       max={50}
                     ></Form.Control>
-                    Portions
                   </Col>
                 </Row>
-              </Card.Body>
-            </Card>
-
-            <Card style={{ border: 'none' }}>
-              <Card.Text style={{ textAlign: 'center' }}>
                 {this.ingredients.map((ing) => (
                   <Row key={ing.ingredient_id}>
                     <Col>
@@ -527,28 +508,65 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                     </Col>
                   </Row>
                 ))}
-              </Card.Text>
-            </Card>
+                <Row>
+                  <Button
+                    style={{ width: '7rem', margin: 'auto', marginTop: '1%' }}
+                    variant="success"
+                    onClick={() => this.addAllToShoppingList()}
+                  >
+                    Add to list
+                  </Button>
+                </Row>
+              </Col>
+            </Row>
           </Card>
-          {/* Card for recommended recipes based on other liked recipes */}
+
           <Card
             style={{
+              padding: '20px',
               textAlign: 'center',
-              borderBottom: 'none',
-              borderRight: 'none',
-              borderLeft: 'none',
+              border: 'none',
             }}
           >
             <Card.Title>You may also like:</Card.Title>
-            <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: '10%' }}>
-              {this.recomended_recipes.map((recipe) => (
-                <Row key={recipe.recipe_id}>
-                  <Column>
-                    <NavLink to={'/recipes/' + recipe.recipe_id}>{recipe.name}</NavLink>
-                  </Column>
-                </Row>
-              ))}
-            </Card.Text>
+
+            <Col lg>
+              <Row xs={1} md={4} className="g-4">
+                {this.recomended_recipes.map((recomended_recipe) => (
+                  <NavLink
+                    to={'/recipes/' + recomended_recipe.recipe_id}
+                    style={{
+                      color: '#9FC1C0',
+                    }}
+                  >
+                    <Column>
+                      <Card
+                        style={{
+                          width: '100%',
+                          margin: '1%',
+                          textAlign: 'center',
+                          borderLeft: 'none',
+                          borderRight: 'none',
+                          borderTop: 'none',
+                          borderRadius: 'none',
+                          height: '100%',
+                        }}
+                      >
+                        <Card.Body>
+                          <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
+                          <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
+                            {recomended_recipe.name}
+                          </Card.Title>
+                          <Card.Text>
+                            {recomended_recipe.country} {recomended_recipe.category}
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Column>
+                  </NavLink>
+                ))}
+              </Row>
+            </Col>
           </Card>
         </Container>
       </>

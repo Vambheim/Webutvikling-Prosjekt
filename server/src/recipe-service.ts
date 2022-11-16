@@ -394,7 +394,7 @@ class RecipeService {
         'SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country FROM recipe JOIN like_information ON recipe.recipe_id = like_information.recipe_id WHERE like_information.liked = TRUE AND recipe.category =? AND recipe.country =? AND recipe.recipe_id != ? GROUP BY recipe.recipe_id ORDER BY COUNT(like_information.liked) DESC LIMIT ?',
         //Limits to three recommended recipes
         //Also put out the three most popular recipes given the same category and country
-        [category, country, recipe_id, 3],
+        [category, country, recipe_id, 4],
         (error, results: RowDataPacket[]) => {
           if (error) return reject(error);
 
