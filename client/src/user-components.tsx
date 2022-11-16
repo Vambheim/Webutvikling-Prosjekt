@@ -7,9 +7,9 @@ import userService, { User } from './user-service';
 import { createHashHistory } from 'history';
 
 //false as default
-export let loggedIn: boolean = false;
+export let loggedIn: boolean = true;
 export let currentUser: User = {
-  user_id: 0,
+  user_id: 7,
   email: '',
   first_name: '',
   last_name: '',
