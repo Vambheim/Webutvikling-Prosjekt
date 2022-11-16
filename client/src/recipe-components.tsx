@@ -247,47 +247,43 @@ export class RecipeList extends Component {
 
         {/* Sjekke hvordan man får imporetrt egen skrifttype */}
         <Container>
-          <Row>
-            <Col lg>
-              <Row xs={1} md={4} className="g-4">
-                {this.filtered_recipes.map((recipe) => (
-                  <NavLink
-                    to={'/recipes/' + recipe.recipe_id}
-                    style={{
-                      color: '#9FC1C0',
-                    }}
-                  >
-                    <Column>
-                      <Row>
-                        <Card
-                          style={{
-                            width: '100%',
-                            margin: '1%',
-                            textAlign: 'center',
-                            borderLeft: 'none',
-                            borderRight: 'none',
-                            borderTop: 'none',
-                            borderRadius: 'none',
-                            height: '100%',
-                          }}
-                        >
-                          <Card.Body>
-                            <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
-                            <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
-                              {recipe.name}
-                            </Card.Title>
-                            <Card.Text>
-                              {recipe.country} {recipe.category}
-                            </Card.Text>
-                          </Card.Body>
-                        </Card>
-                      </Row>
-                    </Column>
-                  </NavLink>
-                ))}
-              </Row>
-            </Col>
-          </Row>
+          <Col lg>
+            <Row xs={1} md={4} className="g-4">
+              {this.filtered_recipes.map((recipe) => (
+                <NavLink
+                  to={'/recipes/' + recipe.recipe_id}
+                  style={{
+                    color: '#9FC1C0',
+                  }}
+                >
+                  <Column>
+                    <Card
+                      style={{
+                        width: '100%',
+                        margin: '1%',
+                        textAlign: 'center',
+                        borderLeft: 'none',
+                        borderRight: 'none',
+                        borderTop: 'none',
+                        borderRadius: 'none',
+                        height: '100%',
+                      }}
+                    >
+                      <Card.Body>
+                        <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
+                        <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
+                          {recipe.name}
+                        </Card.Title>
+                        <Card.Text>
+                          {recipe.country} {recipe.category}
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Column>
+                </NavLink>
+              ))}
+            </Row>
+          </Col>
         </Container>
       </>
     );
@@ -461,8 +457,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                       margin: 'auto',
                       marginTop: '10%',
                       height: '4rem',
-                      // border: '1px',
-                      // borderStyle: 'solid',
                     }}
                     variant="outline-danger"
                     onClick={() => this.likeRecipe()}
@@ -539,7 +533,47 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
           >
             <Card.Title>You may also like:</Card.Title>
-            <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+
+            <Col lg>
+              <Row xs={1} md={4} className="g-4">
+                {this.recomended_recipes.map((recomended_recipe) => (
+                  <NavLink
+                    to={'/recipes/' + recomended_recipe.recipe_id}
+                    style={{
+                      color: '#9FC1C0',
+                    }}
+                  >
+                    <Column>
+                      <Card
+                        style={{
+                          width: '100%',
+                          margin: '1%',
+                          textAlign: 'center',
+                          borderLeft: 'none',
+                          borderRight: 'none',
+                          borderTop: 'none',
+                          borderRadius: 'none',
+                          height: '100%',
+                        }}
+                      >
+                        <Card.Body>
+                          <Card.Img variant="top" src="https://s.tihlde.org/recipechef12312" />
+                          <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
+                            {recomended_recipe.name}
+                          </Card.Title>
+                          <Card.Text>
+                            {recomended_recipe.country} {recomended_recipe.category}
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Column>
+                  </NavLink>
+                ))}
+              </Row>
+            </Col>
+          </Card>
+
+          {/* <Card.Text style={{ marginLeft: 'auto', marginRight: 'auto' }}>
               {this.recomended_recipes.map((recipe) => (
                 <Row key={recipe.recipe_id}>
                   <Column>
@@ -548,7 +582,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                 </Row>
               ))}
             </Card.Text>
-          </Card>
+           </Card> */}
         </Container>
       </>
     );
