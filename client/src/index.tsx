@@ -174,7 +174,7 @@ class Menu extends Component {
         variant="dark"
         style={{ backgroundColor: 'rgb(82 130 101)' }}
       >
-        <Container style={{ fontFamily: 'Chivo' }}>
+        <Container style={{ fontFamily: 'Optima' }}>
           <Navbar.Brand href="#">
             <img
               src="https://tihldestorage.blob.core.windows.net/imagepng/a70fd0bd-f8c0-45eb-b808-293149cf2620resapi-high-resolution-logo-white-on-transparent-background.png"
