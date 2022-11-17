@@ -1024,7 +1024,7 @@ export class RecipeAdd extends Component {
   saveRecipe() {
     if (this.steps.length != 0) {
       recipeService
-        .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
+        .createRecipe(this.recipe.name, this.recipe.category, this.recipe.country)
         .then((recipe_id) => {
           this.ingredients.map((ing) =>
             recipeService
