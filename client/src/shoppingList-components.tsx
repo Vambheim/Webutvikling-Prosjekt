@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
-import { Alert, Column } from './widgets';
+import { Alert } from './widgets';
 import shoppingListService, { ShoppingListInfo } from './shoppingList-service';
 import { loggedIn, currentUser } from './user-components';
 import { createHashHistory } from 'history';
-import { Container, Card, Row, Form, Button, Col } from 'react-bootstrap';
+import { Card, Row, Button, Col } from 'react-bootstrap';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a recipe
 

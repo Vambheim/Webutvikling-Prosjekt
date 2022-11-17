@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`TaskDetails draws correctly (using snapshot) 1`] = `
-<Fragment>
-  Recipes:
-</Fragment>
-`;

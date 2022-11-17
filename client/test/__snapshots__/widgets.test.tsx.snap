@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Column widget tests Draws correctly 1`] = `
+<div
+  className="col"
+>
+  <div
+    className="float-start"
+  >
+    test
+  </div>
+</div>
+`;
+
+exports[`New alert test Alert draws correctly with classname 1`] = `<div />`;
+
+exports[`New alert test Alert.danger draws correctly with classname 1`] = `""`;
+
+exports[`New alert test Alert.danger draws correctly with classname 2`] = `""`;
+
+exports[`New alert test Alert.success draws correctly with classname 1`] = `""`;
+
+exports[`New alert test Button.Primary draws correctly with classname and style 1`] = `""`;
+
+exports[`New alert test Button.info draws correctly with classname 1`] = `""`;
+
+exports[`New alert test Button.info draws correctly with classname and style 1`] = `""`;
