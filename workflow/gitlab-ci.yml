@@ -78,6 +78,7 @@ test:
       recipe(recipe_id) ON DELETE CASCADE,  FOREIGN KEY (ingredient_id) REFERENCES
       ingredient(ingredient_id) ON DELETE CASCADE,  FOREIGN KEY (user_id) REFERENCES user(user_id)
       ON DELETE CASCADE ); " | mysql $MYSQL_DATABASE
+    # insert into også!  
     # Add test user and grant access, opprette alle tabellene her
     - >
       echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; GRANT ALL PRIVILEGES ON
