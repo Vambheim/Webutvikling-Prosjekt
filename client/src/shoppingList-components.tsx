@@ -14,7 +14,7 @@ export class ShoppingList extends Component {
   render() {
     let emptyShoppingListMessage = '';
 
-    if (this.shopping_list.length == 0) {
+    if (this.shopping_list.length == 0 && loggedIn) {
       //@ts-ignore
       emptyShoppingListMessage = (
         <div>
