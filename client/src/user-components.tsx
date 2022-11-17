@@ -94,7 +94,7 @@ export class UserLogIn extends Component {
           </Row>
           <Row>
             <Button
-              variant="outline-success"
+              variant="outline-secondary"
               onClick={() => this.clearInput()}
               style={{
                 marginBottom: '10px',
@@ -245,7 +245,7 @@ export class RegisterUser extends Component {
           </Row>
           <Row>
             <Button
-              variant="outline-success"
+              variant="outline-secondary"
               onClick={() => this.clearInput()}
               style={{
                 marginBottom: '10px',

@@ -672,265 +672,255 @@ export class RecipeAdd extends Component {
           <Row>
             <Col>
               <Card
-                title="Add Recipe"
                 style={{
-                  borderLeft: '0',
-                  borderRight: '0',
-                  borderTop: '0',
-                  borderRadius: '0',
-                  padding: '10%',
+                  border: '0',
+                  textAlign: 'center',
+                  marginTop: '8%',
                 }}
               >
-                <Card.Title style={{ textAlign: 'center' }}>Add your new recipe here:</Card.Title>
-
-                <Container fluid>
-                  <Row className="justify-content-md-center">
-                    <Col xs lg="7">
-                      <Row>
-                        <Form.Control
-                          value={this.recipe.name}
-                          type="text"
-                          placeholder="Name"
-                          onChange={(event) => (this.recipe.name = event.currentTarget.value)}
-                          style={{
-                            textAlign: 'center',
-                            width: '100%',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                            marginBottom: '5px',
-                          }}
-                        ></Form.Control>
-                      </Row>
-                      <Row>
-                        <Form.Control
-                          // vurdere å endre denne til drop down /select
-                          value={this.recipe.category}
-                          type="text"
-                          placeholder="Category"
-                          onChange={(event) => (this.recipe.category = event.currentTarget.value)}
-                          style={{
-                            textAlign: 'center',
-                            width: '100%',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                            marginBottom: '5px',
-                          }}
-                        ></Form.Control>
-                      </Row>
-                      <Row>
-                        <Form.Control
-                          value={this.recipe.country}
-                          type="text"
-                          placeholder="Country"
-                          onChange={(event) => (this.recipe.country = event.currentTarget.value)}
-                          style={{
-                            textAlign: 'center',
-                            width: '100%',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                            marginBottom: '5px',
-                          }}
-                        ></Form.Control>
-                      </Row>
-                    </Col>
-                  </Row>
-                </Container>
-                <Row
-                  style={{
-                    textAlign: 'center',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    padding: '20px',
-                  }}
-                >
-                  Choose the number of portions for this recipe:
+                <Card.Title>Add your new recipe here:</Card.Title>
+                <Row>
+                  <Form.Control
+                    value={this.recipe.name}
+                    type="text"
+                    placeholder="Name"
+                    onChange={(event) => (this.recipe.name = event.currentTarget.value)}
+                    style={{
+                      textAlign: 'center',
+                      width: '60%',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      marginBottom: '10px',
+                    }}
+                  ></Form.Control>
                 </Row>
-                <Form.Control
-                  value={this.portions}
-                  type="number"
-                  // placeholder={'Number of portions'}
-                  min={0}
-                  onChange={(event) => (this.portions = Number(event.currentTarget.value))}
-                  style={{ marginLeft: 'auto', marginRight: 'auto', width: '5rem' }}
-                ></Form.Control>
-
-                <Row style={{ marginLeft: 'auto', marginRight: 'auto', margin: '1%' }}>
-                  <Button variant="light" onClick={() => this.openIngredient()}>
+                <Row>
+                  <Form.Control
+                    value={this.recipe.category}
+                    type="text"
+                    placeholder="Category"
+                    onChange={(event) => (this.recipe.category = event.currentTarget.value)}
+                    style={{
+                      textAlign: 'center',
+                      width: '60%',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      marginBottom: '10px',
+                    }}
+                  ></Form.Control>
+                </Row>
+                <Row>
+                  <Form.Control
+                    value={this.recipe.country}
+                    type="text"
+                    placeholder="Country"
+                    onChange={(event) => (this.recipe.country = event.currentTarget.value)}
+                    style={{
+                      textAlign: 'center',
+                      width: '60%',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      marginBottom: '10px',
+                    }}
+                  ></Form.Control>
+                </Row>
+                <Card.Text> Choose the number of portions for this recipe:</Card.Text>
+                <Row>
+                  <Form.Control
+                    value={this.portions}
+                    type="number"
+                    min={1}
+                    max={50}
+                    onChange={(event) => (this.portions = Number(event.currentTarget.value))}
+                    style={{
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      width: '5rem',
+                      textAlign: 'center',
+                      marginBottom: '10px',
+                    }}
+                  ></Form.Control>
+                </Row>
+                <Row>
+                  <Button
+                    variant="outline-success"
+                    onClick={() => this.openIngredient()}
+                    style={{ width: '15rem', marginLeft: 'auto', marginRight: 'auto' }}
+                  >
                     Continue to add ingredients
                   </Button>
                 </Row>
               </Card>
-
-              <Container fluid>
-                <div
-                  style={{
-                    // @ts-ignore
-                    visibility: this.showIng,
-                  }}
-                >
-                  <Row>
-                    <Card
-                      style={{
-                        borderBottom: '1',
-                        borderTop: '0',
-                        borderLeft: '0',
-                        borderRight: '0',
-                        marginTop: '5%',
-                        paddingBottom: '10%',
-                      }}
-                    >
-                      <Card.Title style={{ textAlign: 'center' }}>Add Ingredients:</Card.Title>
-                      <Card.Text style={{ textAlign: 'center' }}>Choose amount:</Card.Text>
-                      <Row>
-                        <Form.Control
-                          value={this.ingredient.amount}
-                          type="number"
-                          min={1}
-                          onChange={(event) =>
-                            (this.ingredient.amount = Number(event.currentTarget.value))
-                          }
-                          style={{
-                            textAlign: 'center',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                            marginBottom: '1%',
-                          }}
-                        ></Form.Control>
-                      </Row>
-
-                      <Row>
-                        <Form.Control
-                          value={this.ingredient.measurement_unit}
-                          type="text"
-                          placeholder="Measurement unit"
-                          style={{
-                            textAlign: 'center',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                            marginBottom: '1%',
-                          }}
-                          // HADDE VÆRT BEST MED PRE-DEFINERTE ENHETER OG DROP DOWN
-                          onChange={(event) =>
-                            (this.ingredient.measurement_unit = event.currentTarget.value)
-                          }
-                        ></Form.Control>
-                      </Row>
-                      <Row>
-                        <Form.Control
-                          value={this.ingredient.name}
-                          type="text"
-                          placeholder="Ingredient"
-                          onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
-                          style={{
-                            textAlign: 'center',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                          }}
-                        ></Form.Control>
-                      </Row>
-                      <Row>
-                        <Button
-                          style={{ width: '50%' }}
-                          variant="light"
-                          onClick={() => this.addIngredient()}
-                        >
-                          +{' '}
-                        </Button>
-
-                        <Button
-                          style={{ width: '50%' }}
-                          variant="light"
-                          onClick={() => this.undoIngredient()}
-                        >
-                          &#x1F519;
-                        </Button>
-                      </Row>
-
-                      <Row style={{ textAlign: 'left', marginTop: '1%' }}>
-                        {this.ingredients.map((ing, i) => (
-                          <Row key={i}>
-                            <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
-                          </Row>
-                        ))}
-                      </Row>
-
-                      <Row style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                        <Column>
-                          <Button variant="light" onClick={() => this.openStep()}>
-                            Continue to add steps
-                          </Button>
-                        </Column>
-                      </Row>
-                    </Card>
-                  </Row>
-                </div>
-              </Container>
-
-              <div
+              <Card
                 style={{
+                  border: '0',
+                  textAlign: 'center',
+                  marginTop: '8%',
+                  // @ts-ignore
+                  visibility: this.showIng,
+                }}
+              >
+                <Card.Title>Add Ingredients:</Card.Title>
+                <Card.Text>Choose amount for this ingredient:</Card.Text>
+                <Row>
+                  <Form.Control
+                    value={this.ingredient.amount}
+                    type="number"
+                    min={0}
+                    onChange={(event) =>
+                      (this.ingredient.amount = Number(event.currentTarget.value))
+                    }
+                    style={{
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      width: '5rem',
+                      textAlign: 'center',
+                      marginBottom: '10px',
+                    }}
+                  ></Form.Control>
+                </Row>
+                <Row>
+                  <Form.Control
+                    value={this.ingredient.measurement_unit}
+                    type="text"
+                    placeholder="Measurement unit"
+                    style={{
+                      textAlign: 'center',
+                      width: '60%',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      marginBottom: '10px',
+                    }}
+                    onChange={(event) =>
+                      (this.ingredient.measurement_unit = event.currentTarget.value)
+                    }
+                  ></Form.Control>
+                </Row>
+                <Row>
+                  <Form.Control
+                    value={this.ingredient.name}
+                    type="text"
+                    placeholder="Ingredient"
+                    onChange={(event) => (this.ingredient.name = event.currentTarget.value)}
+                    style={{
+                      textAlign: 'center',
+                      width: '60%',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      marginBottom: '10px',
+                    }}
+                  ></Form.Control>
+                </Row>
+                <Row>
+                  <Button
+                    style={{ width: '30%', marginLeft: '20%', marginBottom: '10px' }}
+                    variant="light"
+                    onClick={() => this.addIngredient()}
+                  >
+                    +
+                  </Button>
+
+                  <Button
+                    style={{ width: '30%', marginBottom: '10px' }}
+                    variant="light"
+                    onClick={() => this.undoIngredient()}
+                  >
+                    &#x1F519;
+                  </Button>
+                </Row>
+                <Row>
+                  {this.ingredients.map((ing, i) => (
+                    <Row key={i}>
+                      <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
+                    </Row>
+                  ))}
+                </Row>
+                <Row>
+                  <Button
+                    variant="outline-success"
+                    onClick={() => this.openStep()}
+                    style={{
+                      width: '15rem',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                    }}
+                  >
+                    Continue to add steps
+                  </Button>
+                </Row>
+              </Card>
+
+              <Card
+                style={{
+                  border: '0',
+                  textAlign: 'center',
+                  marginTop: '8%',
+                  paddingBottom: '100px',
                   //@ts-ignore
                   visibility: this.showSteps,
                 }}
               >
-                <Card style={{ border: 'none', marginTop: '5%', paddingBottom: '40%' }}>
-                  <Card.Title style={{ textAlign: 'center' }}>Add steps</Card.Title>
-                  <Row className="justify-content-md-center">
-                    <Form.Control
-                      value={this.step.description}
-                      type="text"
-                      placeholder="Step"
-                      onChange={(event) => (this.step.description = event.currentTarget.value)}
-                      style={{
-                        textAlign: 'center',
-                        width: '95%',
-                      }}
-                    ></Form.Control>
-
-                    <Row>
-                      <Button
-                        style={{ width: '50%' }}
-                        variant="light"
-                        onClick={() => this.addStep()}
-                      >
-                        +
-                      </Button>
-                      <Button
-                        style={{ width: '50%' }}
-                        variant="light"
-                        onClick={() => this.undoStep()}
-                      >
-                        &#x1F519;
-                      </Button>
-                    </Row>
-                  </Row>
+                <Card.Title>Add steps</Card.Title>
+                <Row>
+                  <Form.Control
+                    value={this.step.description}
+                    type="text"
+                    placeholder="Step"
+                    onChange={(event) => (this.step.description = event.currentTarget.value)}
+                    style={{
+                      textAlign: 'center',
+                      width: '60%',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      marginBottom: '10px',
+                    }}
+                  ></Form.Control>
+                </Row>
+                <Row>
+                  <Button
+                    style={{ width: '30%', marginLeft: '20%', marginBottom: '10px' }}
+                    variant="light"
+                    onClick={() => this.addStep()}
+                  >
+                    +
+                  </Button>
+                  <Button
+                    style={{ width: '30%', marginBottom: '10px' }}
+                    variant="light"
+                    onClick={() => this.undoStep()}
+                  >
+                    &#x1F519;
+                  </Button>
+                </Row>
+                <Row>
                   {this.steps.map((step) => (
                     <Row key={step.order_number}>
-                      <Column>{step.order_number + ': ' + step.description}</Column>
+                      <Card.Text>{step.order_number + ': ' + step.description}</Card.Text>
                     </Row>
                   ))}
-                </Card>
-              </div>
+                </Row>
+              </Card>
             </Col>
-            {/* Card for prototype recipe */}
+
             <Col sm>
               <Card
                 style={{
-                  width: '18rem',
-
+                  width: '70%',
                   marginLeft: 'auto',
                   marginRight: 'auto',
-                  marginTop: '30%',
+                  marginTop: '8%',
+                  marginBottom: '10px',
                 }}
               >
                 <Card.Body style={{ textAlign: 'center' }}>
-                  <Card.Title>Your recipe:</Card.Title>
+                  <Card.Title>Preview of your recipe</Card.Title>
                   <Card.Title style={{ color: 'rgb(82, 130, 101)' }}>
                     {' ' + this.recipe.name}
                   </Card.Title>
-                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
+                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '2%' }}>
                     {' ' + this.recipe.category}
                   </Card.Subtitle>
-                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '1%' }}>
+                  <Card.Subtitle style={{ color: 'rgb(82, 130, 101)', margin: '2%' }}>
                     {' ' + this.recipe.country}
                   </Card.Subtitle>
                   <Card.Subtitle
@@ -940,7 +930,7 @@ export class RecipeAdd extends Component {
                   >
                     {'Ingredients:'}
                     {this.ingredients.map((ing, i) => (
-                      <Row key={i}>
+                      <Row key={i} style={{ color: 'black' }}>
                         <li>{ing.amount + ' ' + ing.measurement_unit + ' ' + ing.name}</li>
                       </Row>
                     ))}
@@ -948,29 +938,31 @@ export class RecipeAdd extends Component {
                   <Card.Subtitle
                     style={{
                       color: 'rgb(82, 130, 101)',
-                      marginTop: '1%',
+                      marginTop: '2%',
                     }}
                   >
                     {'Steps: '}
                     {this.steps.map((step) => (
-                      <Row key={step.order_number}>
+                      <Row key={step.order_number} style={{ color: 'black' }}>
                         <Col>{step.order_number + ': ' + step.description}</Col>
                       </Row>
                     ))}
                   </Card.Subtitle>
+                  <Row>
+                    <Button
+                      style={{
+                        width: '15rem',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        marginTop: '20px',
+                      }}
+                      variant="outline-success"
+                      onClick={() => this.saveRecipe()}
+                    >
+                      Save recipe
+                    </Button>
+                  </Row>
                 </Card.Body>
-              </Card>
-              <Card style={{ border: 'none' }}>
-                <Button
-                  style={{
-                    marginTop: '10%',
-                    margin: 'auto',
-                  }}
-                  variant="success"
-                  onClick={() => this.saveRecipe()}
-                >
-                  Save recipe
-                </Button>
               </Card>
             </Col>
           </Row>

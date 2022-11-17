@@ -15,26 +15,21 @@ export class ShoppingList extends Component {
     let emptyShoppingListMessage = '';
 
     if (this.shopping_list.length == 0) {
-      emptyShoppingListMessage = (
-        <div>
-          Your shopping list is currently empty.<br></br>You are welcome to add some via the recipe
-          information{' '}
-        </div>
-      );
+      emptyShoppingListMessage =
+        'Your shopping list is currently empty. You are welcome to add some via the recipe information';
     } else {
       emptyShoppingListMessage = '';
     }
 
     return (
-      
-        <Card
-          style={{
-            padding: '15px',
-            textAlign: 'center',
-            border: 'none',
-          }}
-        >
-         <Card.Title>Shopping list</Card.Title>
+      <Card
+        style={{
+          padding: '15px',
+          textAlign: 'center',
+          border: 'none',
+        }}
+      >
+        <Card.Title>Shopping list</Card.Title>
 
         <Row
           style={{
@@ -42,7 +37,6 @@ export class ShoppingList extends Component {
             width: '90%',
           }}
         >
-
           <Col>
             {emptyShoppingListMessage}
 
@@ -57,7 +51,7 @@ export class ShoppingList extends Component {
                 </Col>
                 <Col>
                   <Button
-                    variant="outline-success"
+                    variant="light"
                     onClick={() => this.deleteOne(list.shopping_list_id, list.name)}
                     style={{
                       width: '5rem',
@@ -73,23 +67,22 @@ export class ShoppingList extends Component {
             ))}
           </Col>
         </Row>
-        
-          <Row>
-            <Button
-              variant="danger"
-              onClick={() => this.deleteAll()}
-              style={{
-                width: '15rem',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                marginBottom: '10px',
-              }}
-            >
-              Delete all
-            </Button>
-          </Row>
-        </Card>
-   
+
+        <Row>
+          <Button
+            variant="danger"
+            onClick={() => this.deleteAll()}
+            style={{
+              width: '15rem',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              marginBottom: '10px',
+            }}
+          >
+            Delete all
+          </Button>
+        </Row>
+      </Card>
     );
   }
 
