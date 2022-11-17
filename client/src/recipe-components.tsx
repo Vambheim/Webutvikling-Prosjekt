@@ -571,9 +571,10 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
 
   mounted() {
     recipeService
+
       .get(this.props.match.params.recipe_id)
       .then((recipe) => (this.recipe = recipe))
-      //endre til navn getRecipeSteps ?
+      // Getting recipe steps
       .then(() => recipeService.getSteps(this.recipe.recipe_id))
       .then((steps) => (this.steps = steps))
       .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))

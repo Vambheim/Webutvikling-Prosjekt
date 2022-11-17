@@ -3,8 +3,9 @@ import { Component } from 'react-simplified';
 import { shallow } from 'enzyme';
 import { Col } from 'react-bootstrap';
 import { Column, Alert } from '../src/widgets';
-import { RecipeDetails, RecipeEdit } from '../src/recipe-components';
+import { RecipeDetails, RecipeEdit, RecipeAdd, RecipeList } from '../src/recipe-components';
 import recipeService, { Recipe } from '../src/recipe-service';
+import { Form, Button } from 'react-bootstrap';
 
 jest.mock('../src/recipe-service', () => {
   class RecipeService {
@@ -41,56 +42,157 @@ jest.mock('../src/recipe-service', () => {
     delete() {
       return Promise.resolve();
     }
+    get() {
+      return Promise.resolve({
+        id: 1098370,
+        name: 'Butter Brie',
+        category: 'side dish',
+        country: 'American',
+      });
+    }
+
+    getAllIngredients() {
+      return Promise.resolve({
+        ingredient_id: 1,
+        name: 'carrot',
+      });
+    }
   }
   return new RecipeService();
 });
 
-class RecipeList extends Component {
-  recipes: Recipe[] = [];
-
-  render() {
-    return (
-      <>
-        Tasks:
-        {this.recipes.map((recipe) => (
-          <div key={recipe.recipe_id}>{recipe.name}</div>
-        ))}
-      </>
-    );
-  }
-
-  mounted(): void {
-    recipeService.getAll().then((recipes) => (this.recipes = recipes));
-  }
-}
-
-describe('Component tests', () => {
-  test('RecipeList draws correctly', (done) => {
+describe('RecipeList tests', () => {
+  test('RecipeDetailds draws correctly using snapshots', (done) => {
     const wrapper = shallow(<RecipeList />);
 
-    // Wait for events to complete
     setTimeout(() => {
-      expect(
-        wrapper.containsAllMatchingElements([
-          <div>Butter Brie</div>,
-          <div>Three Ingredient Frozen Pina Colada</div>,
-          <div>Rotisserie Chicken and Bean Tostadas</div>,
-        ])
-      ).toEqual(true);
-
+      expect(wrapper).toMatchSnapshot();
       done();
     });
   });
 });
 
 describe('RecipeDetails tests', () => {
-  test('MovieOverview draws correctly', (done) => {
-    const wrapper = shallow(<RecipeDetails match={{ params: { id: 1098370 } }} />);
+  test('RecipeDetails draws correctly (using snapshot)', (done) => {
+    const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
 
-    // Wait for events to complete
     setTimeout(() => {
       expect(wrapper).toMatchSnapshot();
       done();
     });
+  });
+  /* 
+  test('RecipeDetails correctly likes', (done) => {
+    const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
+    let loggedIn;
+
+    wrapper.find(Button).at(0).simulate('click');
+    if (loggedIn == true) {
+      setTimeout(() => {
+        expect(location.hash).toEqual('#/recipes');
+
+        done();
+      });
+    } else {
+      expect(wrapper).toMatchSnapshot();
+    }
+  });
+});
+*/
+});
+
+describe('RecipeAdd tests', () => {
+  test('RecipeAdd draws correctly (using snapshot)', (done) => {
+    const wrapper = shallow(<RecipeAdd />);
+
+    setTimeout(() => {
+      expect(wrapper).toMatchSnapshot();
+      done();
+    });
+  });
+
+  test('RecipeAdd correctly sets location save', (done) => {
+    const wrapper = shallow(<RecipeAdd />);
+
+    wrapper.find(Button).at(4).simulate('click');
+
+    setTimeout(() => {
+      expect(location.hash).toEqual('#/');
+
+      done();
+    });
+  });
+  test(' RecipeAdd Form delivers change', () => {
+    const wrapper = shallow(<RecipeAdd />);
+
+    wrapper
+      .find(Form.Control)
+      .at(0)
+      .simulate('change', { currentTarget: { value: 2100 } });
+    wrapper
+      .find(Form.Control)
+      .at(1)
+      .simulate('change', { currentTarget: { value: 2100 } });
+    wrapper
+      .find(Form.Control)
+      .at(2)
+      .simulate('change', { currentTarget: { value: 2100 } });
+    wrapper
+      .find(Form.Control)
+      .at(3)
+      .simulate('change', { currentTarget: { value: 2100 } });
+    wrapper
+      .find(Form.Control)
+      .at(4)
+      .simulate('change', { currentTarget: { value: 2100 } });
+
+    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
+    // @ts-ignore
+    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
+    // @ts-ignore
+    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
+    // @ts-ignore
+    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
+    // @ts-ignore
+    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
+  });
+});
+
+describe('RecipeEdit tests', () => {
+  test('RecipeEdit draws correctly (using snapshot)', (done) => {
+    const wrapper = shallow(<RecipeEdit match={{ params: { id: 1 } }} />);
+
+    setTimeout(() => {
+      expect(wrapper).toMatchSnapshot();
+      done();
+    });
+  });
+  test('EditRecipe correctly sets location save', (done) => {
+    const wrapper = shallow(<RecipeEdit match={{ params: { id: 1 } }} />);
+
+    wrapper.find(Button).at(1).simulate('click');
+
+    expect(location.hash).toEqual('#/');
+
+    done();
+  });
+  /*
+  test('EditRecipe correctly sets location delete', (done) => {
+    const wrapper = shallow(<RecipeEdit match={{ params: { id: 1 } }} />);
+
+    wrapper.find(Button).at(0).simulate('click');
+
+    expect(location.hash).toEqual('#/recipes/');
+
+    done();
+  });
+  */
+
+  test('RecipeEdit delivers change', () => {
+    const wrapper = shallow(<RecipeEdit match={{ params: { id: 1 } }} />);
+
+    wrapper.find(Form.Control).simulate('change', { currentTarget: { value: 'Pannekaker' } });
+
+    expect(wrapper.containsMatchingElement(<Form.Control value="Pannekaker" />)).toEqual(true);
   });
 });
