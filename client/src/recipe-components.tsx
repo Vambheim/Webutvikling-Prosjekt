@@ -1196,22 +1196,26 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
             <Card.Title>Steps</Card.Title>
             <Row>
               <Col>
-                {this.steps.map((step) => (
-                  <Row key={step.step_id}>
-                    {' '}
-                    <Form.Control
-                      value={step.description}
-                      type="text"
-                      onChange={(event) => (step.description = event.currentTarget.value)}
-                      style={{
-                        width: '80%',
-                        marginLeft: 'auto',
-                        marginRight: 'auto',
-                        marginTop: '1%',
-                      }}
-                    ></Form.Control>
-                  </Row>
-                ))}
+                <ol>
+                  {this.steps.map((step) => (
+                    <li>
+                      <Row key={step.step_id}>
+                        {' '}
+                        <Form.Control
+                          value={step.description}
+                          type="text"
+                          onChange={(event) => (step.description = event.currentTarget.value)}
+                          style={{
+                            width: '80%',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            marginTop: '1%',
+                          }}
+                        ></Form.Control>
+                      </Row>
+                    </li>
+                  ))}
+                </ol>
               </Col>
             </Row>
             <Row className="justify-content-md-center">
