@@ -75,6 +75,7 @@ GROUP BY like_information.recipe_id
 ORDER BY likes DESC
 
 
+INSERT INTO:
 
 INSERT INTO like_information VALUES(6, 11, 1)
 
