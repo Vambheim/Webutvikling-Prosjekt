@@ -35,7 +35,6 @@ export class ShoppingList extends Component {
         }}
       >
         <Card.Title>Shopping list</Card.Title>
-
         <Row
           style={{
             marginLeft: '7%',
@@ -44,7 +43,6 @@ export class ShoppingList extends Component {
         >
           <Col>
             {emptyShoppingListMessage}
-
             {this.shopping_list.map((list) => (
               <Row key={list.shopping_list_id}>
                 <Col
