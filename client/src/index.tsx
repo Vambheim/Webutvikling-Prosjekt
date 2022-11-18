@@ -64,7 +64,6 @@ class Home extends Component {
         clearInterval(intervalAPI);
       }, 7500);
     }
-
   }
   render() {
     return (
@@ -141,7 +140,6 @@ ReactDOM.render(
       <Route exact path="/recipes/login" component={UserLogIn} />
       <Route exact path="/recipes/register" component={RegisterUser} />
       <Route exact path="/recipes/user" component={UserDetails} />
-      {/* // her må vi endre noe ^ */}
       <Route exact path="/recipes/:recipe_id(\d+)" component={RecipeDetails} />
       <Route exact path="/recipes/:id(\d+)/edit" component={RecipeEdit} />
     </div>
