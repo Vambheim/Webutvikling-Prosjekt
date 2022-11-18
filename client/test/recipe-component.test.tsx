@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
 import { shallow } from 'enzyme';
-import { Col, Nav } from 'react-bootstrap';
 import { Column, Alert } from '../src/widgets';
 import { RecipeDetails, RecipeEdit, RecipeAdd, RecipeList } from '../src/recipe-components';
 import recipeService, { Recipe } from '../src/recipe-service';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Card } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
 jest.mock('../src/recipe-service', () => {
@@ -59,56 +58,11 @@ jest.mock('../src/recipe-service', () => {
         name: 'carrot',
       });
     }
-
-    addItemToShoppingList() {
-      return Promise.resolve({
-        ingredient_id: 1,
-        amount_per_person: 2,
-        measurement_unit: 'DL',
-      });
-    }
-
-    saveRecipe() {
-      return Promise.resolve({
-        recipe_id: 1098350,
-        name: 'Light Greek Lemon Chicken Orzo Soup',
-        category: 'soup',
-        country: 'Mediterranean',
-      });
-    }
-    getRecipeIngredient() {
-      return Promise.resolve({
-        ingredient_id: 1001,
-        recipe_id: 632101,
-        amount_per_person: 0.5,
-        measurement_unit: 'cup',
-      });
-    }
-
-    /*addIngredient() {
-      return Promise.resolve({
-        name: 'carrot',
-        amount: '2',
-        measurement_unit: 'units',
-      });
-    }*/
   }
   return new RecipeService();
 });
 
 describe('RecipeList tests', () => {
-  test('QuizQuestions draws correctly', (done) => {
-    const wrapper = shallow(<RecipeList />);
-
-    // Wait for events to complete
-    setTimeout(() => {
-      expect(wrapper.containsAllMatchingElements([<NavLink to={'/recipes/1'}></NavLink>])).toEqual(
-        true
-      );
-      done();
-    });
-  });
-
   test('RecipeList draws correctly', (done) => {
     const wrapper = shallow(<RecipeList />);
 
@@ -155,22 +109,44 @@ describe('RecipeList tests', () => {
     });
   });
 
-  test('SearchBar handles change', () => {
+  test('Filter handles change', () => {
+    const wrapper = shallow(<RecipeList />);
+
+    wrapper
+      .find(Form.Select)
+      .at(0)
+      .simulate('change', { currentTarget: { value: 'asian' } });
+    wrapper
+      .find(Form.Select)
+      .at(1)
+      .simulate('change', { currentTarget: { value: 'asian' } });
+    wrapper
+      .find(Form.Select)
+      .at(2)
+      .simulate('change', { currentTarget: { value: 'asian' } });
+    wrapper
+      .find(Form.Select)
+      .at(3)
+      .simulate('change', { currentTarget: { value: 'asian' } });
+    wrapper
+      .find(Form.Select)
+      .at(4)
+      .simulate('change', { currentTarget: { value: 'asian' } });
+
+    expect(wrapper.containsMatchingElement(<Form.Control value="asian" />)).toEqual(false);
+    expect(wrapper.containsMatchingElement(<Form.Control value="asian" />)).toEqual(false);
+    expect(wrapper.containsMatchingElement(<Form.Control value="asian" />)).toEqual(false);
+    expect(wrapper.containsMatchingElement(<Form.Control value="asian" />)).toEqual(false);
+    expect(wrapper.containsMatchingElement(<Form.Control value="asian" />)).toEqual(false);
+  });
+
+  test('Searchbar handles change', () => {
     const wrapper = shallow(<RecipeList />);
 
     wrapper.find(Form.Control).simulate('change', { currentTarget: { value: 'Pannekaker' } });
 
     expect(wrapper.containsMatchingElement(<Form.Control value="Pannekaker" />)).toEqual(true);
   });
-  /* vil ikke hente navlink da den kommer fra react dom 
-  test('RecipeList navlink delivers change', () => {
-    const wrapper = shallow(<RecipeList />);
-
-    wrapper.find(NavLink).simulate('click');
-
-    expect(location.hash).toEqual('#/recipes/:id');
-  });
-  */
 });
 
 describe('RecipeDetails tests', () => {
@@ -203,15 +179,6 @@ describe('RecipeDetails tests', () => {
     }
   });
 
-  test('RecipeDetails draws correctly', (done) => {
-    const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
-
-    setTimeout(() => {
-      expect(wrapper).toMatchSnapshot();
-      done();
-    });
-  });
-
   test('Country and Category filter pushes correctly', (done) => {
     const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
     wrapper.find(Button).at(0).simulate('click');
@@ -220,6 +187,12 @@ describe('RecipeDetails tests', () => {
       expect(wrapper).toMatchSnapshot();
       done();
     });
+  });
+
+  test('RecipeDetails has 2 rows', () => {
+    const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
+
+    expect(wrapper.find(Card)).toHaveLength(2);
   });
 
   test('Ingredientfilter pushes correctly', (done) => {
