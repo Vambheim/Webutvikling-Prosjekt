@@ -1,14 +1,3 @@
-API Key: SE env fil
-
-Linker til ressurser som skal brukes:
-
-For Repsonsivt desing: https://react-bootstrap.github.io/
-
-Muligens for hashing:
-https://medium.com/@nick_92077/user-authentication-basics-hashing-and-jwt-3f9adf12272
-
-Muligens for API: https://rapidapi.com/spoonacular/api/recipe-food-nutrition
-
 ![/'REC.A.P.I'/ logo](https://tihldestorage.blob.core.windows.net/imagepng/a70fd0bd-f8c0-45eb-b808-293149cf2620resapi-high-resolution-logo-white-on-transparent-background.png)
 
 ## Project description
@@ -26,10 +15,10 @@ the passwords are stored as a hashed value.
 
 ### Use our database
 
-You need to create two configuration files that will contain the database connection details. These
-files should not be uploaded to your git repository, and they have therefore been added to
-`.gitignore`. The connection details may vary, but example content of the two configuration files
-are as follows:
+You need to create two configuration files that will contain the database connection details to our
+database. These files should not be uploaded to your git repository, and they have therefore been
+added to `.gitignore`. We have to databases, one for development, and one for testing. Please set
+them up like this, if you would like to use our database:
 
 `server/config.ts`:
 
@@ -54,18 +43,18 @@ These environment variables will be used in the `server/src/mysql-pool.ts` file.
 ### Create your own database
 
 You are also welcome to use your own database. To create the tables you need, please copy the
-content in `databasesetup.txt`: and run the script in your mysql database. Remeber to change the
+content in `databasesetup.txt` and run the script in your mysql database. Remeber to change the
 content in both config.ts-files to match your new database.
 
 In order to retrive all the recipes from spoonaculars API you also need to change the const
-retrieveFromApi to true, as shown below. This is done in `client/src/index.tsx`:
+retrieveFromApi to true, as shown below. This is done in `client/src/index.tsx`
 
 ```ts
 const retrieveFromApi = true;
 ```
 
 After you have startet the application for the first time, this const needs to be put to false in
-order to not retrive the recipes multiple times
+order to not retrive the recipes multiple times.
 
 ## Start server
 
