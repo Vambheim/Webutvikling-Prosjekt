@@ -11,6 +11,15 @@ Muligens for API: https://rapidapi.com/spoonacular/api/recipe-food-nutrition
 
 # /'REC.A.P.I'/ a recipe web-application
 
+This application has been developed as a project assignment in the subject INFT2002 (Web
+development) at NTNU. /'REC.A.P.I'/ offers a variety of functionality in order to make your
+coocking-life easier. We can offer av variety of different recipes with something for everyone. You
+can use our filter and search functions in order to get exactly what you want. The application also
+provides the posibility to both add and edit the recipes, as well ass creating your own shopping
+list with all the ingredients you need from your selected recipe. In addition the application also
+gives you the opportunity to create a user and log in. Note that the security is taken care of, and
+the passwords are stored as a hashed value.
+
 ## Setup database connections
 
 You need to create two configuration files that will contain the database connection details. These
