@@ -179,7 +179,6 @@ class RecipeService {
       .then((response) => response.data.recipe_id);
   }
 
-  // tror denne er good nå
   createRecipeIngredients(
     name: string,
     recipe_id: number,
@@ -219,14 +218,14 @@ class RecipeService {
       .then((response) => response.data);
   }
 
-  //Poster Recipes
+  //Post Recipes from Spoonacular
   PostSpoonacularRecipes(recipes: Array<RecipeDetailed>) {
     return axios
       .post<Array<RecipeDetailed>>('/spoonacular/recipes/', { recipes })
       .then((response) => response.data);
   }
 
-  //Poster ingridienser
+  //Post Ingridiences from Spoonacular
   PostSpoonacularIngriedents(ingridients: Array<RecipeIngredient>) {
 
     return axios
@@ -234,7 +233,7 @@ class RecipeService {
       .then((response) => response.data);
   }
 
-  //Poster data for mange til mange tabellen mellom ingridienser og oppskrifter
+  //Post data for the many to many between ingridiences and recipes
   PostSpoonacularRecipeIngriedents(data: Array<RecipeDetailed>) {
     var ingridients = [];
 
@@ -249,7 +248,7 @@ class RecipeService {
       .then((response) => response.data);
   }
 
-  //Poster data for steps
+  //Post data for steps
   PostSpoonacularSteps(steps: Array<Step>) {
     return axios
       .post<Array<Step>>('/spoonacular/steps/', { steps })

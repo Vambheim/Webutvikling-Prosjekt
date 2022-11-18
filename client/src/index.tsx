@@ -6,12 +6,6 @@ import { Alert } from './widgets';
 import { Carousel, Card, Button, Row, Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { RecipeAdd, RecipeList, RecipeDetails, RecipeEdit } from './recipe-components';
 import { ShoppingList } from './shoppingList-components';
-import RecipeService, {
-  Ingredient,
-  RecipeDetailed,
-  Step,
-  RecipeIngredient,
-} from './recipe-service';
 import { UserDetails, UserLogIn, RegisterUser } from './user-components';
 import { getRecipesBulk } from './thirdparty-api-formatting';
 
@@ -54,10 +48,10 @@ class Menu extends Component {
 
 class Home extends Component {
   mounted() {
-    //Endre denne for å skru av og på kall til API-et
+    //Change this to turn the thirdparty API call on and of 
     const retrieveFromApi = false;
 
-    //henter 5 * 20 oppskrifter fra API-et spoonacular når komponentet lastes
+    //Fetch 5 * 20 recipes from the API spoonacular when Home loads
     if (retrieveFromApi) {
       const intervalAPI = setInterval(() => getRecipesBulk(null), 1500);
       setTimeout(() => {

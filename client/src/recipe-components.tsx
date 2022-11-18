@@ -598,7 +598,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
       recipeService
         .likeRecipe(currentUser.user_id, this.recipe.recipe_id)
         .then((response) => Alert.success(response))
-        // alt kræsjer hvis man får en annen sql-feil en at man ikke kan ha flere rader med samme nøkkel
         .catch((error) => Alert.danger(error.response.data));
     }
   }
@@ -660,7 +659,6 @@ export class RecipeAdd extends Component {
 
   ingredients: addIngredient[] = [];
   ingredient: addIngredient = { name: '', amount: 1, measurement_unit: '' };
-  //amount må være number, men da fungerer ikke placeholder
 
   stepCounter: number = 1;
   steps: addStep[] = [];

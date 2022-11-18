@@ -524,11 +524,11 @@ router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-// Poster spørring til tabell Recipe
+// Post query to Recipe
 router.post('/spoonacular/recipes', (request, response) => {
   var data = request.body;
 
-  //Slicer request packingen og parser til JSON
+  //Slice request packing and parse it to JSON
   var json = JSON.stringify(data).slice(11, -1);
   var recipes = JSON.parse(json);
 
@@ -539,11 +539,11 @@ router.post('/spoonacular/recipes', (request, response) => {
       .catch((error) => response.status(500).send(error));
 });
 
-// Poster spørring til tabell Ingridient --> BURDE VEL KANSKJE VÆRT INGREDIENT
+// Post query to Ingridient
 router.post('/spoonacular/ingridients', (request, response) => {
   var data = request.body;
 
-  //Slicer request packingen og parser til JSON
+  //Slice request packing and parse it to JSON
   var json = JSON.stringify(data).slice(15, -1);
   var ingridients = JSON.parse(json);
 
@@ -554,11 +554,11 @@ router.post('/spoonacular/ingridients', (request, response) => {
       .catch((error) => response.status(500).send(error));
 });
 
-//Poster spørring til tabell recipe_ingrident
+//Post query to recipe_ingrident
 router.post('/spoonacular/ingridients-recipes', (request, response) => {
   var data = request.body;
 
-  //Slicer request packingen og parser til JSON
+  //Slice request packing and parse it to JSON
   var json = JSON.stringify(data).slice(15, -1);
   var ingridients = JSON.parse(json);
 
@@ -569,10 +569,11 @@ router.post('/spoonacular/ingridients-recipes', (request, response) => {
       .catch((error) => response.status(500).send(error));
 });
 
-//Poster spørring til tabell Step
+//Poster query to Step
 router.post('/spoonacular/steps', (request, response) => {
   var data = request.body;
-  //Slicer request packingen og parser til JSON
+
+  //Slice request packing and parse it to JSON
   var json = JSON.stringify(data).slice(9, -1);
   var steps = JSON.parse(json);
 
@@ -582,24 +583,5 @@ router.post('/spoonacular/steps', (request, response) => {
       .then(() => response.send('Postet Spoonacular data'))
       .catch((error) => response.status(500).send(error));
 });
-
-// Example request body: { title: "Ny oppgave" }
-// // Example response body: { id: 4 }
-// router.post('/tasks', (request, response) => {
-//   const data = request.body;
-//   if (data && data.title && data.title.length != 0)
-//     taskService
-//       .create(data.title)
-//       .then((id) => response.send({ id: id }))
-//       .catch((error) => response.status(500).send(error));
-//   else response.status(400).send('Missing task title');
-// });
-
-// router.delete('/tasks/:id', (request, response) => {
-//   taskService
-//     .delete(Number(request.params.id))
-//     .then((_result) => response.send())
-//     .catch((error) => response.status(500).send(error));
-// });
 
 export default router;
