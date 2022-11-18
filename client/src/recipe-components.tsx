@@ -14,7 +14,6 @@ import { Button, Form, Card, Row, Col, Container } from 'react-bootstrap';
 import { createHashHistory } from 'history';
 import shoppingListService from './shoppingList-service';
 import { loggedIn, currentUser } from './user-components';
-import CardHeader from 'react-bootstrap/esm/CardHeader';
 
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a recipe
 
@@ -276,6 +275,7 @@ export class RecipeList extends Component {
                 </NavLink>
               ))}
             </Row>
+            ;
           </Col>
         </Container>
       </>
