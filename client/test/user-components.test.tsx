@@ -112,7 +112,7 @@ describe('UserLogIn component tests', () => {
     wrapper.find(Button).at(2).simulate('click');
 
     setTimeout(() => {
-      expect(location.hash).toEqual('#/recipes/pikk');
+      expect(location.hash).toEqual('#/recipes/user');
       expect(location.hash).toEqual('#/recipes/login');
     });
   });
@@ -193,19 +193,13 @@ describe('UserDetails component tests', () => {
     wrapper.find(Button).at(0).simulate('click');
 
     setTimeout(() => {
-      expect(location.hash).toEqual('');
+      expect(location.hash).toEqual('#/recipes');
     });
   });
 
-  test('Test if the component contains 3 Cards', () => {
+  test('Test if the component contains 2 Cards', () => {
     const wrapper = shallow(<UserDetails />);
 
-    expect(wrapper.find(Card)).toHaveLength(3);
-  });
-
-  test('Test if the component contains 5 Rows', () => {
-    const wrapper = shallow(<UserDetails />);
-
-    expect(wrapper.find(Row)).toHaveLength(5);
+    expect(wrapper.find(Card)).toHaveLength(2);
   });
 });

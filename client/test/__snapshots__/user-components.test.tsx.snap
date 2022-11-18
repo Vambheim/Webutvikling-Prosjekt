@@ -231,7 +231,7 @@ exports[`UserDetails component tests UserDetails draws correctly 1`] = `
 </Fragment>
 `;
 
-exports[`UserLogIn widgets tests UserLogIn draws correctly 1`] = `
+exports[`UserLogIn component tests UserLogIn draws correctly 1`] = `
 <Card
   body={false}
   style={
