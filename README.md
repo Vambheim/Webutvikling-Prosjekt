@@ -20,6 +20,8 @@ list with all the ingredients you need from your selected recipe. In addition th
 gives you the opportunity to create a user and log in. Note that the security is taken care of, and
 the passwords are stored as a hashed value.
 
+![/'REC.A.P.I'/ logo](https://tihldestorage.blob.core.windows.net/imagepng/a70fd0bd-f8c0-45eb-b808-293149cf2620resapi-high-resolution-logo-white-on-transparent-background.png)
+
 ## Setup database connections
 
 You need to create two configuration files that will contain the database connection details. These
