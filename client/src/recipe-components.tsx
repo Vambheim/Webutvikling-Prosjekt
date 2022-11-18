@@ -430,7 +430,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
               {' '}
               {'Recipe for ' + this.recipe.name}
             </Card.Title>
-
             <Row className="justify-content-md-center">
               <Col xs={5}>
                 <h6>Steps: </h6>
@@ -445,12 +444,7 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                 </ol>
                 <Row>
                   <Button
-                    style={{
-                      width: '5rem',
-                      margin: 'auto',
-                      marginTop: '10%',
-                      height: '4rem',
-                    }}
+                    style={{ width: '5rem', margin: 'auto', marginTop: '10%', height: '4rem' }}
                     variant="outline-danger"
                     onClick={() => this.likeRecipe()}
                   >
@@ -506,17 +500,16 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
                 ))}
                 <Row>
                   <Button
-                    style={{ width: '7rem', margin: 'auto', marginTop: '1%' }}
+                    style={{ width: '15rem', margin: 'auto', marginTop: '1%' }}
                     variant="success"
                     onClick={() => this.addAllToShoppingList()}
                   >
-                    Add to list
+                    Add to shopping list
                   </Button>
                 </Row>
               </Col>
             </Row>
           </Card>
-
           <Card
             style={{
               padding: '20px',
@@ -525,7 +518,6 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
             }}
           >
             <Card.Title>You may also like:</Card.Title>
-
             <Col lg>
               <Row xs={1} md={4} className="g-4">
                 {this.recomended_recipes.map((recomended_recipe) => (
@@ -574,19 +566,23 @@ export class RecipeDetails extends Component<{ match: { params: { recipe_id: num
 
       .get(this.props.match.params.recipe_id)
       .then((recipe) => (this.recipe = recipe))
-      // Getting recipe steps
-      .then(() => recipeService.getSteps(this.recipe.recipe_id))
-      .then((steps) => (this.steps = steps))
-      .then(() => recipeService.getRecipeIngredients(this.recipe.recipe_id))
-      .then((ingredients) => (this.ingredients = ingredients))
+      .then(() => {
+        recipeService
+          .getRecipeIngredients(this.recipe.recipe_id)
+          .then((ingredients) => (this.ingredients = ingredients));
+      })
+      .then(() => {
+        recipeService.getSteps(this.recipe.recipe_id).then((steps) => (this.steps = steps));
+      })
       .then(() =>
-        recipeService.getRecommendedRecipes(
-          this.props.match.params.recipe_id,
-          this.recipe.category,
-          this.recipe.country
-        )
+        recipeService
+          .getRecommendedRecipes(
+            this.props.match.params.recipe_id,
+            this.recipe.category,
+            this.recipe.country
+          )
+          .then((recipes) => (this.recomended_recipes = recipes))
       )
-      .then((recipes) => (this.recomended_recipes = recipes))
       .catch((error) => Alert.danger('Error getting recipe details: ' + error.message));
   }
 
@@ -1025,7 +1021,7 @@ export class RecipeAdd extends Component {
   saveRecipe() {
     if (this.steps.length != 0) {
       recipeService
-        .createRecipe(this.recipe.name, this.recipe.country, this.recipe.category)
+        .createRecipe(this.recipe.name, this.recipe.category, this.recipe.country)
         .then((recipe_id) => {
           this.ingredients.map((ing) =>
             recipeService
@@ -1288,8 +1284,14 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
             .then((response) => console.log(response))
             .catch((error) => Alert.danger('Error updating step: ' + error.message));
         });
-      }) // legge til for steps også her
-      .then(() => history.push('/recipes/' + this.recipe.recipe_id))
+      })
+      // .then(() => history.push('/recipes/' + this.recipe.recipe_id))
       .catch((error) => Alert.danger('Error updating recipe' + error.message));
+
+    /// denne kan fjernes etter video
+    setTimeout(() => {
+      history.push('/recipes/' + this.recipe.recipe_id);
+      //@ts-ignore
+    }, '500');
   }
 }
