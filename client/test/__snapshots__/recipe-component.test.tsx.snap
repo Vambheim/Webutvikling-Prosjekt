@@ -1,5 +1,287 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Country and Category filter pushes correctly 1`] = `
+<Fragment>
+  <Container
+    fluid={false}
+  >
+    <Card
+      body={false}
+      style={
+        {
+          "borderLeft": "none",
+          "borderRadius": "0px",
+          "borderRight": "none",
+          "borderTop": "none",
+          "paddingBottom": "3%",
+          "textAlign": "center",
+        }
+      }
+      title="Recipe for Butter Brie"
+    >
+      <CardTitle
+        style={
+          {
+            "paddingTop": "5%",
+          }
+        }
+      >
+         
+        Recipe for Butter Brie
+      </CardTitle>
+      <Row
+        className="justify-content-md-center"
+      >
+        <Col
+          xs={5}
+        >
+          <h6>
+            Steps: 
+          </h6>
+          <ol />
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="outline-danger"
+            >
+              Like ❤
+            </Button>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="success"
+            >
+              Edit
+            </Button>
+          </Row>
+        </Col>
+        <Col>
+          <h6>
+            Ingredients: 
+          </h6>
+          <Row
+            className="justify-content-md-center"
+          >
+            Portion:
+            <Col
+              md="auto"
+            >
+              <FormControl
+                max={50}
+                min={1}
+                onChange={[Function]}
+                type="number"
+                value={1}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "margin": "auto",
+                  "marginTop": "1%",
+                  "width": "7rem",
+                }
+              }
+              variant="success"
+            >
+              Add to list
+            </Button>
+          </Row>
+        </Col>
+      </Row>
+    </Card>
+    <Card
+      body={false}
+      style={
+        {
+          "border": "none",
+          "padding": "20px",
+          "textAlign": "center",
+        }
+      }
+    >
+      <CardTitle>
+        You may also like:
+      </CardTitle>
+      <Col
+        lg={true}
+      >
+        <Row
+          className="g-4"
+          md={4}
+          xs={1}
+        />
+      </Col>
+    </Card>
+  </Container>
+</Fragment>
+`;
+
+exports[`Ingredientfilter pushes correctly 1`] = `
+<Fragment>
+  <Container
+    fluid={false}
+  >
+    <Card
+      body={false}
+      style={
+        {
+          "borderLeft": "none",
+          "borderRadius": "0px",
+          "borderRight": "none",
+          "borderTop": "none",
+          "paddingBottom": "3%",
+          "textAlign": "center",
+        }
+      }
+      title="Recipe for Butter Brie"
+    >
+      <CardTitle
+        style={
+          {
+            "paddingTop": "5%",
+          }
+        }
+      >
+         
+        Recipe for Butter Brie
+      </CardTitle>
+      <Row
+        className="justify-content-md-center"
+      >
+        <Col
+          xs={5}
+        >
+          <h6>
+            Steps: 
+          </h6>
+          <ol />
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="outline-danger"
+            >
+              Like ❤
+            </Button>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="success"
+            >
+              Edit
+            </Button>
+          </Row>
+        </Col>
+        <Col>
+          <h6>
+            Ingredients: 
+          </h6>
+          <Row
+            className="justify-content-md-center"
+          >
+            Portion:
+            <Col
+              md="auto"
+            >
+              <FormControl
+                max={50}
+                min={1}
+                onChange={[Function]}
+                type="number"
+                value={1}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "margin": "auto",
+                  "marginTop": "1%",
+                  "width": "7rem",
+                }
+              }
+              variant="success"
+            >
+              Add to list
+            </Button>
+          </Row>
+        </Col>
+      </Row>
+    </Card>
+    <Card
+      body={false}
+      style={
+        {
+          "border": "none",
+          "padding": "20px",
+          "textAlign": "center",
+        }
+      }
+    >
+      <CardTitle>
+        You may also like:
+      </CardTitle>
+      <Col
+        lg={true}
+      >
+        <Row
+          className="g-4"
+          md={4}
+          xs={1}
+        />
+      </Col>
+    </Card>
+  </Container>
+</Fragment>
+`;
+
 exports[`RecipeAdd tests RecipeAdd draws correctly (using snapshot) 1`] = `
 <Fragment>
   <Container
@@ -393,7 +675,148 @@ exports[`RecipeAdd tests RecipeAdd draws correctly (using snapshot) 1`] = `
 </Fragment>
 `;
 
-exports[`RecipeDetails tests RecipeDetails draws correctly (using snapshot) 1`] = `
+exports[`RecipeDetails tests RecipeDetails draws correctly 1`] = `
+<Fragment>
+  <Container
+    fluid={false}
+  >
+    <Card
+      body={false}
+      style={
+        {
+          "borderLeft": "none",
+          "borderRadius": "0px",
+          "borderRight": "none",
+          "borderTop": "none",
+          "paddingBottom": "3%",
+          "textAlign": "center",
+        }
+      }
+      title="Recipe for Butter Brie"
+    >
+      <CardTitle
+        style={
+          {
+            "paddingTop": "5%",
+          }
+        }
+      >
+         
+        Recipe for Butter Brie
+      </CardTitle>
+      <Row
+        className="justify-content-md-center"
+      >
+        <Col
+          xs={5}
+        >
+          <h6>
+            Steps: 
+          </h6>
+          <ol />
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="outline-danger"
+            >
+              Like ❤
+            </Button>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="success"
+            >
+              Edit
+            </Button>
+          </Row>
+        </Col>
+        <Col>
+          <h6>
+            Ingredients: 
+          </h6>
+          <Row
+            className="justify-content-md-center"
+          >
+            Portion:
+            <Col
+              md="auto"
+            >
+              <FormControl
+                max={50}
+                min={1}
+                onChange={[Function]}
+                type="number"
+                value={1}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "margin": "auto",
+                  "marginTop": "1%",
+                  "width": "7rem",
+                }
+              }
+              variant="success"
+            >
+              Add to list
+            </Button>
+          </Row>
+        </Col>
+      </Row>
+    </Card>
+    <Card
+      body={false}
+      style={
+        {
+          "border": "none",
+          "padding": "20px",
+          "textAlign": "center",
+        }
+      }
+    >
+      <CardTitle>
+        You may also like:
+      </CardTitle>
+      <Col
+        lg={true}
+      >
+        <Row
+          className="g-4"
+          md={4}
+          xs={1}
+        />
+      </Col>
+    </Card>
+  </Container>
+</Fragment>
+`;
+
+exports[`RecipeDetails tests RecipeDetails draws correctly using snapshots 1`] = `
 <Fragment>
   <Container
     fluid={false}
@@ -763,7 +1186,7 @@ exports[`RecipeEdit tests RecipeEdit draws correctly (using snapshot) 1`] = `
 </Fragment>
 `;
 
-exports[`RecipeList tests RecipeDetailds draws correctly using snapshots 1`] = `
+exports[`RecipeList tests Add filter button draws correctly  1`] = `
 <Fragment>
   <Card
     body={false}
@@ -1185,6 +1608,1291 @@ exports[`RecipeList tests RecipeDetailds draws correctly using snapshots 1`] = `
           </Column>
         </NavLink>
       </Row>
+      ;
+    </Col>
+  </Container>
+</Fragment>
+`;
+
+exports[`RecipeList tests Add filter button draws correctly  2`] = `
+<Fragment>
+  <Card
+    body={false}
+    style={
+      {
+        "border": "none",
+        "padding": "15px",
+      }
+    }
+  >
+    <CardTitle
+      style={
+        {
+          "marginLeft": "auto",
+          "marginRight": "auto",
+        }
+      }
+    >
+      Search for a recipe
+    </CardTitle>
+    <Row
+      style={
+        {
+          "marginLeft": "auto",
+          "marginRight": "auto",
+          "textAlign": "center",
+        }
+      }
+    >
+      <Col>
+        <FormControl
+          onChange={[Function]}
+          placeholder="Search"
+          style={
+            {
+              "marginLeft": "auto",
+              "marginRight": "auto",
+              "textAlign": "center",
+              "width": "24rem",
+            }
+          }
+          type="Search"
+          value=""
+        />
+      </Col>
+    </Row>
+  </Card>
+  <Column>
+    <Container
+      fluid={false}
+      style={
+        {
+          "borderBottom": "none",
+          "borderLeft": "none",
+          "borderTop": "none",
+          "margin": "5%",
+        }
+      }
+    >
+      <Card
+        body={false}
+        style={
+          {
+            "border": "none",
+            "textAlign": "center",
+            "width": "12rem",
+          }
+        }
+      >
+        <CardTitle>
+          Filter by country and category:
+        </CardTitle>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose country: 
+              </option>
+              <option
+                key="0"
+                value="American"
+              >
+                American
+              </option>
+              <option
+                key="1"
+                value="Mexican"
+              >
+                Mexican
+              </option>
+            </FormSelect>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10 px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose category: 
+              </option>
+              <option
+                key="0"
+                value="side dish"
+              >
+                side dish
+              </option>
+              <option
+                key="1"
+                value="beverage"
+              >
+                beverage
+              </option>
+              <option
+                key="2"
+                value="antipasti"
+              >
+                antipasti
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Button
+          active={false}
+          disabled={false}
+          onClick={[Function]}
+          style={
+            {
+              "marginBlock": "5%",
+              "marginLeft": "auto",
+              "marginRight": "auto",
+              "width": "60%",
+            }
+          }
+          variant="outline-success"
+        >
+          Add filters
+        </Button>
+      </Card>
+      <Card
+        body={false}
+        style={
+          {
+            "border": "none",
+            "textAlign": "center",
+            "width": "12rem",
+          }
+        }
+      >
+        <CardTitle>
+           Filter by ingredient: 
+        </CardTitle>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "marginBlock": "5%",
+                  "marginLeft": "auto",
+                  "marginRight": "auto",
+                  "width": "60%",
+                }
+              }
+              variant="outline-success"
+            >
+              Add filters
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Button
+            active={false}
+            disabled={false}
+            onClick={[Function]}
+            style={
+              {
+                "marginLeft": "auto",
+                "marginRight": "auto",
+                "width": "70%",
+              }
+            }
+            variant="outline-danger"
+          >
+            Remove filters
+          </Button>
+        </Row>
+      </Card>
+    </Container>
+  </Column>
+  <Container
+    fluid={false}
+  >
+    <Col
+      lg={true}
+    >
+      <Row
+        className="g-4"
+        md={4}
+        xs={1}
+      >
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Butter Brie
+                </CardTitle>
+                <CardText>
+                  American
+                   
+                  side dish
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Three Ingredient Frozen Pina Colada
+                </CardTitle>
+                <CardText>
+                  Mexican
+                   
+                  beverage
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Rotisserie Chicken and Bean Tostadas
+                </CardTitle>
+                <CardText>
+                  Mexican
+                   
+                  antipasti
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+      </Row>
+      ;
+    </Col>
+  </Container>
+</Fragment>
+`;
+
+exports[`RecipeList tests RecipeList draws correctly 1`] = `
+<Fragment>
+  <Card
+    body={false}
+    style={
+      {
+        "border": "none",
+        "padding": "15px",
+      }
+    }
+  >
+    <CardTitle
+      style={
+        {
+          "marginLeft": "auto",
+          "marginRight": "auto",
+        }
+      }
+    >
+      Search for a recipe
+    </CardTitle>
+    <Row
+      style={
+        {
+          "marginLeft": "auto",
+          "marginRight": "auto",
+          "textAlign": "center",
+        }
+      }
+    >
+      <Col>
+        <FormControl
+          onChange={[Function]}
+          placeholder="Search"
+          style={
+            {
+              "marginLeft": "auto",
+              "marginRight": "auto",
+              "textAlign": "center",
+              "width": "24rem",
+            }
+          }
+          type="Search"
+          value=""
+        />
+      </Col>
+    </Row>
+  </Card>
+  <Column>
+    <Container
+      fluid={false}
+      style={
+        {
+          "borderBottom": "none",
+          "borderLeft": "none",
+          "borderTop": "none",
+          "margin": "5%",
+        }
+      }
+    >
+      <Card
+        body={false}
+        style={
+          {
+            "border": "none",
+            "textAlign": "center",
+            "width": "12rem",
+          }
+        }
+      >
+        <CardTitle>
+          Filter by country and category:
+        </CardTitle>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose country: 
+              </option>
+              <option
+                key="0"
+                value="American"
+              >
+                American
+              </option>
+              <option
+                key="1"
+                value="Mexican"
+              >
+                Mexican
+              </option>
+            </FormSelect>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10 px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose category: 
+              </option>
+              <option
+                key="0"
+                value="side dish"
+              >
+                side dish
+              </option>
+              <option
+                key="1"
+                value="beverage"
+              >
+                beverage
+              </option>
+              <option
+                key="2"
+                value="antipasti"
+              >
+                antipasti
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Button
+          active={false}
+          disabled={false}
+          onClick={[Function]}
+          style={
+            {
+              "marginBlock": "5%",
+              "marginLeft": "auto",
+              "marginRight": "auto",
+              "width": "60%",
+            }
+          }
+          variant="outline-success"
+        >
+          Add filters
+        </Button>
+      </Card>
+      <Card
+        body={false}
+        style={
+          {
+            "border": "none",
+            "textAlign": "center",
+            "width": "12rem",
+          }
+        }
+      >
+        <CardTitle>
+           Filter by ingredient: 
+        </CardTitle>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "marginBlock": "5%",
+                  "marginLeft": "auto",
+                  "marginRight": "auto",
+                  "width": "60%",
+                }
+              }
+              variant="outline-success"
+            >
+              Add filters
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Button
+            active={false}
+            disabled={false}
+            onClick={[Function]}
+            style={
+              {
+                "marginLeft": "auto",
+                "marginRight": "auto",
+                "width": "70%",
+              }
+            }
+            variant="outline-danger"
+          >
+            Remove filters
+          </Button>
+        </Row>
+      </Card>
+    </Container>
+  </Column>
+  <Container
+    fluid={false}
+  >
+    <Col
+      lg={true}
+    >
+      <Row
+        className="g-4"
+        md={4}
+        xs={1}
+      >
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Butter Brie
+                </CardTitle>
+                <CardText>
+                  American
+                   
+                  side dish
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Three Ingredient Frozen Pina Colada
+                </CardTitle>
+                <CardText>
+                  Mexican
+                   
+                  beverage
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Rotisserie Chicken and Bean Tostadas
+                </CardTitle>
+                <CardText>
+                  Mexican
+                   
+                  antipasti
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+      </Row>
+      ;
+    </Col>
+  </Container>
+</Fragment>
+`;
+
+exports[`RecipeList tests Remove filters draws correctly 1`] = `
+<Fragment>
+  <Card
+    body={false}
+    style={
+      {
+        "border": "none",
+        "padding": "15px",
+      }
+    }
+  >
+    <CardTitle
+      style={
+        {
+          "marginLeft": "auto",
+          "marginRight": "auto",
+        }
+      }
+    >
+      Search for a recipe
+    </CardTitle>
+    <Row
+      style={
+        {
+          "marginLeft": "auto",
+          "marginRight": "auto",
+          "textAlign": "center",
+        }
+      }
+    >
+      <Col>
+        <FormControl
+          onChange={[Function]}
+          placeholder="Search"
+          style={
+            {
+              "marginLeft": "auto",
+              "marginRight": "auto",
+              "textAlign": "center",
+              "width": "24rem",
+            }
+          }
+          type="Search"
+          value=""
+        />
+      </Col>
+    </Row>
+  </Card>
+  <Column>
+    <Container
+      fluid={false}
+      style={
+        {
+          "borderBottom": "none",
+          "borderLeft": "none",
+          "borderTop": "none",
+          "margin": "5%",
+        }
+      }
+    >
+      <Card
+        body={false}
+        style={
+          {
+            "border": "none",
+            "textAlign": "center",
+            "width": "12rem",
+          }
+        }
+      >
+        <CardTitle>
+          Filter by country and category:
+        </CardTitle>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose country: 
+              </option>
+              <option
+                key="0"
+                value="American"
+              >
+                American
+              </option>
+              <option
+                key="1"
+                value="Mexican"
+              >
+                Mexican
+              </option>
+            </FormSelect>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10 px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose category: 
+              </option>
+              <option
+                key="0"
+                value="side dish"
+              >
+                side dish
+              </option>
+              <option
+                key="1"
+                value="beverage"
+              >
+                beverage
+              </option>
+              <option
+                key="2"
+                value="antipasti"
+              >
+                antipasti
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Button
+          active={false}
+          disabled={false}
+          onClick={[Function]}
+          style={
+            {
+              "marginBlock": "5%",
+              "marginLeft": "auto",
+              "marginRight": "auto",
+              "width": "60%",
+            }
+          }
+          variant="outline-success"
+        >
+          Add filters
+        </Button>
+      </Card>
+      <Card
+        body={false}
+        style={
+          {
+            "border": "none",
+            "textAlign": "center",
+            "width": "12rem",
+          }
+        }
+      >
+        <CardTitle>
+           Filter by ingredient: 
+        </CardTitle>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormSelect
+              onChange={[Function]}
+              style={
+                {
+                  "marginBottom": "10px",
+                }
+              }
+              value=""
+            >
+              <option
+                hidden={true}
+                key="blankChoice"
+              >
+                Choose ingredient: 
+              </option>
+            </FormSelect>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "marginBlock": "5%",
+                  "marginLeft": "auto",
+                  "marginRight": "auto",
+                  "width": "60%",
+                }
+              }
+              variant="outline-success"
+            >
+              Add filters
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Button
+            active={false}
+            disabled={false}
+            onClick={[Function]}
+            style={
+              {
+                "marginLeft": "auto",
+                "marginRight": "auto",
+                "width": "70%",
+              }
+            }
+            variant="outline-danger"
+          >
+            Remove filters
+          </Button>
+        </Row>
+      </Card>
+    </Container>
+  </Column>
+  <Container
+    fluid={false}
+  >
+    <Col
+      lg={true}
+    >
+      <Row
+        className="g-4"
+        md={4}
+        xs={1}
+      >
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Butter Brie
+                </CardTitle>
+                <CardText>
+                  American
+                   
+                  side dish
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Three Ingredient Frozen Pina Colada
+                </CardTitle>
+                <CardText>
+                  Mexican
+                   
+                  beverage
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+        <NavLink
+          style={
+            {
+              "color": "#9FC1C0",
+            }
+          }
+          to="/recipes/undefined"
+        >
+          <Column>
+            <Card
+              body={false}
+              style={
+                {
+                  "borderLeft": "none",
+                  "borderRadius": "none",
+                  "borderRight": "none",
+                  "borderTop": "none",
+                  "height": "100%",
+                  "margin": "1%",
+                  "textAlign": "center",
+                  "width": "100%",
+                }
+              }
+            >
+              <CardBody>
+                <CardImg
+                  src="https://s.tihlde.org/recipechef12312"
+                  variant="top"
+                />
+                <CardTitle
+                  style={
+                    {
+                      "color": "rgb(82, 130, 101)",
+                    }
+                  }
+                >
+                  Rotisserie Chicken and Bean Tostadas
+                </CardTitle>
+                <CardText>
+                  Mexican
+                   
+                  antipasti
+                </CardText>
+              </CardBody>
+            </Card>
+          </Column>
+        </NavLink>
+      </Row>
+      ;
     </Col>
   </Container>
 </Fragment>
