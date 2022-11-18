@@ -46,15 +46,15 @@ You are also welcome to use your own database. To create the tables you need, pl
 content in `databasesetup.txt` and run the script in your mysql database. Remeber to change the
 content in both config.ts-files to match your new database.
 
-In order to retrive all the recipes from spoonaculars API you also need to change the const
+In order to retrive a set of recipes from spoonaculars API you also need to change the constant
 retrieveFromApi to true, as shown below. This is done in `client/src/index.tsx`
 
 ```ts
 const retrieveFromApi = true;
 ```
 
-After you have startet the application for the first time, this const needs to be put to false in
-order to not retrive the recipes multiple times.
+After you have startet the application for the first time and have the desired amount of recipes from Spoonacular, this constant should be put to false in
+order to not retrive a new set of recipes every time you load the webpage.
 
 ## Start server
 
