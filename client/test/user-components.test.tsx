@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { UserLogIn, RegisterUser, UserDetails } from '../src/user-components';
+import {
+  UserLogIn,
+  RegisterUser,
+  UserDetails,
+  loggedIn,
+  currentUser,
+} from '../src/user-components';
 import { shallow } from 'enzyme';
 import { NavLink } from 'react-router-dom';
 import { Component } from 'react-simplified';
@@ -69,23 +75,7 @@ jest.mock('../src/recipe-service', () => {
 //   });
 // });
 
-describe('RegisterUser component tests', () => {
-  test('RegisterUser draws correctly', () => {
-    const wrapper = shallow(<RegisterUser />);
-
-    expect(wrapper).toMatchSnapshot();
-  });
-});
-
-describe('UserDetails component tests', () => {
-  test('UserDetails draws correctly', () => {
-    const wrapper = shallow(<UserDetails />);
-
-    expect(wrapper).toMatchSnapshot();
-  });
-});
-
-describe('UserLogIn widgets tests', () => {
+describe('UserLogIn component tests', () => {
   test('UserLogIn draws correctly', () => {
     const wrapper = shallow(<UserLogIn />);
 
@@ -112,17 +102,61 @@ describe('UserLogIn widgets tests', () => {
     expect(wrapper.containsMatchingElement(<Form.Control value="test2" />)).toEqual(true);
   });
 
-  // test('Button sucess calls function on click-event', () => {
-  //   const wrapper = shallow(
-  //     <Button variant="success" onClick={() => userService.logIn('test@mail.com', 'testPassword')}>
-  //       Log in
-  //     </Button>
-  //   );
+  test('Button sucess calls function on click-event', () => {
+    const wrapper = shallow(<UserLogIn />);
 
-  //   wrapper.find('button').simulate('click');
+    expect(wrapper).toMatchSnapshot();
+  });
+});
 
-  //   expect().toEqual('Logged in as test@mail.com');
-  // });
+describe('UserDetails component tests', () => {
+  test('UserDetails draws correctly', () => {
+    const wrapper = shallow(<UserDetails />);
+
+    expect(wrapper).toMatchSnapshot();
+  });
+});
+
+describe('RegisterUser component tests', () => {
+  test('RegisterUser draws correctly', () => {
+    const wrapper = shallow(<RegisterUser />);
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  test('Input updates correctly', () => {
+    const wrapper = shallow(<RegisterUser />);
+
+    // @ts-ignore: do not type check next line.
+    expect(wrapper.containsMatchingElement(<Form.Control value="" />)).toEqual(true);
+
+    wrapper
+      .find(Form.Control)
+      .at(0)
+      .simulate('change', { currentTarget: { value: 'test1' } });
+
+    wrapper
+      .find(Form.Control)
+      .at(1)
+      .simulate('change', { currentTarget: { value: 'test2' } });
+
+    wrapper
+      .find(Form.Control)
+      .at(2)
+      .simulate('change', { currentTarget: { value: 'test3' } });
+
+    wrapper
+      .find(Form.Control)
+      .at(3)
+      .simulate('change', { currentTarget: { value: 'test4' } });
+
+    // @ts-ignore: do not type check next line.
+
+    expect(wrapper.containsMatchingElement(<Form.Control value="test1" />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value="test2" />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value="test3" />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value="test4" />)).toEqual(true);
+  });
 });
 
 // describe('Button.Success widget tests', () => {

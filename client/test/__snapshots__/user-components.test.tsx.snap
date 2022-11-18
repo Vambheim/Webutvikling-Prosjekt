@@ -231,6 +231,351 @@ exports[`UserDetails component tests UserDetails draws correctly 1`] = `
 </Fragment>
 `;
 
+exports[`UserLogIn component tests Button sucess calls function on click-event 1`] = `
+<Card
+  body={false}
+  style={
+    {
+      "border": "none",
+      "marginLeft": "auto",
+      "marginRight": "auto",
+      "padding": "15px",
+      "textAlign": "center",
+    }
+  }
+>
+  <CardTitle>
+    Log in
+  </CardTitle>
+  <Container
+    fluid={false}
+    style={
+      {
+        "marginLeft": "auto",
+        "marginRight": "auto",
+        "width": "20rem",
+      }
+    }
+  >
+    <Row>
+      <FormControl
+        onChange={[Function]}
+        placeholder="Email"
+        style={
+          {
+            "marginBottom": "10px",
+            "textAlign": "center",
+          }
+        }
+        type="text"
+        value=""
+      />
+    </Row>
+    <Row>
+      <FormControl
+        onChange={[Function]}
+        onKeyUp={[Function]}
+        placeholder="Password"
+        style={
+          {
+            "marginBottom": "10px",
+            "textAlign": "center",
+          }
+        }
+        type="password"
+        value=""
+      />
+    </Row>
+  </Container>
+  <Container
+    fluid={false}
+    style={
+      {
+        "marginLeft": "auto",
+        "marginRight": "auto",
+        "width": "15rem",
+      }
+    }
+  >
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="success"
+      >
+        Log in
+      </Button>
+    </Row>
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="outline-success"
+      >
+        No user? Create one here
+      </Button>
+    </Row>
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="outline-secondary"
+      >
+        Clear input
+      </Button>
+    </Row>
+  </Container>
+</Card>
+`;
+
+exports[`UserLogIn component tests UserLogIn draws correctly 1`] = `
+<Card
+  body={false}
+  style={
+    {
+      "border": "none",
+      "marginLeft": "auto",
+      "marginRight": "auto",
+      "padding": "15px",
+      "textAlign": "center",
+    }
+  }
+>
+  <CardTitle>
+    Log in
+  </CardTitle>
+  <Container
+    fluid={false}
+    style={
+      {
+        "marginLeft": "auto",
+        "marginRight": "auto",
+        "width": "20rem",
+      }
+    }
+  >
+    <Row>
+      <FormControl
+        onChange={[Function]}
+        placeholder="Email"
+        style={
+          {
+            "marginBottom": "10px",
+            "textAlign": "center",
+          }
+        }
+        type="text"
+        value=""
+      />
+    </Row>
+    <Row>
+      <FormControl
+        onChange={[Function]}
+        onKeyUp={[Function]}
+        placeholder="Password"
+        style={
+          {
+            "marginBottom": "10px",
+            "textAlign": "center",
+          }
+        }
+        type="password"
+        value=""
+      />
+    </Row>
+  </Container>
+  <Container
+    fluid={false}
+    style={
+      {
+        "marginLeft": "auto",
+        "marginRight": "auto",
+        "width": "15rem",
+      }
+    }
+  >
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="success"
+      >
+        Log in
+      </Button>
+    </Row>
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="outline-success"
+      >
+        No user? Create one here
+      </Button>
+    </Row>
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="outline-secondary"
+      >
+        Clear input
+      </Button>
+    </Row>
+  </Container>
+</Card>
+`;
+
+exports[`UserLogIn widgets tests Button sucess calls function on click-event 1`] = `
+<Card
+  body={false}
+  style={
+    {
+      "border": "none",
+      "marginLeft": "auto",
+      "marginRight": "auto",
+      "padding": "15px",
+      "textAlign": "center",
+    }
+  }
+>
+  <CardTitle>
+    Log in
+  </CardTitle>
+  <Container
+    fluid={false}
+    style={
+      {
+        "marginLeft": "auto",
+        "marginRight": "auto",
+        "width": "20rem",
+      }
+    }
+  >
+    <Row>
+      <FormControl
+        onChange={[Function]}
+        placeholder="Email"
+        style={
+          {
+            "marginBottom": "10px",
+            "textAlign": "center",
+          }
+        }
+        type="text"
+        value=""
+      />
+    </Row>
+    <Row>
+      <FormControl
+        onChange={[Function]}
+        onKeyUp={[Function]}
+        placeholder="Password"
+        style={
+          {
+            "marginBottom": "10px",
+            "textAlign": "center",
+          }
+        }
+        type="password"
+        value=""
+      />
+    </Row>
+  </Container>
+  <Container
+    fluid={false}
+    style={
+      {
+        "marginLeft": "auto",
+        "marginRight": "auto",
+        "width": "15rem",
+      }
+    }
+  >
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="success"
+      >
+        Log in
+      </Button>
+    </Row>
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="outline-success"
+      >
+        No user? Create one here
+      </Button>
+    </Row>
+    <Row>
+      <Button
+        active={false}
+        disabled={false}
+        onClick={[Function]}
+        style={
+          {
+            "marginBottom": "10px",
+          }
+        }
+        variant="outline-secondary"
+      >
+        Clear input
+      </Button>
+    </Row>
+  </Container>
+</Card>
+`;
+
 exports[`UserLogIn widgets tests UserLogIn draws correctly 1`] = `
 <Card
   body={false}
