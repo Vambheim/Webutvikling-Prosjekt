@@ -24,7 +24,7 @@ the passwords are stored as a hashed value.
 
 ## Setup database connections
 
-### Create your own database
+### Use our database
 
 You need to create two configuration files that will contain the database connection details. These
 files should not be uploaded to your git repository, and they have therefore been added to
@@ -50,6 +50,22 @@ process.env.MYSQL_DATABASE = 'fs_inft2002_1_test';
 ```
 
 These environment variables will be used in the `server/src/mysql-pool.ts` file.
+
+### Create your own database
+
+You are also welcome to use your own database. To create the tables you need, please copy the
+content in `databasesetup.txt`: and run the script in your mysql database. Remeber to change the
+content in both config.ts-files to match your new database.
+
+In order to retrive all the recipes from spoonaculars API you also need to change the const
+retrieveFromApi to true, as shown below. This is done in `client/src/index.tsx`:
+
+```ts
+const retrieveFromApi = true;
+```
+
+After you have startet the application for the first time, this const needs to be put to false in
+order to not retrive the recipes multiple times
 
 ## Start server
 
