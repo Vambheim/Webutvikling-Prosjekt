@@ -9,7 +9,7 @@ https://medium.com/@nick_92077/user-authentication-basics-hashing-and-jwt-3f9adf
 
 Muligens for API: https://rapidapi.com/spoonacular/api/recipe-food-nutrition
 
-# Client tests example
+# /'REC.A.P.I'/ a recipe web-application
 
 ## Setup database connections
 
@@ -22,18 +22,18 @@ are as follows:
 
 ```ts
 process.env.MYSQL_HOST = 'mysql.stud.ntnu.no';
-process.env.MYSQL_USER = 'username_todo';
-process.env.MYSQL_PASSWORD = 'username_todo';
-process.env.MYSQL_DATABASE = 'username_todo_dev';
+process.env.MYSQL_USER = 'fs_inft2002_1';
+process.env.MYSQL_PASSWORD = 'gruppe1';
+process.env.MYSQL_DATABASE = 'fs_inft2002_1_dev';
 ```
 
 `server/test/config.ts`:
 
 ```ts
 process.env.MYSQL_HOST = 'mysql.stud.ntnu.no';
-process.env.MYSQL_USER = 'username_todo';
-process.env.MYSQL_PASSWORD = 'username_todo';
-process.env.MYSQL_DATABASE = 'username_todo_test';
+process.env.MYSQL_USER = 'fs_inft2002_1';
+process.env.MYSQL_PASSWORD = 'gruppe1';
+process.env.MYSQL_DATABASE = 'fs_inft2002_1_test';
 ```
 
 These environment variables will be used in the `server/src/mysql-pool.ts` file.
