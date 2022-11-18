@@ -54,17 +54,16 @@ class Menu extends Component {
 
 class Home extends Component {
   mounted() {
-    //Endre denne for å skru av og på kall til API-et
+    //Change this const to turn on and off retrival from external API
     const retrieveFromApi = false;
 
-    //henter 5 * 20 oppskrifter fra API-et spoonacular når komponentet lastes
+    // Get 5 * 20 recipes from spoonacular when the component is mounted
     if (retrieveFromApi) {
       const intervalAPI = setInterval(() => getRecipesBulk(null), 1500);
       setTimeout(() => {
         clearInterval(intervalAPI);
       }, 7500);
     }
-
   }
   render() {
     return (
