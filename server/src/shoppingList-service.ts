@@ -22,7 +22,7 @@ export type ShoppingListInfo = {
 
 class ShoppingListService {
   /**
-   * Get shoppingList with give user_id
+   * Get shoppingList with given user_id
    */
   getShoppingList(user_id: number) {
     return new Promise<ShoppingListInfo[]>((resolve, reject) => {
@@ -39,6 +39,9 @@ class ShoppingListService {
     });
   }
 
+  /**
+   * Deletes entire shoppingList with given user_id
+   */
   deleteShoppingList(user_id: number) {
     return new Promise<void>((resolve, reject) => {
       pool.query(
@@ -54,6 +57,9 @@ class ShoppingListService {
     });
   }
 
+  /**
+   * Deletes one item in the shoppingList with given shopping_list_id
+   */
   deleteItemShoppingList(shopping_list_id: number) {
     return new Promise<void>((resolve, reject) => {
       pool.query(
@@ -69,6 +75,9 @@ class ShoppingListService {
     });
   }
 
+  /**
+   * Adds item to shoppinglist
+   */
   addToShoppingList(list: ShoppingListUserInfo) {
     return new Promise<void>((resolve, reject) => {
       pool.query(
