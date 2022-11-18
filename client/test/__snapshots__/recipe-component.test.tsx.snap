@@ -1,287 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Country and Category filter pushes correctly 1`] = `
-<Fragment>
-  <Container
-    fluid={false}
-  >
-    <Card
-      body={false}
-      style={
-        {
-          "borderLeft": "none",
-          "borderRadius": "0px",
-          "borderRight": "none",
-          "borderTop": "none",
-          "paddingBottom": "3%",
-          "textAlign": "center",
-        }
-      }
-      title="Recipe for Butter Brie"
-    >
-      <CardTitle
-        style={
-          {
-            "paddingTop": "5%",
-          }
-        }
-      >
-         
-        Recipe for Butter Brie
-      </CardTitle>
-      <Row
-        className="justify-content-md-center"
-      >
-        <Col
-          xs={5}
-        >
-          <h6>
-            Steps: 
-          </h6>
-          <ol />
-          <Row>
-            <Button
-              active={false}
-              disabled={false}
-              onClick={[Function]}
-              style={
-                {
-                  "height": "4rem",
-                  "margin": "auto",
-                  "marginTop": "10%",
-                  "width": "5rem",
-                }
-              }
-              variant="outline-danger"
-            >
-              Like ❤
-            </Button>
-            <Button
-              active={false}
-              disabled={false}
-              onClick={[Function]}
-              style={
-                {
-                  "height": "4rem",
-                  "margin": "auto",
-                  "marginTop": "10%",
-                  "width": "5rem",
-                }
-              }
-              variant="success"
-            >
-              Edit
-            </Button>
-          </Row>
-        </Col>
-        <Col>
-          <h6>
-            Ingredients: 
-          </h6>
-          <Row
-            className="justify-content-md-center"
-          >
-            Portion:
-            <Col
-              md="auto"
-            >
-              <FormControl
-                max={50}
-                min={1}
-                onChange={[Function]}
-                type="number"
-                value={1}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Button
-              active={false}
-              disabled={false}
-              onClick={[Function]}
-              style={
-                {
-                  "margin": "auto",
-                  "marginTop": "1%",
-                  "width": "7rem",
-                }
-              }
-              variant="success"
-            >
-              Add to list
-            </Button>
-          </Row>
-        </Col>
-      </Row>
-    </Card>
-    <Card
-      body={false}
-      style={
-        {
-          "border": "none",
-          "padding": "20px",
-          "textAlign": "center",
-        }
-      }
-    >
-      <CardTitle>
-        You may also like:
-      </CardTitle>
-      <Col
-        lg={true}
-      >
-        <Row
-          className="g-4"
-          md={4}
-          xs={1}
-        />
-      </Col>
-    </Card>
-  </Container>
-</Fragment>
-`;
-
-exports[`Ingredientfilter pushes correctly 1`] = `
-<Fragment>
-  <Container
-    fluid={false}
-  >
-    <Card
-      body={false}
-      style={
-        {
-          "borderLeft": "none",
-          "borderRadius": "0px",
-          "borderRight": "none",
-          "borderTop": "none",
-          "paddingBottom": "3%",
-          "textAlign": "center",
-        }
-      }
-      title="Recipe for Butter Brie"
-    >
-      <CardTitle
-        style={
-          {
-            "paddingTop": "5%",
-          }
-        }
-      >
-         
-        Recipe for Butter Brie
-      </CardTitle>
-      <Row
-        className="justify-content-md-center"
-      >
-        <Col
-          xs={5}
-        >
-          <h6>
-            Steps: 
-          </h6>
-          <ol />
-          <Row>
-            <Button
-              active={false}
-              disabled={false}
-              onClick={[Function]}
-              style={
-                {
-                  "height": "4rem",
-                  "margin": "auto",
-                  "marginTop": "10%",
-                  "width": "5rem",
-                }
-              }
-              variant="outline-danger"
-            >
-              Like ❤
-            </Button>
-            <Button
-              active={false}
-              disabled={false}
-              onClick={[Function]}
-              style={
-                {
-                  "height": "4rem",
-                  "margin": "auto",
-                  "marginTop": "10%",
-                  "width": "5rem",
-                }
-              }
-              variant="success"
-            >
-              Edit
-            </Button>
-          </Row>
-        </Col>
-        <Col>
-          <h6>
-            Ingredients: 
-          </h6>
-          <Row
-            className="justify-content-md-center"
-          >
-            Portion:
-            <Col
-              md="auto"
-            >
-              <FormControl
-                max={50}
-                min={1}
-                onChange={[Function]}
-                type="number"
-                value={1}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Button
-              active={false}
-              disabled={false}
-              onClick={[Function]}
-              style={
-                {
-                  "margin": "auto",
-                  "marginTop": "1%",
-                  "width": "7rem",
-                }
-              }
-              variant="success"
-            >
-              Add to list
-            </Button>
-          </Row>
-        </Col>
-      </Row>
-    </Card>
-    <Card
-      body={false}
-      style={
-        {
-          "border": "none",
-          "padding": "20px",
-          "textAlign": "center",
-        }
-      }
-    >
-      <CardTitle>
-        You may also like:
-      </CardTitle>
-      <Col
-        lg={true}
-      >
-        <Row
-          className="g-4"
-          md={4}
-          xs={1}
-        />
-      </Col>
-    </Card>
-  </Container>
-</Fragment>
-`;
-
 exports[`RecipeAdd tests RecipeAdd draws correctly (using snapshot) 1`] = `
 <Fragment>
   <Container
@@ -671,6 +389,288 @@ exports[`RecipeAdd tests RecipeAdd draws correctly (using snapshot) 1`] = `
         </Card>
       </Col>
     </Row>
+  </Container>
+</Fragment>
+`;
+
+exports[`RecipeDetails tests Country and Category filter pushes correctly 1`] = `
+<Fragment>
+  <Container
+    fluid={false}
+  >
+    <Card
+      body={false}
+      style={
+        {
+          "borderLeft": "none",
+          "borderRadius": "0px",
+          "borderRight": "none",
+          "borderTop": "none",
+          "paddingBottom": "3%",
+          "textAlign": "center",
+        }
+      }
+      title="Recipe for Butter Brie"
+    >
+      <CardTitle
+        style={
+          {
+            "paddingTop": "5%",
+          }
+        }
+      >
+         
+        Recipe for Butter Brie
+      </CardTitle>
+      <Row
+        className="justify-content-md-center"
+      >
+        <Col
+          xs={5}
+        >
+          <h6>
+            Steps: 
+          </h6>
+          <ol />
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="outline-danger"
+            >
+              Like ❤
+            </Button>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="success"
+            >
+              Edit
+            </Button>
+          </Row>
+        </Col>
+        <Col>
+          <h6>
+            Ingredients: 
+          </h6>
+          <Row
+            className="justify-content-md-center"
+          >
+            Portion:
+            <Col
+              md="auto"
+            >
+              <FormControl
+                max={50}
+                min={1}
+                onChange={[Function]}
+                type="number"
+                value={1}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "margin": "auto",
+                  "marginTop": "1%",
+                  "width": "7rem",
+                }
+              }
+              variant="success"
+            >
+              Add to list
+            </Button>
+          </Row>
+        </Col>
+      </Row>
+    </Card>
+    <Card
+      body={false}
+      style={
+        {
+          "border": "none",
+          "padding": "20px",
+          "textAlign": "center",
+        }
+      }
+    >
+      <CardTitle>
+        You may also like:
+      </CardTitle>
+      <Col
+        lg={true}
+      >
+        <Row
+          className="g-4"
+          md={4}
+          xs={1}
+        />
+      </Col>
+    </Card>
+  </Container>
+</Fragment>
+`;
+
+exports[`RecipeDetails tests Ingredientfilter pushes correctly 1`] = `
+<Fragment>
+  <Container
+    fluid={false}
+  >
+    <Card
+      body={false}
+      style={
+        {
+          "borderLeft": "none",
+          "borderRadius": "0px",
+          "borderRight": "none",
+          "borderTop": "none",
+          "paddingBottom": "3%",
+          "textAlign": "center",
+        }
+      }
+      title="Recipe for Butter Brie"
+    >
+      <CardTitle
+        style={
+          {
+            "paddingTop": "5%",
+          }
+        }
+      >
+         
+        Recipe for Butter Brie
+      </CardTitle>
+      <Row
+        className="justify-content-md-center"
+      >
+        <Col
+          xs={5}
+        >
+          <h6>
+            Steps: 
+          </h6>
+          <ol />
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="outline-danger"
+            >
+              Like ❤
+            </Button>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "height": "4rem",
+                  "margin": "auto",
+                  "marginTop": "10%",
+                  "width": "5rem",
+                }
+              }
+              variant="success"
+            >
+              Edit
+            </Button>
+          </Row>
+        </Col>
+        <Col>
+          <h6>
+            Ingredients: 
+          </h6>
+          <Row
+            className="justify-content-md-center"
+          >
+            Portion:
+            <Col
+              md="auto"
+            >
+              <FormControl
+                max={50}
+                min={1}
+                onChange={[Function]}
+                type="number"
+                value={1}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Button
+              active={false}
+              disabled={false}
+              onClick={[Function]}
+              style={
+                {
+                  "margin": "auto",
+                  "marginTop": "1%",
+                  "width": "7rem",
+                }
+              }
+              variant="success"
+            >
+              Add to list
+            </Button>
+          </Row>
+        </Col>
+      </Row>
+    </Card>
+    <Card
+      body={false}
+      style={
+        {
+          "border": "none",
+          "padding": "20px",
+          "textAlign": "center",
+        }
+      }
+    >
+      <CardTitle>
+        You may also like:
+      </CardTitle>
+      <Col
+        lg={true}
+      >
+        <Row
+          className="g-4"
+          md={4}
+          xs={1}
+        />
+      </Col>
+    </Card>
   </Container>
 </Fragment>
 `;
