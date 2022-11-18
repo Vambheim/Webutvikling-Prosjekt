@@ -11,6 +11,8 @@ Muligens for API: https://rapidapi.com/spoonacular/api/recipe-food-nutrition
 
 ![/'REC.A.P.I'/ logo](https://tihldestorage.blob.core.windows.net/imagepng/a70fd0bd-f8c0-45eb-b808-293149cf2620resapi-high-resolution-logo-white-on-transparent-background.png)
 
+## Project description
+
 This application has been developed as a project assignment in the subject INFT2002 (Web
 development) at NTNU. /'REC.A.P.I'/ offers a variety of functionality in order to make your
 coocking-life easier. We can offer av variety of different recipes with something for everyone. You
