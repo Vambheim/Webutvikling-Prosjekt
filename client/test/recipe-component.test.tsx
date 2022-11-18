@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
 import { shallow } from 'enzyme';
-import { Col } from 'react-bootstrap';
+import { Col, Nav } from 'react-bootstrap';
 import { Column, Alert } from '../src/widgets';
 import { RecipeDetails, RecipeEdit, RecipeAdd, RecipeList } from '../src/recipe-components';
 import recipeService, { Recipe } from '../src/recipe-service';
@@ -43,6 +43,7 @@ jest.mock('../src/recipe-service', () => {
     delete() {
       return Promise.resolve();
     }
+
     get() {
       return Promise.resolve({
         id: 1098370,
@@ -66,8 +67,6 @@ jest.mock('../src/recipe-service', () => {
         measurement_unit: 'DL',
       });
     }
-
-    openIngredient() {}
 
     saveRecipe() {
       return Promise.resolve({
@@ -98,6 +97,18 @@ jest.mock('../src/recipe-service', () => {
 });
 
 describe('RecipeList tests', () => {
+  test('QuizQuestions draws correctly', (done) => {
+    const wrapper = shallow(<RecipeList />);
+
+    // Wait for events to complete
+    setTimeout(() => {
+      expect(wrapper.containsAllMatchingElements([<NavLink to={'/recipes/1'}></NavLink>])).toEqual(
+        true
+      );
+      done();
+    });
+  });
+
   test('RecipeList draws correctly', (done) => {
     const wrapper = shallow(<RecipeList />);
 
@@ -151,6 +162,15 @@ describe('RecipeList tests', () => {
 
     expect(wrapper.containsMatchingElement(<Form.Control value="Pannekaker" />)).toEqual(true);
   });
+  /* vil ikke hente navlink da den kommer fra react dom 
+  test('RecipeList navlink delivers change', () => {
+    const wrapper = shallow(<RecipeList />);
+
+    wrapper.find(NavLink).simulate('click');
+
+    expect(location.hash).toEqual('#/recipes/:id');
+  });
+  */
 });
 
 describe('RecipeDetails tests', () => {
@@ -191,43 +211,25 @@ describe('RecipeDetails tests', () => {
       done();
     });
   });
-});
-/* 
-  test('RecipeDetails correctly likes', (done) => {
+
+  test('Country and Category filter pushes correctly', (done) => {
     const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
-    let loggedIn;
-
     wrapper.find(Button).at(0).simulate('click');
-    if (loggedIn == true) {
-      setTimeout(() => {
-        expect(location.hash).toEqual('#/recipes');
-
-        done();
-      });
-    } else {
+    setTimeout(() => {
+      // $FlowExpectedError: do not type check next line.
       expect(wrapper).toMatchSnapshot();
-    }
+      done();
+    });
   });
-});
-*/
 
-test('Country and Category filter pushes correctly', (done) => {
-  const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
-  wrapper.find(Button).at(0).simulate('click');
-  setTimeout(() => {
-    // $FlowExpectedError: do not type check next line.
-    expect(wrapper).toMatchSnapshot();
-    done();
-  });
-});
-
-test('Ingredientfilter pushes correctly', (done) => {
-  const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
-  wrapper.find(Button).at(1).simulate('click');
-  setTimeout(() => {
-    // $FlowExpectedError: do not type check next line.
-    expect(wrapper).toMatchSnapshot();
-    done();
+  test('Ingredientfilter pushes correctly', (done) => {
+    const wrapper = shallow(<RecipeDetails match={{ params: { recipe_id: 1 } }} />);
+    wrapper.find(Button).at(1).simulate('click');
+    setTimeout(() => {
+      // $FlowExpectedError: do not type check next line.
+      expect(wrapper).toMatchSnapshot();
+      done();
+    });
   });
 });
 
@@ -237,6 +239,18 @@ describe('RecipeAdd tests', () => {
 
     setTimeout(() => {
       expect(wrapper).toMatchSnapshot();
+      done();
+    });
+  });
+
+  test('RecipeAdd correctly sets location save', (done) => {
+    const wrapper = shallow(<RecipeAdd />);
+
+    wrapper.find(Button).at(0).simulate('click');
+
+    setTimeout(() => {
+      expect(location.hash).toEqual('#/recipes/1/edit');
+
       done();
     });
   });
@@ -259,44 +273,39 @@ describe('RecipeAdd tests', () => {
     wrapper
       .find(Form.Control)
       .at(0)
-      .simulate('change', { currentTarget: { value: 2100 } });
+      .simulate('change', { currentTarget: { value: 'milk' } });
     wrapper
       .find(Form.Control)
       .at(1)
-      .simulate('change', { currentTarget: { value: 2100 } });
+      .simulate('change', { currentTarget: { value: 'milk' } });
     wrapper
       .find(Form.Control)
       .at(2)
-      .simulate('change', { currentTarget: { value: 2100 } });
+      .simulate('change', { currentTarget: { value: 'milk' } });
     wrapper
       .find(Form.Control)
       .at(3)
-      .simulate('change', { currentTarget: { value: 2100 } });
+      .simulate('change', { currentTarget: { value: 4 } });
     wrapper
       .find(Form.Control)
       .at(4)
-      .simulate('change', { currentTarget: { value: 2100 } });
+      .simulate('change', { currentTarget: { value: 'milk' } });
     wrapper
       .find(Form.Control)
-      .at(4)
-      .simulate('change', { currentTarget: { value: 2100 } });
+      .at(5)
+      .simulate('change', { currentTarget: { value: 'milk' } });
+    wrapper
+      .find(Form.Control)
+      .at(6)
+      .simulate('change', { currentTarget: { value: 'milk' } });
 
-    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
-    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
-    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
-    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
-    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
-    expect(wrapper.containsMatchingElement(<Form.Control value={2100} />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value={'milk'} />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value={'milk'} />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value={'milk'} />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value={'milk'} />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value={'milk'} />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Control value={4} />)).toEqual(true);
   });
-  /*
-  test('Pop array delivers change', () => {
-    const wrapper = shallow(<RecipeAdd />);
-
-    wrapper.find(Button).at(3).simulate('click');
-
-    expect(wrapper.containsMatchingElement());
-  });
-  */
 });
 
 describe('RecipeEdit tests', () => {
@@ -308,17 +317,17 @@ describe('RecipeEdit tests', () => {
       done();
     });
   });
-  /*
+
   test('EditRecipe correctly sets location save', (done) => {
     const wrapper = shallow(<RecipeEdit match={{ params: { id: 1 } }} />);
 
     wrapper.find(Button).at(1).simulate('click');
 
-    expect(location.hash).toEqual('#/');
+    expect(location.hash).toEqual('#/recipes/1/edit');
 
     done();
   });
-  
+
   test('EditRecipe correctly sets location delete', (done) => {
     const wrapper = shallow(<RecipeEdit match={{ params: { id: 1 } }} />);
 
@@ -328,13 +337,22 @@ describe('RecipeEdit tests', () => {
 
     done();
   });
-  */
 
   test('RecipeEdit delivers change', () => {
     const wrapper = shallow(<RecipeEdit match={{ params: { id: 1 } }} />);
 
     wrapper.find(Form.Control).simulate('change', { currentTarget: { value: 'Pannekaker' } });
+    wrapper
+      .find(Form.Select)
+      .at(0)
+      .simulate('change', { currentTarget: { value: 'Pannekaker' } });
+    wrapper
+      .find(Form.Select)
+      .at(1)
+      .simulate('change', { currentTarget: { value: 'Pannekaker' } });
 
     expect(wrapper.containsMatchingElement(<Form.Control value="Pannekaker" />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Select value="Pannekaker" />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<Form.Select value="Pannekaker" />)).toEqual(true);
   });
 });

@@ -1,8 +1,17 @@
 
-##CREATE TABLES:
+##CREATE DATABASE SCRIPT FOR BOTH DEV AND TEST DATABASES
 
-##ALTER TABLE tablename AUTO_INCREMENT = 1
-##Denne gjør at man reseter AUTO_INCREMENT
+## DROPS THE TABLES WITH EQUAL NAMES
+
+DROP TABLE recipe;
+DROP TABLE ingredient;
+DROP TABLE recipe_ingredient;
+DROP TABLE step;
+DROP TABLE user;
+DROP TABLE like_information; 
+DROP TABLE shopping_list; 
+
+##CREATES THE NECESSARY  
 
 CREATE TABLE recipe(
 recipe_id INT NOT NULL AUTO_INCREMENT,
@@ -67,95 +76,3 @@ FOREIGN KEY (recipe_id) REFERENCES recipe(recipe_id) ON DELETE CASCADE,
 FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id) ON DELETE CASCADE,
 FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 ); 
-
-
-SELECT recipe.name, COUNT(liked) as likes
-FROM like_information JOIN recipe ON like_information.recipe_id = recipe.recipe_id
-GROUP BY like_information.recipe_id
-ORDER BY likes DESC
-
-
-INSERT INTO:
-
-INSERT INTO like_information VALUES(6, 11, 1)
-
-
-
-NOTATER:
-**************Shopping List*********************
-
-// trenger man shopping_list tabellen?
-// må vi legge til amount per person i shopping_list_recipe_ingredient
-// legge til user_id som fremmednøkkel i 
-
-select ingredient.name (lurer på om vi skal ta med amount per person eller om det skal hentes fra annet sted)
-shopping-list join shopping_list_recipe_ingredient 
-ON shopping_list_id 
-join recipe_ingredient on ingredient_id
-join ingredient on ingredient_id
-
-//gitt endringene over
-INSERT INTO shopping_list_recipe_ingredient VALUES ()
-recipe_id= this.match.props.params 
-user_id = hente fra global currentUser 
-ingredient_id = henter fra row id??
-amount = amount per person * porsjoner valgt i recipe_details
-
-Utskirft: 
-- Liste over alle ingredients gitt user_id i currentUser
-- Ha med hvor mye man trenger
-
-Funksjonalitet: 
-- Slette ingredienser fra lista
-- Tømme hele listen 
-- Ikke noe mer  
-
-**************Hjemside**************************
-Funksjonalitet:
-- Liste opp populære oppskrifter
--- De med fleste likes knyttet til seg, orderby count(likes), group by Recipe_id
-- Liste opp de nyeste oppskriftene, order by recipe_id desc 
-
-
-************ Recipe List ********************
-Funksjonalitet:
-- Filter som gjør at man kan søke på flere ingredienser (si maks 3) og se om det er en rett som passer
--- MINIMUM KRAV
-- Liste opp nye oppskrifter? enten her eller på hjemsiden 
-
-
-**************Recipe Details************''
-Funksjonalitet:
-- Liste opp 3 lignende oppskrifter
--- Komme med anbefaling, som f.eks. Vi tror du også vil like disse oppskriftene
---- Finne en sammenheng, kan f.eks. være tre random med likt land og kategori? 
-GJORT AV THOMAS
-
-
-
-*********** My user ******************
-Funksjonalitet: 
-- Se likte oppskrifter
-- Gå til shopping_list
-
-
-Se likte oppskrifter: 
-
-GET: 
-
-SELECT recipe.name, recipe.recipe_id
-FROM like_information JOIN recipe ON like_information.recipe_id = recipe.recipe_id
-WHERE like_information.liked = TRUE 
-AND like_information.user_id =?
-
-currentUser= ?
-
-SELECT recipe.recipe_id, recipe.name, recipe.category, recipe.country
-FROM ingredient JOIN recipe_ingredient ON ingredient.ingredient_id = recipe_ingredient.ingredient_id
-JOIN recipe ON recipe_ingredient.recipe_id = recipe.recipe_id
-WHERE ingredient.name NOT IN (
-    SELECT ingredient.name FROM ingredient
-	WHERE name!=? && name!=? && name!=?
-) 
-GROUP BY recipe.recipe_id
-HAVING count(recipe.recipe_id) = ?

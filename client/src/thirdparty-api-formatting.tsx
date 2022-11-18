@@ -25,7 +25,7 @@ export async function getRecipesBulk(testData: any) {
     var steps: Array<Step> = [];
 
     for (let i = 0; i < recipeJSON.length;) {
-      //variablles to save ingridiences spesific to a given recipe
+      //variabler for å lagre ingridienser knyttt en oppskrift
       const recipeIngriedents = recipeJSON[i]['extendedIngredients'];
       var recipeSteps = [];
       var ingriedients: Array<RecipeIngredient> = [];
@@ -40,9 +40,9 @@ export async function getRecipesBulk(testData: any) {
         recipeSteps = recipeJSON[i]['analyzedInstructions'][0]['steps'];
       }
 
-      //traverse ingrediences in recipe
+      //traverserer ingredienser i oppskriften
       for (let y = 0; y < recipeIngriedents.length;) {
-        //Define an object with the needed data for Ingriedent from JSON
+        //Lager et objekt med utvalgt data for Ingriedent fra JSON
         const ingriedent: RecipeIngredient = {
           ingredient_id: recipeIngriedents[y]['id'],
           name: recipeIngriedents[y]['name'],
@@ -88,7 +88,7 @@ export async function getRecipesBulk(testData: any) {
         //Push recipe in array
         recipes.push(recipe);
 
-        //Traverse steps for every recipe and put them in an array 
+        //Traverserer steps for hver oppskrift og putter det i array
         for (let z = 0; z < recipeSteps.length;) {
           const step: Step = {
             step_id: 1,
@@ -110,12 +110,11 @@ export async function getRecipesBulk(testData: any) {
 
   const result = await getApi();
 
-  //Call REST API for every involved tabel in the database
+  //Kaller REST API for hver enkelt tabell i databasen
   RecipeService.PostSpoonacularRecipes(result[0])
   RecipeService.PostSpoonacularIngriedents(result[1]);
   RecipeService.PostSpoonacularRecipeIngriedents(result[0]);
   RecipeService.PostSpoonacularSteps(result[2]);
 
-  return result
+  return result;
 }
-

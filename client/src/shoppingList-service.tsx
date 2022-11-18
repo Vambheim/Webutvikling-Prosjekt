@@ -12,12 +12,18 @@ export type ShoppingListInfo = {
 };
 
 class ShoppingListService {
+  /**
+   * Get shopping list for given user
+   */
   getShoppingList(user_id: number) {
     return axios
       .get<ShoppingListInfo[]>('/shoppinglist/' + user_id)
       .then((response) => response.data);
   }
 
+  /**
+   * Add to shopping list for given user
+   */
   addToShoppingList(
     recipe_id: number,
     ingredient_id: number,
@@ -36,10 +42,16 @@ class ShoppingListService {
       .then((response) => response.data);
   }
 
+  /**
+   * Delete whole shopping list for given user
+   */
   deleteShoppingList(user_id: number) {
     return axios.delete('/shoppinglist/' + user_id).then((response) => response.data);
   }
 
+  /**
+   * Delete one item in shopping list
+   */
   deleteItemShoppingList(shopping_list_id: number) {
     return axios.delete('/shoppinglistitem/' + shopping_list_id).then((response) => response.data);
   }

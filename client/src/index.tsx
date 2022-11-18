@@ -49,9 +49,11 @@ class Menu extends Component {
 class Home extends Component {
   mounted() {
     //Change this to turn the thirdparty API call on and of 
+    //Change this const to turn on and off retrival from external API
     const retrieveFromApi = false;
 
     //Fetch 5 * 20 recipes from the API spoonacular when Home loads
+    // Get 5 * 20 recipes from spoonacular when the component is mounted
     if (retrieveFromApi) {
       const intervalAPI = setInterval(() => getRecipesBulk(null), 1500);
       setTimeout(() => {

@@ -10,7 +10,8 @@ import shoppingListService from './shoppingList-service';
 const router = express.Router();
 export const salt = bcrypt.genSaltSync(10);
 
-///////////////////USER
+//////////////////////USER
+// Gets a user if the login is completed
 router.get('/users/login/:email/:password', (request, response) => {
   const email = String(request.params.email);
   const password = String(request.params.password);
@@ -37,6 +38,7 @@ router.get('/users/login/:email/:password', (request, response) => {
   }
 });
 
+//Register a new user
 router.post('/users/register', (request, response) => {
   const data = request.body;
   //Check required fields
@@ -74,7 +76,8 @@ router.post('/users/register', (request, response) => {
   }
 });
 
-///////////////////RECIPES
+//////////////////////RECIPES
+//Get all recipes
 router.get('/recipes', (_request, response) => {
   recipeService
     .getAll()
@@ -82,6 +85,7 @@ router.get('/recipes', (_request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+//Get a recipe with given recipe_id
 router.get('/recipes/:recipe_id', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
   recipeService
@@ -92,26 +96,7 @@ router.get('/recipes/:recipe_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-router.get('/recipes/:recipe_id/steps', (request, response) => {
-  const recipe_id = Number(request.params.recipe_id);
-  recipeService
-    .getSteps(recipe_id)
-    .then((rows) => response.send(rows))
-    .catch((error) => response.status(500).send(error));
-});
-
-router.get('/recipes/:recipe_id/ingredients', (request, response) => {
-  const recipe_id = Number(request.params.recipe_id);
-  if (typeof recipe_id == 'number' && recipe_id != 0) {
-    recipeService
-      .getIngredientsToRecipe(recipe_id)
-      .then((rows) => response.send(rows))
-      .catch((error) => response.status(500).send(error));
-  } else {
-    response.status(400).send('Incorrect paramter-propperties');
-  }
-});
-
+//Creates a new recipe
 router.post('/recipes', (request, response) => {
   const data = request.body;
   if (
@@ -131,6 +116,80 @@ router.post('/recipes', (request, response) => {
   }
 });
 
+// Updates a recipe
+router.put('/recipes', (request, response) => {
+  const data = request.body;
+  if (
+    typeof data.recipe_id == 'number' &&
+    data.recipe_id.length != 0 &&
+    typeof data.name == 'string' &&
+    data.name.length != 0 &&
+    typeof data.category == 'string' &&
+    data.category.length != 0 &&
+    typeof data.country == 'string' &&
+    data.country.length != 0
+  )
+    recipeService
+      .update({
+        recipe_id: data.recipe_id,
+        name: data.name,
+        category: data.category,
+        country: data.country,
+      })
+      .then(() => response.send('Recipe was updated'))
+      .catch((error) => response.status(500).send(error));
+  else response.status(400).send('Propperties are not valid');
+});
+
+// Deletes a recipe with given recipe_id
+router.delete('/recipes/:recipe_id', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+  if (typeof recipe_id == 'number' && recipe_id != 0) {
+    recipeService
+      .delete(recipe_id)
+      .then((_result) => response.send())
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+//////////////////////INGREDIENTS
+//Gets all ingredinets
+router.get('/ingredients', (_request, response) => {
+  recipeService
+    .getAllIngredients()
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+//Get all the ingredients to a given recipe
+router.get('/recipes/:recipe_id/ingredients', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+  if (typeof recipe_id == 'number' && recipe_id != 0) {
+    recipeService
+      .getIngredientsToRecipe(recipe_id)
+      .then((rows) => response.send(rows))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Incorrect paramter-propperties');
+  }
+});
+
+//Creates a new ingredient
+router.post('/ingredients', (request, response) => {
+  const data = request.body;
+  if (typeof data.name == 'string' && data.name.length != 0) {
+    recipeService
+      .createIngredient(data.name)
+      .then((ingredient_id) => response.send({ ingredient_id: ingredient_id }))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+//Creates a new ingredient in a recipe
 router.post('/recipes/ingredients', (request, response) => {
   const data = request.body;
   if (
@@ -187,64 +246,12 @@ router.post('/recipes/ingredients', (request, response) => {
   }
 });
 
-//Her må det legges til "/:recipe_id"
-router.put('/recipes', (request, response) => {
-  const data = request.body;
-  if (
-    typeof data.recipe_id == 'number' &&
-    data.recipe_id.length != 0 &&
-    typeof data.name == 'string' &&
-    data.name.length != 0 &&
-    typeof data.category == 'string' &&
-    data.category.length != 0 &&
-    typeof data.country == 'string' &&
-    data.country.length != 0
-  )
-    recipeService
-      .update({
-        recipe_id: data.recipe_id,
-        name: data.name,
-        category: data.category,
-        country: data.country,
-      })
-      .then(() => response.send('Recipe was updated'))
-      .catch((error) => response.status(500).send(error));
-  else response.status(400).send('Propperties are not valid');
-});
-
-//Updates a given step in a given recipe
-router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
-  const data = request.body;
-  const recipe_id = Number(request.params.recipe_id);
-  const step_id = Number(request.params.step_id);
-
-  if (
-    data &&
-    typeof recipe_id == 'number' &&
-    recipe_id != 0 &&
-    typeof step_id == 'number' &&
-    step_id != 0 &&
-    typeof data.order_number == 'number' &&
-    data.order_number != 0 &&
-    typeof data.description == 'string' &&
-    data.description.length != 0
-  ) {
-    recipeService
-      .updateSteps(data.order_number, data.description, step_id, recipe_id)
-      .then(() => response.send('Step was updated'))
-      .catch((error) => response.status(500).send(error));
-  } else {
-    response.status(400).send('Propperties are not valid');
-  }
-});
-
 // Updates a given ingredient in a given recipe
 router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response) => {
   const data = request.body;
   const recipe_id = Number(request.params.recipe_id);
   const ingredient_id = Number(request.params.ingredient_id);
 
-  //må se over denne, fungerer ikke med data.amount_per_person.length != 0
   if (
     data &&
     typeof data.amount_per_person == 'number' &&
@@ -315,69 +322,17 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
   }
 });
 
-router.delete('/recipes/:recipe_id', (request, response) => {
+//////////////////////STEPS
+//Get all the steps to a given recipe
+router.get('/recipes/:recipe_id/steps', (request, response) => {
   const recipe_id = Number(request.params.recipe_id);
-
-  if (typeof recipe_id == 'number' && recipe_id != 0) {
-    recipeService
-      .delete(recipe_id)
-      .then((_result) => response.send())
-      .catch((error) => response.status(500).send(error));
-  } else {
-    response.status(400).send('Propperties are not valid');
-  }
-});
-
-// Creates a like in the database
-router.post('/recipes/like', (request, response) => {
-  const data = request.body;
-  if (data && data.user_id != 0 && data.recipe_id != 0) {
-    recipeService
-      .likeRecipe(data.user_id, data.recipe_id)
-      .then((_results) => response.send('Recipe was liked'))
-      .catch((error) => response.status(500).send(error));
-  } else response.status(400).send('wrong parameters');
-});
-
-router.get('/likedRecipes/:user_id', (request, response) => {
-  const user_id = Number(request.params.user_id);
   recipeService
-    .getLikedRecipes(user_id)
+    .getSteps(recipe_id)
     .then((rows) => response.send(rows))
     .catch((error) => response.status(500).send(error));
 });
 
-router.get('/recipes/:recipe_id/recommended/:category/:country', (request, response) => {
-  const recipe_id = Number(request.params.recipe_id);
-  const category = String(request.params.category);
-  const country = String(request.params.country);
-  recipeService
-    .getRecomendedRecipes(recipe_id, category, country)
-    .then((rows) => response.send(rows))
-    .catch((error) => response.status(500).send(error));
-});
-
-//////////////////INGREDIENTS
-router.get('/ingredients', (_request, response) => {
-  recipeService
-    .getAllIngredients()
-    .then((rows) => response.send(rows))
-    .catch((error) => response.status(500).send(error));
-});
-
-router.post('/ingredients', (request, response) => {
-  const data = request.body;
-  if (typeof data.name == 'string' && data.name.length != 0) {
-    recipeService
-      .createIngredient(data.name)
-      .then((ingredient_id) => response.send({ ingredient_id: ingredient_id }))
-      .catch((error) => response.status(500).send(error));
-  } else {
-    response.status(400).send('Propperties are not valid');
-  }
-});
-
-/////////////Steps
+//Creates a new step
 router.post('/steps', (request, response) => {
   const data = request.body;
   if (
@@ -397,8 +352,67 @@ router.post('/steps', (request, response) => {
   }
 });
 
-///////////////////FILTER
+//Updates a given step in a given recipe
+router.put('/recipes/:recipe_id/steps/:step_id', (request, response) => {
+  const data = request.body;
+  const recipe_id = Number(request.params.recipe_id);
+  const step_id = Number(request.params.step_id);
 
+  if (
+    data &&
+    typeof recipe_id == 'number' &&
+    recipe_id != 0 &&
+    typeof step_id == 'number' &&
+    step_id != 0 &&
+    typeof data.order_number == 'number' &&
+    data.order_number != 0 &&
+    typeof data.description == 'string' &&
+    data.description.length != 0
+  ) {
+    recipeService
+      .updateSteps(data.order_number, data.description, step_id, recipe_id)
+      .then(() => response.send('Step was updated'))
+      .catch((error) => response.status(500).send(error));
+  } else {
+    response.status(400).send('Propperties are not valid');
+  }
+});
+
+//////////////////////LIKES
+// Creates a like in the database
+router.post('/recipes/like', (request, response) => {
+  const data = request.body;
+  if (data && data.user_id != 0 && data.recipe_id != 0) {
+    recipeService
+      .likeRecipe(data.user_id, data.recipe_id)
+      .then((_results) => response.send('Recipe was liked'))
+      .catch((error) => response.status(500).send(error));
+  } else response.status(400).send('wrong parameters');
+});
+
+// Gets all the liked recipes from given user
+router.get('/likedRecipes/:user_id', (request, response) => {
+  const user_id = Number(request.params.user_id);
+  recipeService
+    .getLikedRecipes(user_id)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+//////////////////////RECOMENDATIONS
+//Gets 4 recomended recipes given a selected recipe_id
+router.get('/recipes/:recipe_id/recommended/:category/:country', (request, response) => {
+  const recipe_id = Number(request.params.recipe_id);
+  const category = String(request.params.category);
+  const country = String(request.params.country);
+  recipeService
+    .getRecomendedRecipes(recipe_id, category, country)
+    .then((rows) => response.send(rows))
+    .catch((error) => response.status(500).send(error));
+});
+
+//////////////////////FILTER
+//Get recipes with filter by one ingredient
 router.get('/oneingredientfilter/:ingredient1', (request, response) => {
   const ingredient1 = String(request.params.ingredient1);
   if (typeof ingredient1 == 'string' && ingredient1.length != 0) {
@@ -411,6 +425,7 @@ router.get('/oneingredientfilter/:ingredient1', (request, response) => {
   }
 });
 
+//Get recipes with filter by two ingredients
 router.get('/twoingredientsfilter/:ingredient1/:ingredient2', (request, response) => {
   const ingredient1 = String(request.params.ingredient1);
   const ingredient2 = String(request.params.ingredient2);
@@ -429,6 +444,7 @@ router.get('/twoingredientsfilter/:ingredient1/:ingredient2', (request, response
   }
 });
 
+//Get recipes with filter by three ingredients
 router.get(
   '/threeingredientsfilter/:ingredient1/:ingredient2/:ingredient3',
   (request, response) => {
@@ -453,6 +469,7 @@ router.get(
   }
 );
 
+//Get recipes with filter by country and category
 router.get('/countryandcategoryfilter/:country/:category', (request, response) => {
   const country = String(request.params.country);
   const category = String(request.params.category);
@@ -464,6 +481,7 @@ router.get('/countryandcategoryfilter/:country/:category', (request, response) =
   }
 });
 
+//Get recipes with filter by country
 router.get('/countryfilter/:country', (request, response) => {
   const country = String(request.params.country);
   if (country) {
@@ -474,6 +492,7 @@ router.get('/countryfilter/:country', (request, response) => {
   }
 });
 
+//Get recipes with filter by category
 router.get('/categoryfilter/:category', (request, response) => {
   const category = String(request.params.category);
   if (category) {
@@ -484,7 +503,8 @@ router.get('/categoryfilter/:category', (request, response) => {
   }
 });
 
-/////////////////////SHOPPING LIST
+//////////////////////SHOPPING LIST
+//Get the shopping list from a give user
 router.get('/shoppinglist/:user_id', (request, response) => {
   const user_id = Number(request.params.user_id);
   shoppingListService
@@ -493,6 +513,7 @@ router.get('/shoppinglist/:user_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+//Adds ingredients to a given shopping list
 router.post('/shoppinglist', (request, response) => {
   const data = request.body;
   if (
@@ -508,6 +529,7 @@ router.post('/shoppinglist', (request, response) => {
   else response.status(400).send('Missing ingredient details');
 });
 
+//Deletes the entire shopping list
 router.delete('/shoppinglist/:user_id', (request, response) => {
   const user_id = Number(request.params.user_id);
   shoppingListService
@@ -516,6 +538,7 @@ router.delete('/shoppinglist/:user_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
+//Deletes one item in the shopping list
 router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
   const shopping_list_id = Number(request.params.shopping_list_id);
   shoppingListService
@@ -570,6 +593,7 @@ router.post('/spoonacular/ingridients-recipes', (request, response) => {
 });
 
 //Poster query to Step
+// Posts the query to the step table
 router.post('/spoonacular/steps', (request, response) => {
   var data = request.body;
 

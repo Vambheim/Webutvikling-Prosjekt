@@ -67,20 +67,13 @@ jest.mock('../src/recipe-service', () => {
   return new RecipeService();
 });
 
-// describe('UserLogIn component tests', () => {
-//   test('UserLogIn draws correctly', () => {
-//     const wrapper = shallow(<UserLogIn />);
-
-//     expect(wrapper).toMatchSnapshot();
-//   });
-// });
-
 describe('UserLogIn component tests', () => {
   test('UserLogIn draws correctly', () => {
     const wrapper = shallow(<UserLogIn />);
 
     expect(wrapper).toMatchSnapshot();
   });
+
   test('Input updates correctly', () => {
     const wrapper = shallow(<UserLogIn />);
 
@@ -102,18 +95,26 @@ describe('UserLogIn component tests', () => {
     expect(wrapper.containsMatchingElement(<Form.Control value="test2" />)).toEqual(true);
   });
 
-  test('Button sucess calls function on click-event', () => {
+  test('Button variant = sucess calls function on click-event', () => {
     const wrapper = shallow(<UserLogIn />);
 
-    expect(wrapper).toMatchSnapshot();
+    wrapper.find(Button).at(0).simulate('click');
+
+    setTimeout(() => {
+      expect(location.hash).toEqual('#/recipes/user');
+    });
   });
-});
 
-describe('UserDetails component tests', () => {
-  test('UserDetails draws correctly', () => {
-    const wrapper = shallow(<UserDetails />);
+  test('Button variant = outline-secondary calls function on click-event', () => {
+    const wrapper = shallow(<UserLogIn />);
 
-    expect(wrapper).toMatchSnapshot();
+    wrapper.find(Button).at(1).simulate('click');
+    wrapper.find(Button).at(2).simulate('click');
+
+    setTimeout(() => {
+      expect(location.hash).toEqual('#/recipes/pikk');
+      expect(location.hash).toEqual('#/recipes/login');
+    });
   });
 });
 
@@ -157,48 +158,54 @@ describe('RegisterUser component tests', () => {
     expect(wrapper.containsMatchingElement(<Form.Control value="test3" />)).toEqual(true);
     expect(wrapper.containsMatchingElement(<Form.Control value="test4" />)).toEqual(true);
   });
+
+  test('Button variant = sucess calls function on click-event', () => {
+    const wrapper = shallow(<RegisterUser />);
+
+    wrapper.find(Button).at(0).simulate('click');
+
+    setTimeout(() => {
+      expect(location.hash).toEqual('#/recipes/login');
+    });
+  });
+
+  test('Button variant = outline-secondary calls function on click-event', () => {
+    const wrapper = shallow(<RegisterUser />);
+
+    wrapper.find(Button).at(1).simulate('click');
+
+    setTimeout(() => {
+      expect(location.hash).toEqual('#/recipes/register');
+    });
+  });
 });
 
-// describe('Button.Success widget tests', () => {
-//   test('Draws correctly', () => {
-//     // @ts-ignore: do not type check next line.
-//     const wrapper = shallow(<Button.Success>test</Button.Success>);
+describe('UserDetails component tests', () => {
+  test('UserDetails draws correctly', () => {
+    const wrapper = shallow(<UserDetails />);
 
-//     expect(
-//       wrapper.matchesElement(
-//         <button type="button" className="btn btn-success">
-//           test
-//         </button>
-//       )
-//     ).toEqual(true);
-//   });
-// });
+    expect(wrapper).toMatchSnapshot();
+  });
 
-// Wait for events to complete
-//   setTimeout(() => {
-//     expect(
-//       wrapper.containsAllMatchingElements([
-//         <NavLink to="/tasks/1">Les leksjon</NavLink>,
-//         <NavLink to="/tasks/2">Møt opp på forelesning</NavLink>,
-//         <NavLink to="/tasks/3">Gjør øving</NavLink>,
-//       ])
-//     ).toEqual(true);
-//     done();
-//   });
-// });
+  test('Button variant = outline-danger calls function on click-event', () => {
+    const wrapper = shallow(<UserDetails />);
 
-//   test('TaskNew correctly sets location on create', (done) => {
-//     const wrapper = shallow(<TaskNew />);
+    wrapper.find(Button).at(0).simulate('click');
 
-//     wrapper.find(Form.Input).simulate('change', { currentTarget: { value: 'Kaffepause' } });
-//     // @ts-ignore
-//     expect(wrapper.containsMatchingElement(<Form.Input value="Kaffepause" />)).toEqual(true);
+    setTimeout(() => {
+      expect(location.hash).toEqual('');
+    });
+  });
 
-//     wrapper.find(Button.Success).simulate('click');
-//     // Wait for events to complete
-//     setTimeout(() => {
-//       expect(location.hash).toEqual('#/tasks/4');
-//       done();
-//     });
-//   });
-// });
+  test('Test if the component contains 3 Cards', () => {
+    const wrapper = shallow(<UserDetails />);
+
+    expect(wrapper.find(Card)).toHaveLength(3);
+  });
+
+  test('Test if the component contains 5 Rows', () => {
+    const wrapper = shallow(<UserDetails />);
+
+    expect(wrapper.find(Row)).toHaveLength(5);
+  });
+});
