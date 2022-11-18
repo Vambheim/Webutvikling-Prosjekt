@@ -24,6 +24,8 @@ the passwords are stored as a hashed value.
 
 ## Setup database connections
 
+### Create your own database
+
 You need to create two configuration files that will contain the database connection details. These
 files should not be uploaded to your git repository, and they have therefore been added to
 `.gitignore`. The connection details may vary, but example content of the two configuration files
