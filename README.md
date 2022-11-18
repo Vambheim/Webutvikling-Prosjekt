@@ -9,7 +9,7 @@ https://medium.com/@nick_92077/user-authentication-basics-hashing-and-jwt-3f9adf
 
 Muligens for API: https://rapidapi.com/spoonacular/api/recipe-food-nutrition
 
-# /'REC.A.P.I'/ a recipe web-application
+![/'REC.A.P.I'/ logo](https://tihldestorage.blob.core.windows.net/imagepng/a70fd0bd-f8c0-45eb-b808-293149cf2620resapi-high-resolution-logo-white-on-transparent-background.png)
 
 This application has been developed as a project assignment in the subject INFT2002 (Web
 development) at NTNU. /'REC.A.P.I'/ offers a variety of functionality in order to make your
@@ -19,8 +19,6 @@ provides the posibility to both add and edit the recipes, as well ass creating y
 list with all the ingredients you need from your selected recipe. In addition the application also
 gives you the opportunity to create a user and log in. Note that the security is taken care of, and
 the passwords are stored as a hashed value.
-
-![/'REC.A.P.I'/ logo](https://tihldestorage.blob.core.windows.net/imagepng/a70fd0bd-f8c0-45eb-b808-293149cf2620resapi-high-resolution-logo-white-on-transparent-background.png)
 
 ## Setup database connections
 
