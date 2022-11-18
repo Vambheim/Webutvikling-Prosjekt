@@ -11,6 +11,9 @@ export type User = {
 };
 
 class UserService {
+  /**
+   * Creates new user
+   */
   createUser(
     email: string,
     first_name: string,

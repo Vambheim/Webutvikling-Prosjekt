@@ -10,8 +10,10 @@ export type User = {
 };
 
 class UserService {
+  /**
+   * Create new user
+   */
   createUser(email: string, first_name: string, last_name: string, password: string) {
-    // endre parametere til bare user? ^
     return new Promise<User>((resolve, reject) => {
       pool.query(
         'INSERT INTO user SET email=?, first_name=?, last_name=?, password=?',
@@ -25,6 +27,9 @@ class UserService {
     });
   }
 
+  /**
+   * Get user with given email
+   */
   getUser(email: string) {
     return new Promise<User>((resolve, reject) => {
       pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
@@ -39,7 +44,9 @@ class UserService {
     });
   }
 
-  // se over denne og getUser: er jo egt samme greia
+  /**
+   * Check if the user exist
+   */
   userExistsCheck(email: string) {
     return new Promise<void>((resolve, reject) => {
       pool.query('SELECT * FROM user WHERE email=?', [email], (error, results: RowDataPacket[]) => {
