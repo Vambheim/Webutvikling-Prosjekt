@@ -67,20 +67,13 @@ jest.mock('../src/recipe-service', () => {
   return new RecipeService();
 });
 
-// describe('UserLogIn component tests', () => {
-//   test('UserLogIn draws correctly', () => {
-//     const wrapper = shallow(<UserLogIn />);
-
-//     expect(wrapper).toMatchSnapshot();
-//   });
-// });
-
 describe('UserLogIn component tests', () => {
   test('UserLogIn draws correctly', () => {
     const wrapper = shallow(<UserLogIn />);
 
     expect(wrapper).toMatchSnapshot();
   });
+
   test('Input updates correctly', () => {
     const wrapper = shallow(<UserLogIn />);
 
@@ -102,10 +95,26 @@ describe('UserLogIn component tests', () => {
     expect(wrapper.containsMatchingElement(<Form.Control value="test2" />)).toEqual(true);
   });
 
-  test('Button sucess calls function on click-event', () => {
+  test('Button variant = sucess calls function on click-event', () => {
     const wrapper = shallow(<UserLogIn />);
 
-    expect(wrapper).toMatchSnapshot();
+    wrapper.find(Button).at(0).simulate('click');
+
+    setTimeout(() => {
+      expect(location.hash).toEqual('#/recipes/user');
+    });
+  });
+
+  test('Button variant = outline-secondary calls function on click-event', () => {
+    const wrapper = shallow(<UserLogIn />);
+
+    wrapper.find(Button).at(1).simulate('click');
+    wrapper.find(Button).at(2).simulate('click');
+
+    setTimeout(() => {
+      expect(location.hash).toEqual('#/recipes/pikk');
+      expect(location.hash).toEqual('#/recipes/login');
+    });
   });
 });
 
