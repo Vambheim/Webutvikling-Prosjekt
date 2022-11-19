@@ -547,12 +547,11 @@ router.delete('/shoppinglistitem/:shopping_list_id', (request, response) => {
     .catch((error) => response.status(500).send(error));
 });
 
-//////////////////////SPONNACULAR API
-// Posts the query to the recipe table
+// Post query to Recipe
 router.post('/spoonacular/recipes', (request, response) => {
   var data = request.body;
 
-  //Slices the request package and parse to JSON
+  //Slice request packing and parse it to JSON
   var json = JSON.stringify(data).slice(11, -1);
   var recipes = JSON.parse(json);
 
@@ -563,11 +562,11 @@ router.post('/spoonacular/recipes', (request, response) => {
       .catch((error) => response.status(500).send(error));
 });
 
-// Posts the query to the ingredient table
+// Post query to Ingridient
 router.post('/spoonacular/ingridients', (request, response) => {
   var data = request.body;
 
-  //Slices the request package and parse to JSON
+  //Slice request packing and parse it to JSON
   var json = JSON.stringify(data).slice(15, -1);
   var ingridients = JSON.parse(json);
 
@@ -578,11 +577,11 @@ router.post('/spoonacular/ingridients', (request, response) => {
       .catch((error) => response.status(500).send(error));
 });
 
-// Posts the query to the recipe_ingrident table
+//Post query to recipe_ingrident
 router.post('/spoonacular/ingridients-recipes', (request, response) => {
   var data = request.body;
 
-  //Slices the request package and parse to JSON
+  //Slice request packing and parse it to JSON
   var json = JSON.stringify(data).slice(15, -1);
   var ingridients = JSON.parse(json);
 
@@ -593,10 +592,12 @@ router.post('/spoonacular/ingridients-recipes', (request, response) => {
       .catch((error) => response.status(500).send(error));
 });
 
+//Poster query to Step
 // Posts the query to the step table
 router.post('/spoonacular/steps', (request, response) => {
   var data = request.body;
-  //Slices the request package and parse to JSON
+
+  //Slice request packing and parse it to JSON
   var json = JSON.stringify(data).slice(9, -1);
   var steps = JSON.parse(json);
 

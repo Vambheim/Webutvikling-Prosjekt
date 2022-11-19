@@ -279,7 +279,7 @@ class RecipeService {
   PostSpoonacularRecipeIngriedents(data: Array<RecipeDetailed>) {
     var ingridients = [];
 
-    for (let i = 0; i < data.length; ) {
+    for (let i = 0; i < data.length;) {
       ingridients.push(data[i].ingriedients);
       i++;
     }
