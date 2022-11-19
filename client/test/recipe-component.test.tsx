@@ -205,7 +205,6 @@ describe('RecipeDetails tests', () => {
     });
   });
 });
-
 describe('RecipeAdd tests', () => {
   test('RecipeAdd draws correctly (using snapshot)', (done) => {
     const wrapper = shallow(<RecipeAdd />);
