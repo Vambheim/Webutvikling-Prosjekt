@@ -102,14 +102,11 @@ export class ShoppingList extends Component {
 
   deleteOne(list_id: number, name: string) {
     if (confirm('Do you want to remove ' + name + ' from the shopping list?')) {
-      console.log(list_id);
       shoppingListService
         .deleteItemShoppingList(list_id)
         .then(() => Alert.success('Item deleted'))
         .then(() => this.mounted()) // refreshes til items in shopping list
         .catch((error) => Alert.danger('Error deleting item in shopping list: ' + error.message));
-    } else {
-      console.log('Canceled');
     }
   }
 
@@ -124,8 +121,6 @@ export class ShoppingList extends Component {
             .then(() => Alert.info('Shopping list was successfully deleted'))
             .then(() => this.mounted())
             .catch((error) => Alert.danger('Error deleting shopping list ' + error.message));
-        } else {
-          console.log('Canceled');
         }
       } else {
         Alert.info('No items to delete');
