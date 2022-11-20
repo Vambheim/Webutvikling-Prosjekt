@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { Column, Alert } from '../src/widgets';
-import { Component } from 'react-simplified';
 
 describe('Column widget tests', () => {
   test('Draws correctly', () => {

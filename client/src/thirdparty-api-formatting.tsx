@@ -1,19 +1,17 @@
-import RecipeService, {
-  Ingredient,
-  RecipeDetailed,
-  Step,
-  RecipeIngredient,
-} from './recipe-service';
+import RecipeService, { RecipeDetailed, Step, RecipeIngredient } from './recipe-service';
 
 export async function getRecipesBulk(testData: any) {
   //Typescript defining a promise which returns three Arrays
   const getApi = async (): Promise<
     [Array<RecipeDetailed>, Array<RecipeIngredient>, Array<Step>]
   > => {
-    //fetch data from the thirdparty API or alternatively us the declared testdata (this feature is only used in the testing) 
-    const api = testData == null ? await fetch(
-      `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=20`
-    ) : testData;
+    //fetch data from the thirdparty API or alternatively us the declared testdata (this feature is only used in the testing)
+    const api =
+      testData == null
+        ? await fetch(
+            `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=20`
+          )
+        : testData;
 
     //Formatting the data from the thirdparty API
     const data = testData == null ? await api.json() : testData;
@@ -24,7 +22,7 @@ export async function getRecipesBulk(testData: any) {
     var ingriedientsUnique: Array<RecipeIngredient> = [];
     var steps: Array<Step> = [];
 
-    for (let i = 0; i < recipeJSON.length;) {
+    for (let i = 0; i < recipeJSON.length; ) {
       //variabler for å lagre ingridienser knyttt en oppskrift
       const recipeIngriedents = recipeJSON[i]['extendedIngredients'];
       var recipeSteps = [];
@@ -41,7 +39,7 @@ export async function getRecipesBulk(testData: any) {
       }
 
       //traverserer ingredienser i oppskriften
-      for (let y = 0; y < recipeIngriedents.length;) {
+      for (let y = 0; y < recipeIngriedents.length; ) {
         //Lager et objekt med utvalgt data for Ingriedent fra JSON
         const ingriedent: RecipeIngredient = {
           ingredient_id: recipeIngriedents[y]['id'],
@@ -61,7 +59,7 @@ export async function getRecipesBulk(testData: any) {
         ) {
           ingriedients.push(ingriedent);
 
-          //list with unique ids, to avoid dobbel instances of ingridiences 
+          //list with unique ids, to avoid dobbel instances of ingridiences
           if (!ingriedientsUnique.some((e) => e.ingredient_id == ingriedent.ingredient_id))
             ingriedientsUnique.push(ingriedent);
         }
@@ -75,7 +73,7 @@ export async function getRecipesBulk(testData: any) {
         name: recipeJSON[i]['title'],
         category: recipeJSON[i]['dishTypes'] ? recipeJSON[i]['dishTypes'][0] : null, // The firsh dishtype if it exists
         country: recipeJSON[i]['cuisines'] ? recipeJSON[i]['cuisines'][0] : null, // The first cuisine if it exists
-        ingriedients: ingriedients, // adds the list of ingridients 
+        ingriedients: ingriedients, // adds the list of ingridients
       };
 
       if (
@@ -89,7 +87,7 @@ export async function getRecipesBulk(testData: any) {
         recipes.push(recipe);
 
         //Traverserer steps for hver oppskrift og putter det i array
-        for (let z = 0; z < recipeSteps.length;) {
+        for (let z = 0; z < recipeSteps.length; ) {
           const step: Step = {
             step_id: 1,
             description: recipeSteps[z]['step'],
@@ -111,7 +109,7 @@ export async function getRecipesBulk(testData: any) {
   const result = await getApi();
 
   //Kaller REST API for hver enkelt tabell i databasen
-  RecipeService.PostSpoonacularRecipes(result[0])
+  RecipeService.PostSpoonacularRecipes(result[0]);
   RecipeService.PostSpoonacularIngriedents(result[1]);
   RecipeService.PostSpoonacularRecipeIngriedents(result[0]);
   RecipeService.PostSpoonacularSteps(result[2]);
