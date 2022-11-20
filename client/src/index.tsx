@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Component } from 'react-simplified';
 import { HashRouter, NavLink, Route } from 'react-router-dom';
 import { Alert } from './widgets';
-import { Carousel, Card, Button, Row, Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { Carousel, Card, Container, Navbar, Nav } from 'react-bootstrap';
 import { RecipeAdd, RecipeList, RecipeDetails, RecipeEdit } from './recipe-components';
 import { ShoppingList } from './shoppingList-components';
 import { UserDetails, UserLogIn, RegisterUser } from './user-components';
@@ -48,7 +48,7 @@ class Menu extends Component {
 
 class Home extends Component {
   mounted() {
-    //Change this to turn the thirdparty API call on and of 
+    //Change this to turn the thirdparty API call on and of
     //Change this const to turn on and off retrival from external API
     const retrieveFromApi = false;
 

@@ -1,11 +1,7 @@
 import * as React from 'react';
-import { Component } from 'react-simplified';
 import { shallow } from 'enzyme';
-import { Column, Alert } from '../src/widgets';
 import { RecipeDetails, RecipeEdit, RecipeAdd, RecipeList } from '../src/recipe-components';
-import recipeService, { Recipe } from '../src/recipe-service';
 import { Form, Button, Card } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
 
 jest.mock('../src/recipe-service', () => {
   class RecipeService {

@@ -1,19 +1,8 @@
 import * as React from 'react';
-import {
-  UserLogIn,
-  RegisterUser,
-  UserDetails,
-  loggedIn,
-  currentUser,
-} from '../src/user-components';
+import { UserLogIn, RegisterUser, UserDetails } from '../src/user-components';
 import { shallow } from 'enzyme';
-import { NavLink } from 'react-router-dom';
-import { Component } from 'react-simplified';
-import { Alert, Column } from '../src/widgets';
-import { Button, Form, Card, Row, Col, Container, FormControl } from 'react-bootstrap';
-import recipeService, { Recipe } from '../src/recipe-service';
-import userService, { User } from '../src/user-service';
-import { createHashHistory } from 'history';
+
+import { Button, Form, Card } from 'react-bootstrap';
 
 jest.mock('../src/user-service', () => {
   class UserService {
@@ -24,7 +13,7 @@ jest.mock('../src/user-service', () => {
       password: 'testPassword'
     ) {
       return Promise.resolve({
-        user_id: 10000,
+        user_id: 1,
         email: 'test@mail.com',
         first_name: 'testFirstName',
         last_name: 'testLastName',
