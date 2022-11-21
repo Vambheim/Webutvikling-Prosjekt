@@ -256,7 +256,7 @@ router.put('/recipes/:recipe_id/ingredients/:ingredient_id', (request, response)
     data &&
     typeof data.amount_per_person == 'number' &&
     data.amount_per_person != 0 &&
-    (isNaN(data.measurement_unit) || data.measurement_unit == undefined) &&
+    (isNaN(data.measurement_unit) || data.measurement_unit == '') &&
     typeof recipe_id == 'number' &&
     recipe_id != 0 &&
     typeof ingredient_id == 'number' &&
