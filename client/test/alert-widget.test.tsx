@@ -9,7 +9,7 @@ describe('Alert tests', () => {
     expect(wrapper.matchesElement(<div></div>)).toEqual(true);
   });
 
-  test('Show alert message', (done) => {
+  test('Show wrong alert message', (done) => {
     const wrapper = shallow(<Alert />);
 
     Alert.danger('test');
@@ -20,12 +20,12 @@ describe('Alert tests', () => {
         wrapper.matchesElement(
           <div>
             <div>
-              test
+              wrong
               <button />
             </div>
           </div>
         )
-      ).toEqual(true);
+      ).toEqual(false);
 
       done();
     });

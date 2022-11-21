@@ -38,6 +38,7 @@ describe('New alert test', () => {
       done();
     });
   });
+
   test('Alert.danger draws correctly with classname', () => {
     //@ts-ignore
     const wrapper = shallow(<Alert.danger>test</Alert.danger>);
@@ -66,28 +67,6 @@ describe('New alert test', () => {
     //console.log(wrapper.debug());
 
     expect(wrapper).toMatchSnapshot();
-  });
-
-  test('Show alert message', (done) => {
-    const wrapper = shallow(<Alert />);
-
-    Alert.danger('test');
-
-    // Wait for events to complete
-    setTimeout(() => {
-      expect(
-        wrapper.containsMatchingElement(
-          <div>
-            <div>
-              test
-              <button />
-            </div>
-          </div>
-        )
-      ).toEqual(true);
-
-      done();
-    });
   });
 
   test('Alert draws correctly with classname', () => {

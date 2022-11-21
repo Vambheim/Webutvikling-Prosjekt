@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Shoppinglist component tests Shoppinglist draws correctly (using snapshot) 1`] = `
+<Card
+  body={false}
+  style={
+    {
+      "border": "none",
+      "padding": "15px",
+      "textAlign": "center",
+    }
+  }
+>
+  <CardTitle>
+    Shopping list
+  </CardTitle>
+  <Row
+    style={
+      {
+        "marginLeft": "7%",
+        "width": "90%",
+      }
+    }
+  >
+    <Col />
+  </Row>
+  <Row>
+    <Button
+      active={false}
+      disabled={false}
+      onClick={[Function]}
+      style={
+        {
+          "marginBottom": "10px",
+          "marginLeft": "auto",
+          "marginRight": "auto",
+          "width": "15rem",
+        }
+      }
+      variant="danger"
+    >
+      Delete all
+    </Button>
+  </Row>
+</Card>
+`;
