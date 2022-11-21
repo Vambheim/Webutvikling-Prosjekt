@@ -1273,20 +1273,17 @@ export class RecipeEdit extends Component<{ match: { params: { id: number } } }>
               ing.ingredient_id,
               ing.name
             )
-            .then((response) => console.log(response))
             .catch((error) => Alert.danger('Error updating ingredient: ' + error.message));
         });
         this.steps.map((step) => {
           recipeService
             .updateStep(this.recipe.recipe_id, step.step_id, step.order_number, step.description)
-            .then((response) => console.log(response))
             .catch((error) => Alert.danger('Error updating step: ' + error.message));
         });
       })
-      // .then(() => history.push('/recipes/' + this.recipe.recipe_id))
       .catch((error) => Alert.danger('Error updating recipe' + error.message));
 
-    /// denne kan fjernes etter video
+    /// workaround to make sure the recipe is updated before pushing to another path
     setTimeout(() => {
       history.push('/recipes/' + this.recipe.recipe_id);
       //@ts-ignore
